@@ -1,0 +1,172 @@
+.bg-linear-black {
+	background: linear-gradient(195deg, rgb(66, 66, 74), rgb(25, 25, 25));
+	color: rgb(255, 255, 255);
+}
+
+.hover\:bg-linear-black:hover {
+	background: linear-gradient(195deg, rgb(66, 66, 74), rgb(25, 25, 25));
+	color: rgb(255, 255, 255);
+}
+
+.bg-linear-blue {
+	background: linear-gradient(195deg, rgb(73, 163, 241), rgb(26, 115, 232));
+	color: rgb(255, 255, 255);
+}
+
+.hover\:bg-linear-blue:hover {
+	background: linear-gradient(195deg, rgb(73, 163, 241), rgb(26, 115, 232));
+	color: rgb(255, 255, 255);
+}
+
+.hover\:bg-linear-red:hover {
+	background: linear-gradient(195deg, rgb(236, 64, 122), rgb(216, 27, 96));
+	color: rgb(255, 255, 255);
+}
+
+.bg-linear-red {
+	background: linear-gradient(195deg, rgb(236, 64, 122), rgb(216, 27, 96));
+	color: rgb(255, 255, 255);
+}
+
+.bg-linear-green {
+	background: linear-gradient(195deg, rgb(102, 187, 106), rgb(67, 160, 71));
+	color: rgb(255, 255, 255);
+}
+
+.hover\:bg-linear-green:hover {
+	background: linear-gradient(195deg, rgb(102, 187, 106), rgb(67, 160, 71));
+	color: rgb(255, 255, 255);
+}
+
+.employee-icon {
+	color: rgb(255, 255, 255);
+	border-radius: 0.75rem;
+	box-shadow: rgba(0, 0, 0, 0.14) 0rem 0.25rem 1.25rem 0rem,
+		rgba(64, 64, 64, 0.4) 0rem 0.4375rem 0.625rem -0.3125rem;
+}
+.salary-icon {
+	border-radius: 0.75rem;
+	box-shadow: rgba(0, 0, 0, 0.14) 0rem 0.25rem 1.25rem 0rem,
+		rgba(64, 64, 64, 0.4) 0rem 0.4375rem 0.625rem -0.3125rem;
+}
+.request-icon {
+	border-radius: 0.75rem;
+	box-shadow: rgba(0, 0, 0, 0.14) 0rem 0.25rem 1.25rem 0rem,
+		rgba(64, 64, 64, 0.4) 0rem 0.4375rem 0.625rem -0.3125rem;
+}
+
+.card-shadow {
+	border-radius: 0.75rem;
+	box-shadow: rgba(0, 0, 0, 0.1) 0rem 0.25rem 0.375rem -0.0625rem,
+		rgba(0, 0, 0, 0.06) 0rem 0.125rem;
+}
+
+.navlinks {
+	background-color: transparent;
+	margin: 1rem 0px;
+}
+
+.navlinks:hover {
+	background: linear-gradient(195deg, rgb(73, 163, 241), rgb(26, 115, 232));
+	color: rgb(255, 255, 255);
+}
+
+.active {
+	background: linear-gradient(195deg, rgb(73, 163, 241), rgb(26, 115, 232));
+	color: rgb(255, 255, 255);
+	border-radius: 99999999px;
+}
+
+.glassmorphism {
+	background: rgba(255, 255, 255, 0.2);
+	border-radius: 16px;
+	box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+	backdrop-filter: blur(5px);
+	-webkit-backdrop-filter: blur(5px);
+	border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.glassmorphism-dark {
+	backdrop-filter: blur(16px) saturate(180%);
+	-webkit-backdrop-filter: blur(16px) saturate(180%);
+	background-color: rgba(0, 0, 0, 0.75);
+	border-radius: 12px;
+	border: 1px solid rgba(209, 213, 219, 0.3);
+}
+
+.custom-border {
+	border-top: 0px solid rgba(0, 0, 0, 0.12);
+	border-right: 0px solid rgba(0, 0, 0, 0.12);
+	border-left: 0px solid rgba(0, 0, 0, 0.12);
+	background-color: transparent;
+	height: 0.0625rem;
+	margin: 1rem 0px;
+	border-bottom: none;
+	opacity: 0.25;
+	background-image: linear-gradient(
+		to right,
+		rgba(52, 71, 103, 0),
+		rgba(52, 71, 103, 0.4),
+		rgba(52, 71, 103, 0)
+	) !important;
+}
+
+.box-shadow {
+	border: 0px solid rgba(0, 0, 0, 0.125);
+	border-radius: 0.75rem;
+	box-shadow: rgba(0, 0, 0, 0.1) 0rem 0.25rem 0.375rem -0.0625rem,
+		rgba(0, 0, 0, 0.06) 0rem 0.125rem 0.25rem -0.0625rem;
+}
+
+.table-styling td,
+th {
+	width: 25%;
+	text-align: center;
+}
+
+.chart-container {
+	width: 50%;
+	position: absolute;
+	top: -1rem;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.dropzone {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+}
+
+.no-scroll {
+	overflow: hidden;
+	height: 100%;
+}
+
+@media (max-width: 768px) {
+	.ml-20 {
+		margin-left: 0;
+	}
+	.ml-64 {
+		margin-left: 0;
+	}
+	aside {
+		width: 100%;
+		height: 100vh;
+		position: fixed;
+		top: 0;
+		left: 0;
+	}
+}
+
+.hide-scrollbar {
+	scrollbar-width: none; /* Firefox */
+	-ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+	/* WebKit */
+	width: 0;
+	height: 0;
+}
