@@ -1,0 +1,213 @@
+{
+  "messages": [
+    {
+      "id": 1,
+      "name": "Shanaya",
+      "message": "lorem ipsum dolor"
+    },
+    {
+      "id": 2,
+      "name": "Ankur",
+      "message": "lorem ipsum dolor"
+    },
+    {
+      "id": 2,
+      "name": "Ankur",
+      "message": "lorem ipsum dolor"
+    },
+    {
+      "id": 2,
+      "name": "Ankur",
+      "message": "lorem ipsum dolor"
+    }
+  ],
+
+  "books": [
+    {
+      "id": 1,
+      "url": "assets/library/1.png",
+      "subject": "Science"
+    },
+    {
+      "id": 2,
+      "url": "assets/library/2.png",
+      "subject": "Science"
+    },
+    {
+      "id": 3,
+      "url": "assets/library/3.png",
+      "subject": "Maths"
+    },
+    {
+      "id": 4,
+      "url": "assets/library/4.png",
+      "subject": "Computer Science"
+    },
+    {
+      "id": 5,
+      "url": "assets/library/5.png",
+      "subject": "Social Science"
+    },
+    {
+      "id": 6,
+      "url": "assets/library/6.png",
+      "subject": "Arts"
+    },
+    {
+      "id": 7,
+      "url": "assets/library/7.png",
+      "subject": "Social Science"
+    },
+    {
+      "id": 8,
+      "url": "assets/library/8.png",
+      "subject": "Maths"
+    }
+  ],
+  "assignments":[
+    {
+      "subject":"Science",
+      "obtMarks":11,
+      "totalMarks":12
+    },
+    {
+      "subject":"Science",
+      "obtMarks":16,
+      "totalMarks":16
+    },
+    {
+      "subject":"Science",
+      "obtMarks":14,
+      "totalMarks":18
+    },
+    {
+      "subject":"Science",
+      "obtMarks":6,
+      "totalMarks":6
+    },
+    {
+      "subject":"Science",
+      "obtMarks":6,
+      "totalMarks":6
+    },
+    {
+      "subject":"Science",
+      "obtMarks":6,
+      "totalMarks":6
+    }
+  ],
+  "exams":[
+    {
+      "subject":"Science",
+      "date":"14/03/2024"
+    },
+    {
+      "subject":"Hindi",
+      "date":"15/03/2024"
+    },
+    {
+      "subject":"Maths",
+      "date":"18/03/2024"
+    },
+    {
+      "subject":"English",
+      "date":"19/03/2024"
+    },
+    {
+      "subject":"Social Science",
+      "date":"20/03/2024"
+    }
+  ],
+  "timetable":[
+    {
+      "id":1,
+      "timestamp":"8:30",
+      "subject":"Hindi"
+    },
+    {
+      "id":2,
+      "timestamp":"9:30",
+      "subject":"Science"
+    },
+    {
+      "id":3,
+      "timestamp":"10:30",
+      "subject":"Activity"
+    },
+    {
+      "id":4,
+      "timestamp":"11:30",
+      "subject":"Break"
+    },
+    {
+      "id":5,
+      "timestamp":"12:00",
+      "subject":"Maths"
+    },
+    {
+      "id":6,
+      "timestamp":"13:00",
+      "subject":"English"
+    }
+  ],
+  "reviews":[
+    {
+      "id":1,
+      "teacher":"Shanaya",
+      "subject":"Science",
+      "message":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus interdum justo in lorem porttitor, fermentum porta tortor lobortis. Nullam at convallis ligula, sed maximus leo. Nulla lobortis blandit pellentesque. Morbi." 
+    },
+    {
+      "id":2,
+      "teacher":"Ankur",
+      "subject":"Maths",
+      "message":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus interdum justo in lorem porttitor, fermentum porta tortor lobortis. Nullam at convallis ligula, sed maximus leo. Nulla lobortis blandit pellentesque. Morbi." 
+    }
+  ],
+  "events":[
+    {
+      "title":"Annual Football Championship",
+      "date":"20-31 March, 2024",
+      "url":"assets/events/events.png",
+      "description":"Lorem ipsum dolor sit amet consectetur. Auctor libero metus consectetur fames. Morbi purus justo suspendisse et placerat. Bibendum urna commodo senectus faucibus vitae ultrices cursus venenatis. At viverra lectus sit ut cras ultrices tristique nascetur facilisi."
+    },
+    {
+      "title":"Annual Cricket Tournament",
+      "date":"1 - 7 April, 2024",
+      "url":"assets/events/events.png",
+      "description":"Lorem ipsum dolor sit amet consectetur. Auctor libero metus consectetur fames. Morbi purus justo suspendisse et placerat. Bibendum urna commodo senectus faucibus vitae ultrices cursus"
+    }
+  ],
+  "teachers":[
+    {
+      "name":"Shanaya",
+      "designation":"Science Teacher",
+      "available": true
+    },
+    {
+      "name":"Shanaya",
+      "designation":"Science Teacher",
+      "available": true
+    },
+    {
+      "name":"Shanaya",
+      "designation":"Science Teacher",
+      "available": true
+    },
+    {
+      "name":"Shanaya",
+      "designation":"Science Teacher",
+      "available": true
+    },
+    {
+      "name":"Shanaya",
+      "designation":"Science Teacher",
+      "available": false
+    },
+    {
+      "name":"Shanaya",
+      "designation":"Science Teacher",
+      "available": true
+    }
+  ]
+}

@@ -1,0 +1,185 @@
+{
+  "schedule": [
+    {
+      "id": 1,
+      "subject": "Activity",
+      "class": 5,
+      "time": "08:00",
+      "mode": "Online",
+      "type": "meeting"
+    },
+    {
+      "id": 2,
+      "subject": "Science",
+      "class": 5,
+      "time": "08:30",
+      "mode": "Offline",
+      "type": "class lecture"
+    },
+    {
+      "id": 3,
+      "subject": "Biology",
+      "class": 5,
+      "time": "09:00",
+      "mode": "Online",
+      "type": "training"
+    },
+    {
+      "id": 4,
+      "subject": "Activity",
+      "class": 5,
+      "time": "08:00",
+      "mode": "Online",
+      "type": "meeting"
+    },
+    {
+      "id": 5,
+      "subject": "Science",
+      "class": 5,
+      "time": "08:30",
+      "mode": "Offline",
+      "type": "class lecture"
+    },
+    {
+      "id": 6,
+      "subject": "Biology",
+      "class": 5,
+      "time": "09:00",
+      "mode": "Online",
+      "type": "training"
+    }
+  ],
+  "students": [
+    {
+      "id": 1,
+      "name": "Anamika joshi"
+    },
+    {
+      "id": 2,
+      "name": "Ashwani Raj"
+    },
+    {
+      "id": 3,
+      "name": "Ishan Yadav"
+    },
+    {
+      "id": 4,
+      "name": "Praful Yadav"
+    }
+  ],
+  "teacher": {
+    "id": 7,
+    "campusId": 1,
+    "name": "Yash Sojitra",
+    "email": "yash@gmail.com",
+    "role": "teacher",
+    "gender": "Male",
+    "contactNumber": "6386997744",
+    "dob": "24-08-2004",
+    "permanent_address": "Rajkot",
+    "currentAddress": "Rajkot",
+    "departmentId": 1,
+    "classes": [3, 5, 7, 8],
+    "subjects": ["Science", "Social Studies"]
+  },
+  "classes": {
+    "3": [
+      {
+        "id": 1,
+        "name": "Anamika jshi3"
+      },
+      {
+        "id": 2,
+        "name": "Ashwani Raj3"
+      },
+      {
+        "id": 3,
+        "name": "Ishan dav3"
+      },
+      {
+        "id": 4,
+        "name": "Praful Yadav3"
+      }
+    ],
+    "5": [
+      {
+        "id": 1,
+        "name": "namika jos5"
+      },
+      {
+        "id": 2,
+        "name": "Ashw Rja5"
+      },
+      {
+        "id": 3,
+        "name": "Iha Yadav5"
+      },
+      {
+        "id": 4,
+        "name": "rahul Yadav5"
+      }
+    ],
+    "7": [
+      {
+        "id": 1,
+        "name": "namika joshi7"
+      },
+      {
+        "id": 2,
+        "name": "Ashw Raja7"
+      },
+      {
+        "id": 3,
+        "name": "Isha Yadav7"
+      },
+      {
+        "id": 4,
+        "name": "rahul Yadav7"
+      }
+    ],
+    "8": [
+      {
+        "id": 1,
+        "name": "namika joshi8"
+      },
+      {
+        "id": 2,
+        "name": "Ashw Raja8"
+      },
+      {
+        "id": 3,
+        "name": "Isha Yadav8"
+      },
+      {
+        "id": 4,
+        "name": "rahul Yadav8"
+      }
+    ]
+  },
+  "leaves":[
+    {
+      "id":1,
+      "title":"Rajastan Trip",
+      "from":"4th June, 2024",
+      "to": "8th June, 2024",
+      "days": "4",
+      "status":"pending"
+    },
+    {
+      "id":2,
+      "title":"Rajastan Trip",
+      "from":"4th June, 2024",
+      "to": "8th June, 2024",
+      "days": "4",
+      "status":"pending"
+    },
+    {
+      "id":3,
+      "title":"Rajastan Trip",
+      "from":"4th June, 2024",
+      "to": "8th June, 2024",
+      "days": "4",
+      "status":"pending"
+    }
+  ]
+}
