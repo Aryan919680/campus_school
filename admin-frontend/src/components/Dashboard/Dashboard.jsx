@@ -8,6 +8,7 @@ import Employee from "../main/dashboard/employeesDetails/Employee";
 import Modal from "../popup/Modal";
 import { AuthContext } from "../../context/AuthContext";
 import FeesListTable from "../Fees/StudentsWithPaymentStatus";
+import { ContentSkeleton } from "../Skeleton/ContentSkeleton";
 
 const Dashboard = () => {
 	const { token, isLoggedIn } = useContext(AuthContext);
@@ -206,7 +207,7 @@ const Dashboard = () => {
 				responsiveWidth={"md:w/[60%]"}
 			>
 				<div className="bg-white p-8 rounded-md">
-					{isLoading ? <p>Loading...</p> : <FeesListTable />}
+					{isLoading ? <ContentSkeleton /> : <FeesListTable />}
 				</div>
 			</Modal>
 

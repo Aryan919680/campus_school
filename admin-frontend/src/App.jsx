@@ -9,6 +9,7 @@ import LandingPage from "./LandingPage";
 import OnboardingForm from "./onboarding/OnboardingForm";
 import CollegeDashboard from "./components/Dashboard/CollegeDashboard";
 import "./App.css";
+import PageSkeleton from "./components/Skeleton/PageSkeleton";
 
 function App() {
 	const { isLoggedIn, userData, isLoading, handleLogout } =
@@ -26,7 +27,7 @@ function App() {
 	};
 
 	if (isLoading) {
-		return <div>Loading...</div>;
+		return <PageSkeleton />;
 	}
 
 	const userType = localStorage.getItem("userType");

@@ -7,6 +7,7 @@ import ModalDetails from "../../../popup/ModalDetails";
 import EmployeeAddForm from "../../../Forms/EmployeeAddForm";
 import API_ENDPOINTS from "../../../../API/apiEndpoints";
 import axios from "axios";
+import { ContentSkeleton } from "../../../Skeleton/ContentSkeleton";
 
 const Employee = () => {
 	const [teachers, setTeachers] = useState([]);
@@ -157,7 +158,7 @@ const Employee = () => {
 	return (
 		<>
 			{isLoading ? (
-				<p>Loading...</p>
+				<ContentSkeleton />
 			) : (
 				<div className="bg-white p-8 rounded-md w-full">
 					<div className="flex items-center justify-between pb-6 ">

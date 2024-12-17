@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
+import PageSkeleton from "../components/Skeleton/PageSkeleton";
 
 const AuthContext = createContext({
 	userData: null,
@@ -62,6 +63,11 @@ export const AuthProvider = ({ children }) => {
 			setIsLoggedIn(true);
 		}
 	};
+
+	// Show PageSkeleton during initial load
+	if (isLoading) {
+		return <PageSkeleton />;
+	}
 
 	return (
 		<AuthContext.Provider

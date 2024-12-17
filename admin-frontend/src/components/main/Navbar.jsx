@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import ProfileDropDown from "./ProfileDropDown";
 import FloatingInput from "../Forms/FloatingInput";
+import API_ENDPOINTS from "../../API/apiEndpoints";
 
 const Navbar = ({ logout, userData, toggleSidebar, setUserData }) => {
 	const [formData, setFormData] = useState({
@@ -15,12 +16,13 @@ const Navbar = ({ logout, userData, toggleSidebar, setUserData }) => {
 	const [isFormVisible, setIsFormVisible] = useState(false);
 	const [hasPendingRequests, setHasPendingRequests] = useState(false);
 	const [pendingRequests, setPendingRequests] = useState([]);
-	const [teacherPhotos, setTeacherPhotos] = useState({});
 	const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
 	const formRef = useRef(null);
 	const notificationRef = useRef(null);
 	const scriptRef = useRef(false);
 
+	// Google Translate setup
 	useEffect(() => {
 		const addGoogleTranslateScript = () => {
 			if (!scriptRef.current) {
@@ -30,7 +32,7 @@ const Navbar = ({ logout, userData, toggleSidebar, setUserData }) => {
 					"https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
 				script.async = true;
 				document.body.appendChild(script);
-				scriptRef.current = true; // Mark script as added
+				scriptRef.current = true;
 			}
 		};
 
@@ -43,29 +45,87 @@ const Navbar = ({ logout, userData, toggleSidebar, setUserData }) => {
 				"google_translate_element"
 			);
 
-			// Apply styles to hide branding
 			const style = document.createElement("style");
 			style.innerHTML = `
-				#google_translate_element .goog-logo-link {
-					display: none !important;
-				}
-				#google_translate_element .goog-logo {
-					display: none !important;
-				}
-				#goog-te-banner-frame {
-					display: none !important;
-				}
-				#goog-te-banner-frame {
-					display: none !important;
-				}
-			`;
+        #google_translate_element .goog-logo-link {
+          display: none !important;
+        }
+        #google_translate_element .goog-logo {
+          display: none !important;
+        }
+        #goog-te-banner-frame {
+          display: none !important;
+        }
+      `;
 			document.head.appendChild(style);
 		};
 
 		addGoogleTranslateScript();
 	}, []);
 
-	// Your existing functions (handleChange, handleSubmit, etc.) remain unchanged
+	// Fetch pending leaves
+	const fetchPendingLeaves = async () => {
+		try {
+			setIsLoading(true);
+			const response = await fetch(API_ENDPOINTS.FETCH_ALL_PENDING_LEAVES, {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${localStorage.getItem("token")}`,
+				},
+			});
+
+			if (!response.ok) {
+				throw new Error("Failed to fetch pending leaves");
+			}
+
+			const data = await response.json();
+			console.log("API Response:", data); // Debug line
+
+			if (data.success && Array.isArray(data.leaves)) {
+				const formattedRequests = data.leaves.map((leave) => ({
+					id: leave.teacherId,
+					teacherId: leave.teacherId,
+					name: leave.name,
+					reason: leave.reason,
+					startDate: new Date(leave.dateFrom).toLocaleDateString(),
+					endDate: new Date(leave.dateTo).toLocaleDateString(),
+					status: leave.status,
+					applyDate: new Date(leave.applyDate).toLocaleDateString(),
+					noOfDays: leave.noOfDays,
+				}));
+
+				setPendingRequests(formattedRequests);
+				setHasPendingRequests(formattedRequests.length > 0);
+			}
+		} catch (error) {
+			console.error("Error fetching leaves:", error);
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
+	// Set up polling for leaves
+	useEffect(() => {
+		fetchPendingLeaves();
+		const interval = setInterval(fetchPendingLeaves, 30000);
+		return () => clearInterval(interval);
+	}, []);
+
+	// Handle click outside notification
+	useEffect(() => {
+		const handleClickOutside = (event) => {
+			if (
+				notificationRef.current &&
+				!notificationRef.current.contains(event.target)
+			) {
+				setIsNotificationOpen(false);
+			}
+		};
+
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => document.removeEventListener("mousedown", handleClickOutside);
+	}, []);
 
 	return (
 		<section className="flex items-center justify-between mt-0 mb-4 mx-0 p-2 glassmorphism w-full relative z-10">
@@ -74,7 +134,7 @@ const Navbar = ({ logout, userData, toggleSidebar, setUserData }) => {
 			</div>
 
 			<div className="flex items-center w-full justify-end">
-				{/* Updated Google Translate Element */}
+				{/* Google Translate Element */}
 				<div className="dropdown relative h-full hidden md:block">
 					<div
 						id="google_translate_element"
@@ -109,44 +169,79 @@ const Navbar = ({ logout, userData, toggleSidebar, setUserData }) => {
 
 					{/* Notification Dropdown */}
 					{isNotificationOpen && (
-						<div className="absolute right-0 top-12 w-80 mt-2 bg-white rounded-md shadow-lg z-50 border border-gray-200">
+						<div className="absolute right-0 top-12 w-96 mt-2 bg-white rounded-md shadow-lg z-50 border border-gray-200">
+							<div className="p-3 border-b border-gray-200 bg-gray-50">
+								<h6 className="text-sm font-semibold text-gray-700">
+									Leave Requests
+								</h6>
+							</div>
 							<ul className="py-1 max-h-96 overflow-y-auto">
 								{pendingRequests.length > 0 ? (
-									pendingRequests.map((request, index) => (
+									pendingRequests.map((request) => (
 										<li
-											key={index}
-											className="px-4 py-3 hover:bg-gray-50 transition-colors duration-200"
+											key={request.id}
+											className="px-4 py-3 hover:bg-gray-50 transition-colors duration-200 border-b border-gray-100 last:border-0"
 										>
-											<div className="flex items-center">
-												{teacherPhotos[request.teacherId] ? (
-													<img
-														src={teacherPhotos[request.teacherId]}
-														alt={request.name}
-														className="w-10 h-10 rounded-full mr-3 object-cover"
+											<div className="flex items-start">
+												<div className="w-10 h-10 rounded-full mr-3 bg-blue-100 flex items-center justify-center flex-shrink-0">
+													<Icon
+														icon="mdi:calendar-clock"
+														className="text-blue-600"
+														height={20}
 													/>
-												) : (
-													<div className="w-10 h-10 rounded-full mr-3 bg-gray-200 flex items-center justify-center">
-														<Icon
-															icon="mdi:user"
-															className="text-gray-500"
-															height={24}
-														/>
-													</div>
-												)}
+												</div>
 												<div>
-													<h5 className="font-semibold text-gray-800">
-														{request.name}
-													</h5>
-													<p className="text-sm text-gray-600">
+													<div className="flex justify-between items-start">
+														<h5 className="font-semibold text-gray-800">
+															{request.name}
+														</h5>
+														<span className="text-xs text-gray-500">
+															Applied: {request.applyDate}
+														</span>
+													</div>
+													<p className="text-sm text-gray-600 mt-1">
 														{request.reason}
 													</p>
+													<p className="text-xs text-gray-500 mt-1">
+														Duration: {request.startDate} to {request.endDate} (
+														{request.noOfDays} days)
+													</p>
+													<div className="mt-2 flex gap-2">
+														<button
+															onClick={() =>
+																handleLeaveAction(request.teacherId, "approve")
+															}
+															className="px-3 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800 hover:bg-green-200"
+														>
+															Approve
+														</button>
+														<button
+															onClick={() =>
+																handleLeaveAction(request.teacherId, "reject")
+															}
+															className="px-3 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800 hover:bg-red-200"
+														>
+															Reject
+														</button>
+													</div>
 												</div>
 											</div>
 										</li>
 									))
 								) : (
-									<li className="px-4 py-3 text-sm text-gray-700">
-										No pending requests
+									<li className="px-4 py-6 text-sm text-gray-700 text-center">
+										{isLoading ? (
+											<div className="flex items-center justify-center">
+												<Icon
+													icon="mdi:loading"
+													className="animate-spin mr-2"
+													height={20}
+												/>
+												Loading requests...
+											</div>
+										) : (
+											"No pending requests"
+										)}
 									</li>
 								)}
 							</ul>
@@ -155,14 +250,12 @@ const Navbar = ({ logout, userData, toggleSidebar, setUserData }) => {
 				</div>
 
 				{/* Profile Dropdown */}
-				<div className="flex items-center justify-center">
-					<ProfileDropDown
-						logout={logout}
-						userData={userData}
-						toggleForm={() => setIsFormVisible(!isFormVisible)}
-						setUserData={setUserData}
-					/>
-				</div>
+				<ProfileDropDown
+					logout={logout}
+					userData={userData}
+					toggleForm={() => setIsFormVisible(!isFormVisible)}
+					setUserData={setUserData}
+				/>
 			</div>
 
 			{/* Form Modal */}

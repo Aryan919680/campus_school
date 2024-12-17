@@ -4,9 +4,9 @@ import axios from "axios";
 import API_ENDPOINTS from "./API/apiEndpoints";
 
 const ResetPassword = () => {
-	const { token, userId } = useParams(); // Extract token and userId from URL
-	const navigate = useNavigate(); // Initialize the useNavigate hook
-	const [password, setPassword] = useState(""); // Use 'password' instead of 'newPassword'
+	const { token, userId } = useParams();
+	const navigate = useNavigate();
+	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [errorMessage, setErrorMessage] = useState("");
 	const [successMessage, setSuccessMessage] = useState("");
