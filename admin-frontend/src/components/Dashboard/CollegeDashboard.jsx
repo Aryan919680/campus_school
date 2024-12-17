@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useApiEndpoints } from "../../API/apiEndpoints";
+import API_ENDPOINTS from "../../API/apiEndpoints";
 
 const CollegeDashboard = ({ userData, logout }) => {
-	const endpoints = useApiEndpoints();
 	const [departments, setDepartments] = useState([]);
 	const [newDepartment, setNewDepartment] = useState({
 		name: "",
@@ -19,7 +18,7 @@ const CollegeDashboard = ({ userData, logout }) => {
 
 	const fetchDepartments = async () => {
 		try {
-			const response = await axios.get(endpoints.FETCH_ALL_DEPARTMENTS, {
+			const response = await axios.get(API_ENDPOINTS.FETCH_ALL_DEPARTMENTS, {
 				headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 			});
 			setDepartments(response.data.data || []);
@@ -36,7 +35,7 @@ const CollegeDashboard = ({ userData, logout }) => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
-			await axios.post(endpoints.CREATE_DEPARTMENTS, newDepartment, {
+			await axios.post(API_ENDPOINTS.CREATE_DEPARTMENTS, newDepartment, {
 				headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 			});
 			fetchDepartments();

@@ -1,13 +1,17 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
 
-export const AuthContext = createContext({
+const AuthContext = createContext({
 	userData: null,
 	token: null,
 	isLoggedIn: false,
 	isLoading: true,
 	handleLogin: () => {},
 	handleLogout: () => {},
+	setIsLoggedIn: () => {},
+	setToken: () => {},
+	setUserData: () => {},
+	refreshAuthState: () => {},
 });
 
 export const AuthProvider = ({ children }) => {
@@ -48,6 +52,17 @@ export const AuthProvider = ({ children }) => {
 		delete axios.defaults.headers.common["Authorization"];
 	};
 
+	const refreshAuthState = () => {
+		const storedToken = localStorage.getItem("token");
+		const storedUserData = localStorage.getItem("userData");
+
+		if (storedToken && storedUserData) {
+			setToken(storedToken);
+			setUserData(JSON.parse(storedUserData));
+			setIsLoggedIn(true);
+		}
+	};
+
 	return (
 		<AuthContext.Provider
 			value={{
@@ -57,6 +72,10 @@ export const AuthProvider = ({ children }) => {
 				isLoading,
 				handleLogin,
 				handleLogout,
+				setIsLoggedIn,
+				setToken,
+				setUserData,
+				refreshAuthState,
 			}}
 		>
 			{children}
@@ -64,4 +83,4 @@ export const AuthProvider = ({ children }) => {
 	);
 };
 
-export { AuthProvider as default };
+export { AuthContext };

@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
+import { AuthContext } from "./context/AuthContext"; // Changed to named import
 import LogIn from "./LogIn";
 import Layout from "./Layout";
 import FeesDashboard from "./components/Dashboard/FeesDashboard";
@@ -8,19 +9,16 @@ import LandingPage from "./LandingPage";
 import OnboardingForm from "./onboarding/OnboardingForm";
 import CollegeDashboard from "./components/Dashboard/CollegeDashboard";
 import "./App.css";
-import AuthContext from "./context/AuthContext";
 
 function App() {
-	const { isLoggedIn, userData, isLoading, refreshAuthState } =
+	const { isLoggedIn, userData, isLoading, handleLogout } =
 		useContext(AuthContext);
 	const [showOnboarding, setShowOnboarding] = useState(false);
 
 	const logout = () => {
-		localStorage.removeItem("token");
-		localStorage.removeItem("userData");
+		handleLogout();
 		localStorage.removeItem("userType");
 		localStorage.removeItem("campusType");
-		refreshAuthState();
 	};
 
 	const handleStartOnboarding = () => {

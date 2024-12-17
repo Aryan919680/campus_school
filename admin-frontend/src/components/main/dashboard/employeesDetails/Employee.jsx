@@ -7,7 +7,6 @@ import ModalDetails from "../../../popup/ModalDetails";
 import EmployeeAddForm from "../../../Forms/EmployeeAddForm";
 import API_ENDPOINTS from "../../../../API/apiEndpoints";
 import axios from "axios";
-import EmployeeUpload from "../../../Employees/EmployeeUpload";
 
 const Employee = () => {
 	const [teachers, setTeachers] = useState([]);
@@ -160,7 +159,7 @@ const Employee = () => {
 			{isLoading ? (
 				<p>Loading...</p>
 			) : (
-				<div className="bg-white p-8 rounded-md w-fit sm:w-full">
+				<div className="bg-white p-8 rounded-md w-full">
 					<div className="flex items-center justify-between pb-6 ">
 						<h2 className="text-gray-600 font-semibold">Employee Details</h2>
 						<div>

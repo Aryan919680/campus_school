@@ -1,9 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
-import API_ENDPOINTS from "../../API/apiEndpoints";
 import { Icon } from "@iconify/react";
 import ProfileDropDown from "./ProfileDropDown";
 import FloatingInput from "../Forms/FloatingInput";
-import axios from "axios";
 
 const Navbar = ({ logout, userData, toggleSidebar, setUserData }) => {
 	const [formData, setFormData] = useState({
@@ -71,13 +69,13 @@ const Navbar = ({ logout, userData, toggleSidebar, setUserData }) => {
 
 	return (
 		<section className="flex items-center justify-between mt-0 mb-4 mx-0 p-2 glassmorphism w-full relative z-10">
-			<div className="bg-linear-black p-2 rounded-full block lg:hidden">
+			<div className="bg-linear-black p-2 rounded-full block sm:hidden">
 				<Icon icon="mdi:hamburger-close" height={24} onClick={toggleSidebar} />
 			</div>
 
 			<div className="flex items-center w-full justify-end">
 				{/* Updated Google Translate Element */}
-				<div className="dropdown relative h-full">
+				<div className="dropdown relative h-full hidden md:block">
 					<div
 						id="google_translate_element"
 						className="absolute"

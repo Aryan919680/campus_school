@@ -21,7 +21,6 @@ const Dashboard = () => {
 	const navigate = useNavigate();
 	const currentDate = new Date();
 
-	// Simplified fetch functions that won't block UI
 	const fetchStudents = async () => {
 		try {
 			const response = await axios.get(API_ENDPOINTS.FETCH_ALL_STUDENTS, {
