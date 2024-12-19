@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { AuthContext } from "./context/AuthContext"; // Changed to named import
+import { AuthContext } from "./context/AuthContext";
 import LogIn from "./LogIn";
 import Layout from "./Layout";
 import FeesDashboard from "./components/Dashboard/FeesDashboard";

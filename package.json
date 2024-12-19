@@ -1,0 +1,12 @@
+{
+    "name": "campus-irp",
+    "private": true,
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+        "build:all": "node build.js",
+        "build:admin": "cd admin-frontend && npm install && npm run build",
+        "build:employee": "cd employee-frontend && npm install && npm run build",
+        "build:student": "cd student-frontend && npm install && npm run build"
+}
+  }

@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "buildCommand": "node build.js",
+  "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/admin-frontend/:path*",
+      "destination": "/admin-frontend/index.html"
+    },
+    {
+      "source": "/employee-frontend/:path*",
+      "destination": "/employee-frontend/index.html"
+    },
+    {
+      "source": "/student-frontend/:path*",
+      "destination": "/student-frontend/index.html"
+    }
+  ]
+}

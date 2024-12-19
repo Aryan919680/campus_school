@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Campus IRP</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				font-family: Arial, sans-serif;
+				background-color: #f0f2f5;
+				height: 100vh;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+
+			.container {
+				background-color: white;
+				padding: 2rem;
+				border-radius: 8px;
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+				width: 90%;
+				max-width: 400px;
+			}
+
+			h1 {
+				text-align: center;
+				color: #1a1a1a;
+				margin-bottom: 2rem;
+			}
+
+			.portal-buttons {
+				display: flex;
+				flex-direction: column;
+				gap: 1rem;
+			}
+
+			button {
+				padding: 1rem;
+				border: none;
+				border-radius: 4px;
+				font-size: 1rem;
+				font-weight: bold;
+				cursor: pointer;
+				transition: opacity 0.2s;
+			}
+
+			button:hover {
+				opacity: 0.9;
+			}
+
+			.student {
+				background-color: #4caf50;
+				color: white;
+			}
+
+			.teacher {
+				background-color: #2196f3;
+				color: white;
+			}
+
+			.admin {
+				background-color: #9c27b0;
+				color: white;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h1>Campus IRP Portal</h1>
+			<div class="portal-buttons">
+				<button class="student" onclick="navigateToPortal('student')">
+					Student Portal
+				</button>
+				<button class="teacher" onclick="navigateToPortal('teacher')">
+					Teacher Portal
+				</button>
+				<button class="admin" onclick="navigateToPortal('admin')">
+					Admin Portal
+				</button>
+			</div>
+		</div>
+
+		<script>
+			function navigateToPortal(type) {
+				const baseUrl = window.location.origin;
+				switch (type) {
+					case "student":
+						window.location.href = `${baseUrl}/student-frontend/`;
+						break;
+					case "teacher":
+						window.location.href = `${baseUrl}/employee-frontend/`;
+						break;
+					case "admin":
+						window.location.href = `${baseUrl}/admin-frontend/`;
+						break;
+					default:
+						console.error("Invalid portal type");
+				}
+			}
+		</script>
+	</body>
+</html>
