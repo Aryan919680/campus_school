@@ -36,7 +36,7 @@ const API_ENDPOINTS = {
   FETCH_ALL_ADMIN: `${import.meta.env.VITE_BASE_URL}/api/v1/admin`,
   ADMIN_FORGOT_PASSWORD: `${
     import.meta.env.VITE_BASE_URL
-  }/admin/forget-password`,
+  }/api/v1/admin/forget-password`,
   ADMIN_RESET_PASSWORD: (userId, token) =>
     `${
       import.meta.env.VITE_BASE_URL
@@ -50,7 +50,7 @@ const API_ENDPOINTS = {
   }/api/v1/teacher/${userId}/reg`,
   FETCH_ALL_TEACHERS: `${
     import.meta.env.VITE_BASE_URL
-  }/teacher/${userId}/fetchAll`,
+  }/api/v1/teacher/${userId}/fetchAll`,
   FETCH_TEACHERS: (teacherId) =>
     `${
       import.meta.env.VITE_BASE_URL
@@ -61,25 +61,25 @@ const API_ENDPOINTS = {
     `${import.meta.env.VITE_BASE_URL}/api/v1/teacher/${userId}/delete/${id}`,
   DELETE_ALL_TEACHERS: `${
     import.meta.env.VITE_BASE_URL
-  }/teacher/${userId}/deleteAllTeacher`,
+  }/api/v1/teacher/${userId}/deleteAllTeacher`,
   LOGIN_TEACHERS: `${import.meta.env.VITE_BASE_URL}/api/v1/teacher/login`,
   // ATTENDANCE
   MARK_FACULTY_TEACHERS: (userId) =>
     `${
       import.meta.env.VITE_BASE_URL
-    }/attendance/markFacultyAttendance/${userId}`,
+    }/api/v1/attendance/markFacultyAttendance/${userId}`,
   FACULTY_ATTENDANCE_DATE: (userId, date) =>
     `${
       import.meta.env.VITE_BASE_URL
-    }/attendance/fetchFacultyAttendance/${userId}/${date}`,
+    }/api/v1/attendance/fetchFacultyAttendance/${userId}/${date}`,
   FACULTY_ATTENDANCE_BY_DATE_ID: (date, id) =>
     `${
       import.meta.env.VITE_BASE_URL
-    }/attendance/faculty-attendanceById/${date}/${id}`,
+    }/api/v1/attendance/faculty-attendanceById/${date}/${id}`,
   UPDATE_ATTENDANCE: (userId) =>
     `${
       import.meta.env.VITE_BASE_URL
-    }/attendance/updateFacultyAttendance/${userId}`,
+    }/api/v1/attendance/updateFacultyAttendance/${userId}`,
   SELECTED_DATE_ATTENDANCE: (userId) =>
     `${
       import.meta.env.VITE_BASE_URL
@@ -94,7 +94,7 @@ const API_ENDPOINTS = {
     }/api/v1/student/${userId}/fetch/${studentID}`,
   FETCH_ALL_STUDENTS: `${
     import.meta.env.VITE_BASE_URL
-  }/student/${userId}/fetchAll`,
+  }/api/v1/student/${userId}/fetchAll`,
   UPDATE_STUDENTS: (eventId) =>
     `${
       import.meta.env.VITE_BASE_URL
@@ -102,10 +102,10 @@ const API_ENDPOINTS = {
   DELETE_STUDENTS: (eventId) =>
     `${
       import.meta.env.VITE_BASE_URL
-    }/student/${userId}/deleteStudent/${eventId}`,
+    }/api/v1/student/${userId}/deleteStudent/${eventId}`,
   DELETE_ALL_STUDENTSS: `${
     import.meta.env.VITE_BASE_URL
-  }/student/${userId}/deleteAllStudent`,
+  }/api/v1/student/${userId}/deleteAllStudent`,
   LOGIN_STUDENTS: `${import.meta.env.VITE_BASE_URL}/api/v1/student/login`,
   // SUBJECTS
   CREATE_SUBJECT: (departmentId) =>
@@ -134,25 +134,25 @@ const API_ENDPOINTS = {
   APPLY_LEAVE: `${import.meta.env.VITE_BASE_URL}/api/v1/Leave/apply-leave`,
   FETCH_ALL_LEAVES_TEACHER_ID: `${
     import.meta.env.VITE_BASE_URL
-  }/leave/fetch-leaves/`,
+  }/api/v1/leave/fetch-leaves/`,
   FETCH_ALL_PENDING_LEAVES: `${
     import.meta.env.VITE_BASE_URL
-  }/leave/pending-leaves`,
+  }/api/v1/leave/pending-leaves`,
   UPDATE_LEAVES: (teacherId, action) =>
     `${
       import.meta.env.VITE_BASE_URL
-    }/leave/change-status/${teacherId}/${action}`,
+    }/api/v1/leave/change-status/${teacherId}/${action}`,
   // DEPARTMENT
   CREATE_DEPARTMENTS: `${
     import.meta.env.VITE_BASE_URL
-  }/department/${userId}/reg`,
+  }/api/v1/department/${userId}/reg`,
   UPDATE_DEPARTMENTS: (departmentId) =>
     `${import.meta.env.VITE_BASE_URL}/api/v1/department/update/${departmentId}`,
   DELETE_DEPARTMENT: (departmentId) =>
     `${import.meta.env.VITE_BASE_URL}/api/v1/department/delete/${departmentId}`,
   FETCH_ALL_DEPARTMENTS: `${
     import.meta.env.VITE_BASE_URL
-  }/department/fetchAll/${userId}`,
+  }/api/v1/department/fetchAll/${userId}`,
   FETCH_DEPARTMENTS: (departmentId) =>
     `${import.meta.env.VITE_BASE_URL}/api/v1/department/fetch/${departmentId}`,
   //SUPPORT
