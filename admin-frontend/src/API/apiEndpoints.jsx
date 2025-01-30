@@ -21,7 +21,7 @@ const API_ENDPOINTS = {
   UPDATE_CAMPUS: `${import.meta.env.VITE_BASE_URL}/api/v1/campus/update-campus`,
 
   // Onboarding
-  CREATE_CAMPUS: `${import.meta.env.VITE_BASE_URL}/api/v1/campus/reg/campus`,
+  CREATE_CAMPUS: `${import.meta.env.VITE_BASE_URL}/api/v1/campus/register`,
   CREATE_BRANCH: `${import.meta.env.VITE_BASE_URL}/api/v1/campus/reg/branch`,
   CREATE_ROLE: `${import.meta.env.VITE_BASE_URL}/api/v1/admin/reg`,
 

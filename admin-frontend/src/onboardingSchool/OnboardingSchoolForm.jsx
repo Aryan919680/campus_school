@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import CreateCampus from "./CreateCampus";
+import CreateSchool from "./CreateSchool";
 import CreateBranch from "./CreateBranch";
 import CreateRole from "./CreateRole";
-import ReviewPage from "./ReviewPage";
+import ReviewPage from "../onboarding/ReviewPage";
 
-const OnboardingForm = ({ onClose }) => {
+const OnboardingSchoolForm = ({ onClose }) => {
 	const [step, setStep] = useState(1);
+	const [isSchool,setIsSchool] = useState(true);
 
 	useEffect(() => {
 		const storedStep = localStorage.getItem("onboardingStep");
@@ -31,7 +32,7 @@ const OnboardingForm = ({ onClose }) => {
 			<h2 className="sr-only">Steps</h2>
 			<div>
 				<ol className="flex items-center justify-between gap-2 text-xs font-medium text-gray-500 sm:gap-4">
-					{["College", "Branch", "Admin", "Review"].map((label, index) => (
+					{["School", "Branch", "Admin", "Review"].map((label, index) => (
 						<li key={label} className="flex items-center justify-center gap-2">
 							<span
 								className={`size-6 rounded flex justify-center items-center ${
@@ -74,7 +75,7 @@ const OnboardingForm = ({ onClose }) => {
 			<div className="bg-white p-8 rounded-lg shadow-xl md:w-[30vw] w-[100vw] ">
 				<div className="flex justify-between items-center mb-6">
 					<h2 className="text-2xl font-bold text-gray-700">
-						College Onboarding
+						School Onboarding
 					</h2>
 					<button
 						onClick={onClose}
@@ -96,11 +97,11 @@ const OnboardingForm = ({ onClose }) => {
 					</button>
 				</div>
 				{renderProgressTracker()}
-				{step === 1 && <CreateCampus onNext={nextStep} />}
+				{step === 1 && <CreateSchool onNext={nextStep} />}
 				{step === 2 && <CreateBranch onNext={nextStep} onPrevious={prevStep} />}
 				{step === 3 && <CreateRole onNext={nextStep} onPrevious={prevStep} />}
 				{step === 4 && (
-					<ReviewPage
+					<ReviewPage isSchool = {isSchool}
 						onPrevious={prevStep}
 						onSubmit={() => {
 							localStorage.removeItem("onboardingStep");
@@ -113,4 +114,4 @@ const OnboardingForm = ({ onClose }) => {
 	);
 };
 
-export default OnboardingForm;
+export default OnboardingSchoolForm;

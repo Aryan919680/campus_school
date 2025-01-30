@@ -62,7 +62,7 @@ const LogIn = ({ onStartOnboarding }) => {
 
 			const response = await axios.post(endpoint, { ...credentials, userType });
 			if (response.data.success) {
-				const userRole = response.data.data.role.toLowerCase();
+				// const userRole = response.data.data.role.toLowerCase();
 
 				setIsLoggedIn(true);
 				setToken(response.data.token);
