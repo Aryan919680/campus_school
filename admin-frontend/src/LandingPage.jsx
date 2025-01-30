@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import OnboardingForm from "./onboarding/OnboardingForm";
+import SelectCampus from "./onboarding/SelectCampus";
 
 const LandingPage = () => {
 	const navigate = useNavigate();
@@ -35,8 +36,8 @@ const LandingPage = () => {
 					</button>
 				</div>
 			</div>
-
-			{showOnboarding && <OnboardingForm onClose={handleCloseOnboarding} />}
+			{showOnboarding && <SelectCampus onClose={handleCloseOnboarding} />}
+			{/* {showOnboarding && <OnboardingForm onClose={handleCloseOnboarding} />} */}
 		</div>
 	);
 };

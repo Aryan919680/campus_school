@@ -2,13 +2,61 @@ import React, { useState } from "react";
 import axios from "axios";
 import API_ENDPOINTS from "../API/apiEndpoints";
 
-const ReviewPage = ({ onPrevious, onSubmit }) => {
+const ReviewPage = ({ onPrevious, onSubmit, isSchool }) => {
 	const [showOtpPopup, setShowOtpPopup] = useState(false);
 	const [otp, setOtp] = useState("");
 	const [roleId, setRoleId] = useState(null);
 	// const apiEndpoints = useApiEndpoints();
 
 	// Get all data from localStorage
+
+	const schoolData = {
+		name: localStorage.getItem("schoolName") || "",
+		type: "SCHOOL",
+		location: localStorage.getItem("schoolLocation") || "",
+		campus_details: {
+			school: {
+				board: localStorage.getItem("selectedOption",) || "",
+				code: "101",
+				address: localStorage.getItem("schoolBranchLocation") || "",
+				branch_name: localStorage.getItem("schoolBranchName") || "",
+				director: localStorage.getItem("schoolDirectorName") || "",
+				year: Number(localStorage.getItem("schoolFoundedYear")) || 0,
+			}
+		},
+		admin: {
+			role: "admin",
+			email: localStorage.getItem("adminEmail") || "",
+			password: localStorage.getItem("adminPassword") || "",
+			name: localStorage.getItem("adminName") || "",
+		}
+
+	};
+
+
+
+	const collegeData = {
+		name: localStorage.getItem("campusName") || "",
+		type: "COLLEGE",
+		location: localStorage.getItem("campusLocation") || "",
+		campus_details: {
+			college: {
+				code: "1013",
+				address: localStorage.getItem("branchLocation") || "",
+				director: localStorage.getItem("directorName") || "",
+				year: Number(localStorage.getItem("campusFoundedYear")) || 0,
+			}
+		},
+		admin: {
+			role: "admin",
+			email: localStorage.getItem("collegeAdminEmail") || "",
+			password: localStorage.getItem("collegeAdminPassword") || "",
+			name: localStorage.getItem("collegeAdminName") || "",
+		}
+
+	};
+
+
 	const campusData = {
 		logo: localStorage.getItem("campusLogo") || "",
 		name: localStorage.getItem("campusName") || "",
@@ -29,64 +77,112 @@ const ReviewPage = ({ onPrevious, onSubmit }) => {
 		password: localStorage.getItem("adminPassword") || "",
 	};
 
+	// 	const handleSubmit = async () => {
+	// 		try {
+	// 			const headers = {
+	// 				"Content-Type": "application/json",
+	// 				Accept: "application/json",
+	// 			};
+	//   if(isSchool){
+	// 			const campusResponse = await axios.post(
+	// 				API_ENDPOINTS.CREATE_CAMPUS,
+
+	// 				{
+	// 					isSchool ? schoolData : ''
+	// 				},
+	// 				{ headers }
+	// 			);
+
+	// 			if (!campusResponse.data?.data?.id)
+	// 				throw new Error("Campus creation failed");
+
+	// 			const campusId = campusResponse.data.data.id;
+	// 			localStorage.setItem("campusId", campusId);
+
+	// 			const branchResponse = await axios.post(
+	// 				API_ENDPOINTS.CREATE_BRANCH,
+	// 				{
+	// 					campusId: Number(campusId),
+	// 					location: branchData.location,
+	// 					BranchName: branchData.name,
+	// 				},
+	// 				{ headers }
+	// 			);
+
+	// 			if (!branchResponse.data?.data?.id)
+	// 				throw new Error("Branch creation failed");
+
+	// 			const branchId = branchResponse.data.data.id;
+	// 			localStorage.setItem("branchId", branchId);
+
+	// 			const adminResponse = await axios.post(
+	// 				API_ENDPOINTS.CREATE_ADMIN,
+	// 				{
+	// 					name: adminData.name,
+	// 					email: adminData.email,
+	// 					password: adminData.password,
+	// 					branchId: Number(branchId),
+	// 					role: adminData.role,
+	// 					photo: adminData.photo,
+	// 				},
+	// 				{ headers }
+	// 			);
+
+	// 			if (!adminResponse.data?.data?.id)
+	// 				throw new Error("Admin creation failed");
+
+	// 			setRoleId(adminResponse.data.data.id);
+	// 			setShowOtpPopup(true);
+	// 		} catch (error) {
+	// 			console.error("Error details:", error.response?.data || error.message);
+	// 			alert(
+	// 				`Submission failed: ${error.response?.data?.message || error.message}`
+	// 			);
+	// 		}
+	// 	};
+
+
+
 	const handleSubmit = async () => {
 		try {
 			const headers = {
 				"Content-Type": "application/json",
 				Accept: "application/json",
 			};
+			if (isSchool) {
+				const schoolResponse = await axios.post(
+					API_ENDPOINTS.CREATE_CAMPUS,
 
-			const campusResponse = await axios.post(
-				API_ENDPOINTS.CREATE_CAMPUS,
-				{
-					name: campusData.name,
-					location: campusData.location,
-					foundedYear: parseInt(campusData.foundedYear),
-					logo: campusData.logo,
-				},
-				{ headers }
-			);
 
-			if (!campusResponse.data?.data?.id)
-				throw new Error("Campus creation failed");
+					schoolData
+					,
+					{ headers }
+				);
+				console.log(schoolResponse)
+				if (schoolResponse) {
+					const schoolId = schoolResponse.data.data.id;
+					localStorage.setItem("schoolId", schoolId);
+					localStorage.setItem("otpVerified", "true");
+					onSubmit();
+				}
+			} else {
+				const campusResponse = await axios.post(
+					API_ENDPOINTS.CREATE_CAMPUS,
 
-			const campusId = campusResponse.data.data.id;
-			localStorage.setItem("campusId", campusId);
 
-			const branchResponse = await axios.post(
-				API_ENDPOINTS.CREATE_BRANCH,
-				{
-					campusId: Number(campusId),
-					location: branchData.location,
-					BranchName: branchData.name,
-				},
-				{ headers }
-			);
+					collegeData
+					,
+					{ headers }
+				);
+				console.log(campusResponse)
+				if (campusResponse) {
+					const campusId = campusResponse.data.data.id;
+					localStorage.setItem("campusId", campusId);
+					localStorage.setItem("otpVerified", "true");
+					onSubmit();
+				}
+			}
 
-			if (!branchResponse.data?.data?.id)
-				throw new Error("Branch creation failed");
-
-			const branchId = branchResponse.data.data.id;
-			localStorage.setItem("branchId", branchId);
-
-			const adminResponse = await axios.post(
-				API_ENDPOINTS.CREATE_ADMIN,
-				{
-					name: adminData.name,
-					email: adminData.email,
-					password: adminData.password,
-					branchId: Number(branchId),
-					role: adminData.role,
-					photo: adminData.photo,
-				},
-				{ headers }
-			);
-
-			if (!adminResponse.data?.data?.id)
-				throw new Error("Admin creation failed");
-
-			setRoleId(adminResponse.data.data.id);
-			setShowOtpPopup(true);
 		} catch (error) {
 			console.error("Error details:", error.response?.data || error.message);
 			alert(

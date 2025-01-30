@@ -5,6 +5,7 @@ const CreateCampus = ({ onNext }) => {
 	const [campusData, setCampusData] = useState({
 		campusName: localStorage.getItem("campusName") || "",
 		location: localStorage.getItem("campusLocation") || "",
+		directorName : localStorage.getItem("directorName") || "",
 		foundedYear: localStorage.getItem("campusFoundedYear") || "",
 		logo: localStorage.getItem("campusLogo") || "",
 	});
@@ -58,7 +59,7 @@ const CreateCampus = ({ onNext }) => {
 		localStorage.setItem("campusName", campusData.campusName);
 		localStorage.setItem("campusLocation", campusData.location);
 		localStorage.setItem("campusFoundedYear", campusData.foundedYear);
-
+        localStorage.setItem("directorName", campusData.directorName);
 		onNext();
 	};
 
@@ -71,7 +72,7 @@ const CreateCampus = ({ onNext }) => {
 					htmlFor="campusName"
 					className="block text-sm font-medium text-gray-700"
 				>
-					Campus Name
+					College Name
 				</label>
 				<input
 					id="campusName"
@@ -88,7 +89,7 @@ const CreateCampus = ({ onNext }) => {
 					htmlFor="location"
 					className="block text-sm font-medium text-gray-700"
 				>
-					Location
+					Address
 				</label>
 				<input
 					id="location"
@@ -112,6 +113,23 @@ const CreateCampus = ({ onNext }) => {
 					name="foundedYear"
 					type="number"
 					value={campusData.foundedYear}
+					onChange={handleChange}
+					className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+				/>
+			</div>
+
+			<div>
+				<label
+					htmlFor="foundedYear"
+					className="block text-sm font-medium text-gray-700"
+				>
+					Director Name
+				</label>
+				<input
+					id="directorName"
+					name="directorName"
+					type="name"
+					value={campusData.directorName}
 					onChange={handleChange}
 					className="mt-1 block w-full border border-gray-300 rounded-md p-2"
 				/>

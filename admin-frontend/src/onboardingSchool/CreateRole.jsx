@@ -3,18 +3,19 @@ import axios from "axios";
 
 const CreateRole = ({ onPrevious, onNext }) => {
 	const [roleData, setRoleData] = useState({
-		name: localStorage.getItem("collegeAdminName") || "",
-		email: localStorage.getItem("collegeAdminEmail") || "",
-		branchId: Number(localStorage.getItem("collegeBranchId")) || "",
+		name: localStorage.getItem("adminName") || "",
+		email: localStorage.getItem("adminEmail") || "",
+		branchId: Number(localStorage.getItem("branchId")) || "",
 		role: "admin", // Automatically set to "admin"
 		photo: null,
 	});
 	const [isValid, setIsValid] = useState(false);
-	const [password, setPassword] = useState(localStorage.getItem("collegeAdminPassword") || "");
+	const [password, setPassword] = useState(localStorage.getItem("adminPassword") || "");
 
 	 const options = [
-			{ value: "dean", label: "DEAN" },
-			{ value: "hod", label: "HOD" },
+			{ value: "director", label: "Director" },
+			{ value: "manager", label: "Manager" },
+            { value: "principal", label: "Principal"}
 		];
 	
 		const [selectedOption, setSelectedOption] = useState("");
@@ -25,7 +26,7 @@ const CreateRole = ({ onPrevious, onNext }) => {
 	
 		};
 	const [photoPreview, setPhotoPreview] = useState(
-		localStorage.getItem("collegeAdminPhoto") || ""
+		localStorage.getItem("adminPhoto") || ""
 	);
 
 	const handleChange = (e) => {
@@ -46,7 +47,7 @@ const CreateRole = ({ onPrevious, onNext }) => {
 
 	const handleNext = async () => {
 		try {
-			let photoUrl = localStorage.getItem("collegeAdminPhoto");
+			let photoUrl = localStorage.getItem("adminPhoto");
 
 			if (roleData.photo) {
 				const formData = new FormData();
@@ -64,13 +65,13 @@ const CreateRole = ({ onPrevious, onNext }) => {
 				);
 
 				photoUrl = uploadResponse.data.secure_url;
-				localStorage.setItem("collegeAdminPhoto", photoUrl);
+				localStorage.setItem("adminPhoto", photoUrl);
 			}
-
-			localStorage.setItem("collegeAdminName", roleData.name);
-			localStorage.setItem("collegeAdminEmail", roleData.email);
-			localStorage.setItem("collegeAdminRole", roleData.role); // Always "admin"
-			localStorage.setItem("collegeAdminPassword", password);
+              console.log(password)
+			localStorage.setItem("adminName", roleData.name);
+			localStorage.setItem("adminEmail", roleData.email);
+			localStorage.setItem("adminRole", roleData.role); // Always "admin"
+			localStorage.setItem("adminPassword", password);
 
 			onNext();
 		} catch (error) {
@@ -179,7 +180,7 @@ const CreateRole = ({ onPrevious, onNext }) => {
 						value={password}
 						onChange={handlePasswordChange}
 						className={`mt-1 block w-full border rounded-md p-2 ${
-							/[A-Z]/.test(password) ? "text-green-500 border-green-500" : "text-red-500 border-red-500"
+							isValid ? "text-green-500 border-green-500" : "text-red-500 border-red-500"
 						  }`}
 						required
 					/>
