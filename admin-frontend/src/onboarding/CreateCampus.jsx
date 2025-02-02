@@ -8,6 +8,7 @@ const CreateCampus = ({ onNext }) => {
 		directorName : localStorage.getItem("directorName") || "",
 		foundedYear: localStorage.getItem("campusFoundedYear") || "",
 		logo: localStorage.getItem("campusLogo") || "",
+		code: localStorage.getItem("collegeCode") || ""
 	});
 	const [logoPreview, setLogoPreview] = useState(
 		localStorage.getItem("campusLogo") || null
@@ -60,6 +61,7 @@ const CreateCampus = ({ onNext }) => {
 		localStorage.setItem("campusLocation", campusData.location);
 		localStorage.setItem("campusFoundedYear", campusData.foundedYear);
         localStorage.setItem("directorName", campusData.directorName);
+		localStorage.setItem("collegeCode", campusData.collegeCode);
 		onNext();
 	};
 
@@ -84,6 +86,23 @@ const CreateCampus = ({ onNext }) => {
 				/>
 			</div>
 
+
+			<div>
+				<label
+					htmlFor="collegeCode"
+					className="block text-sm font-medium text-gray-700"
+				>
+					College Code
+				</label>
+				<input
+					id="collegeCode"
+					name="collegeCode"
+					type="number"
+					value={campusData.collegeCode}
+					onChange={handleChange}
+					className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+				/>
+			</div>
 			<div>
 				<label
 					htmlFor="location"

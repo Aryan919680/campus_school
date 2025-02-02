@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const CreateRole = ({ onPrevious, onNext }) => {
+import API_ENDPOINTS from "../API/apiEndpoints";
+const CreateRole = ({ onPrevious, onSubmit }) => {
 	const [roleData, setRoleData] = useState({
-		name: localStorage.getItem("adminName") || "",
 		email: localStorage.getItem("adminEmail") || "",
 		branchId: Number(localStorage.getItem("branchId")) || "",
-		role: "admin", // Automatically set to "admin"
+		role: "admin", 
 		photo: null,
 	});
 	const [isValid, setIsValid] = useState(false);
@@ -17,6 +17,31 @@ const CreateRole = ({ onPrevious, onNext }) => {
 			{ value: "manager", label: "Manager" },
             { value: "principal", label: "Principal"}
 		];
+
+		const schoolData = {
+			name: localStorage.getItem("schoolName") || "",
+			type: "SCHOOL",
+			location: localStorage.getItem("schoolLocation") || "",
+			campus_details: {
+				school: {
+					board: localStorage.getItem("selectedOption") || "",
+					code: localStorage.getItem("schoolCode") || "",
+					address: localStorage.getItem("schoolBranchLocation") || "",
+					branch_name: localStorage.getItem("schoolLocation") || "",
+					director: localStorage.getItem("schoolDirectorName") || "",
+					year: Number(localStorage.getItem("schoolFoundedYear")) || 0,
+				}
+			},
+			admin: {
+				role: "admin",
+				email: localStorage.getItem("adminEmail") || "",
+				password: localStorage.getItem("adminPassword") || "",
+				name: "",
+			}
+	
+		};
+	
+	
 	
 		const [selectedOption, setSelectedOption] = useState("");
 	
@@ -68,12 +93,12 @@ const CreateRole = ({ onPrevious, onNext }) => {
 				localStorage.setItem("adminPhoto", photoUrl);
 			}
               console.log(password)
-			localStorage.setItem("adminName", roleData.name);
+			
 			localStorage.setItem("adminEmail", roleData.email);
 			localStorage.setItem("adminRole", roleData.role); // Always "admin"
 			localStorage.setItem("adminPassword", password);
 
-			onNext();
+			handleSubmit();
 		} catch (error) {
 			console.error("Error uploading photo:", error);
 		}
@@ -99,6 +124,40 @@ const CreateRole = ({ onPrevious, onNext }) => {
 		setPassword(value);
 		validatePassword(value);
 	  };
+
+
+
+	  const handleSubmit = async () => {
+		try {
+			const headers = {
+				"Content-Type": "application/json",
+				Accept: "application/json",
+			};
+				const schoolResponse = await axios.post(
+					API_ENDPOINTS.CREATE_CAMPUS,
+
+
+					schoolData
+					,
+					{ headers }
+				);
+				console.log(schoolResponse)
+				if (schoolResponse) {
+					const schoolId = schoolResponse.data.data.id;
+					localStorage.setItem("schoolId", schoolId);
+					localStorage.setItem("otpVerified", "true");
+					onSubmit();
+				}
+		
+			
+
+		} catch (error) {
+			console.error("Error details:", error.response?.data || error.message);
+			alert(
+				`Submission failed: ${error.response?.data?.message || error.message}`
+			);
+		}
+	};
 	return (
 		<form>
 			<h2 className="text-2xl font-semibold mb-6 text-center">
@@ -106,23 +165,7 @@ const CreateRole = ({ onPrevious, onNext }) => {
 			</h2>
 
 			<div className="space-y-4">
-				<div>
-					<label
-						htmlFor="name"
-						className="block text-sm font-medium text-gray-700"
-					>
-						Name
-					</label>
-					<input
-						id="name"
-						name="name"
-						type="text"
-						value={roleData.name}
-						onChange={handleChange}
-						className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-						required
-					/>
-				</div>
+				
 
 				<div>
 					<label
@@ -247,7 +290,7 @@ const CreateRole = ({ onPrevious, onNext }) => {
 					onClick={handleNext}
 					className="py-2 px-4 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 transition duration-300"
 				>
-					Next
+					Submit
 				</button>
 			</div>
 		</form>

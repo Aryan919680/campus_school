@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
-const CreateRole = ({ onPrevious, onNext }) => {
+import API_ENDPOINTS from "../API/apiEndpoints";
+const CreateRole = ({ onPrevious, onSubmit }) => {
 	const [roleData, setRoleData] = useState({
 		name: localStorage.getItem("collegeAdminName") || "",
 		email: localStorage.getItem("collegeAdminEmail") || "",
@@ -27,6 +27,28 @@ const CreateRole = ({ onPrevious, onNext }) => {
 	const [photoPreview, setPhotoPreview] = useState(
 		localStorage.getItem("collegeAdminPhoto") || ""
 	);
+
+	const collegeData = {
+		name: localStorage.getItem("campusName") || "",
+		type: "COLLEGE",
+		location: localStorage.getItem("campusLocation") || "",
+		campus_details: {
+			college: {
+				code : localStorage.getItem("collegeCode") || 0,
+				address: "",
+				director: localStorage.getItem("directorName") || "",
+				year: Number(localStorage.getItem("campusFoundedYear")) || 0,
+			}
+		},
+		admin: {
+			role: "admin",
+			email: localStorage.getItem("collegeAdminEmail") || "",
+			password: localStorage.getItem("collegeAdminPassword") || "",
+			name:  "",
+		}
+
+	};
+
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -71,8 +93,7 @@ const CreateRole = ({ onPrevious, onNext }) => {
 			localStorage.setItem("collegeAdminEmail", roleData.email);
 			localStorage.setItem("collegeAdminRole", roleData.role); // Always "admin"
 			localStorage.setItem("collegeAdminPassword", password);
-
-			onNext();
+			handleSubmit();
 		} catch (error) {
 			console.error("Error uploading photo:", error);
 		}
@@ -98,6 +119,39 @@ const CreateRole = ({ onPrevious, onNext }) => {
 		setPassword(value);
 		validatePassword(value);
 	  };
+
+	  const handleSubmit = async () => {
+		console.log(collegeData)
+		try {
+			const headers = {
+				"Content-Type": "application/json",
+				Accept: "application/json",
+			};
+				const schoolResponse = await axios.post(
+					API_ENDPOINTS.CREATE_CAMPUS,
+
+
+					collegeData
+					,
+					{ headers }
+				);
+				console.log(schoolResponse)
+				if (schoolResponse) {
+					const schoolId = schoolResponse.data.data.id;
+					localStorage.setItem("schoolId", schoolId);
+					localStorage.setItem("otpVerified", "true");
+					onSubmit();
+				}
+		
+			
+
+		} catch (error) {
+			console.error("Error details:", error.response?.data || error.message);
+			alert(
+				`Submission failed: ${error.response?.data?.message || error.message}`
+			);
+		}
+	};
 	return (
 		<form>
 			<h2 className="text-2xl font-semibold mb-6 text-center">
@@ -105,7 +159,7 @@ const CreateRole = ({ onPrevious, onNext }) => {
 			</h2>
 
 			<div className="space-y-4">
-				<div>
+				{/* <div>
 					<label
 						htmlFor="name"
 						className="block text-sm font-medium text-gray-700"
@@ -121,7 +175,7 @@ const CreateRole = ({ onPrevious, onNext }) => {
 						className="mt-1 block w-full border border-gray-300 rounded-md p-2"
 						required
 					/>
-				</div>
+				</div> */}
 
 				<div>
 					<label
@@ -246,7 +300,7 @@ const CreateRole = ({ onPrevious, onNext }) => {
 					onClick={handleNext}
 					className="py-2 px-4 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 transition duration-300"
 				>
-					Next
+					Submit
 				</button>
 			</div>
 		</form>

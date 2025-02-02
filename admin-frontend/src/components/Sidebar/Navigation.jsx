@@ -205,6 +205,13 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 					isSidebarExpanded={isSidebarExpanded}
 				/>
 				<NavItems
+					to="/Classes"
+					icon="mingcute:department-fill"
+					title="Classes"
+					isSidebarExpanded={isSidebarExpanded}
+				/>
+				
+				<NavItems
 					to="/Employees"
 					icon="clarity:employee-group-solid"
 					title="Employees"

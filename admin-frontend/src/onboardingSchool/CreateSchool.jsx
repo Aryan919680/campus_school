@@ -8,6 +8,8 @@ const CreateSchool = ({ onNext }) => {
 		directorName : localStorage.getItem("schoolDirectorName") || "",
 		foundedYear: localStorage.getItem("schoolFoundedYear") || "",
 		logo: localStorage.getItem("schoolLogo") || "",
+		schoolCode : localStorage.getItem("schoolCode")|| "",
+		branchName: localStorage.getItem("schoolBranchName") || "",
 	});
 	const [logoPreview, setLogoPreview] = useState(
 		localStorage.getItem("schoolLogo") || null
@@ -63,6 +65,8 @@ const CreateSchool = ({ onNext }) => {
 		localStorage.setItem("schoolFoundedYear", parseInt(schoolData.foundedYear));
         localStorage.setItem("schoolDirectorName", schoolData.directorName);
         localStorage.setItem("selectedOption", selectedOption);
+		localStorage.setItem("schoolCode", schoolData.schoolCode);
+		localStorage.setItem("schoolBranchName", schoolData.schoolBranchName);
 		onNext();
 	};
 
@@ -141,6 +145,23 @@ const CreateSchool = ({ onNext }) => {
 </div>
 
 
+<div>
+				<label
+					htmlFor="schoolCode"
+					className="block text-sm font-medium text-gray-700"
+				>
+					UDISE Code
+				</label>
+				<input
+					id="schoolCode"
+					name="schoolCode"
+					type="number"
+					value={schoolData.schoolCode}
+					onChange={handleChange}
+					className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+				/>
+			</div>
+
 			<div>
 				<label
 					htmlFor="location"
@@ -157,7 +178,23 @@ const CreateSchool = ({ onNext }) => {
 					className="mt-1 block w-full border border-gray-300 rounded-md p-2"
 				/>
 			</div>
-
+			<div className="mb-4">
+                <label
+                    htmlFor="branchName"
+                    className="block text-sm font-medium text-gray-700"
+                >
+                    Branch Name
+                </label>
+                <input
+                    id="branchName"
+                    name="branchName"
+                    type="text"
+                    value={schoolData.branchName}
+                    onChange={handleChange}
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                    required
+                />
+            </div>
 			<div>
 				<label
 					htmlFor="foundedYear"
