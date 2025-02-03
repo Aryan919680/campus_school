@@ -5,7 +5,7 @@ import { jwtDecode } from "jwt-decode";
 import API_ENDPOINTS from "./API/apiEndpoints";
 import { AuthContext } from "./context/AuthContext";
 
-const LogIn = ({ onStartOnboarding }) => {
+const LogIn = ({ onSchoolOnboarding,onCollegeOnboarding }) => {
 	const { setIsLoggedIn, setToken, setUserData, refreshAuthState } =
 		useContext(AuthContext);
 	const [credentials, setCredentials] = useState({ email: "", password: "" });
@@ -231,12 +231,20 @@ const LogIn = ({ onStartOnboarding }) => {
 
 				<div className="text-center">
 					<p className="text-gray-600 text-sm">Don't have an account?</p>
+					<div className="flex flex-col">
 					<button
-						onClick={onStartOnboarding}
+						onClick={onSchoolOnboarding}
 						className="mt-2 text-sky-500 hover:text-sky-700 font-semibold"
 					>
-						Start School/College Onboarding
+						Start School Onboarding
 					</button>
+					<button
+						onClick={onCollegeOnboarding}
+						className="mt-2 text-sky-500 hover:text-sky-700 font-semibold"
+					>
+						Start College Onboarding
+					</button>
+					</div>
 				</div>
 
 				<div className="mt-4 text-center">

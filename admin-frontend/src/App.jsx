@@ -10,11 +10,13 @@ import OnboardingForm from "./onboarding/OnboardingForm";
 import CollegeDashboard from "./components/Dashboard/CollegeDashboard";
 import "./App.css";
 import PageSkeleton from "./components/Skeleton/PageSkeleton";
+import OnboardingSchoolForm from "./onboardingSchool/OnboardingSchoolForm";
 
 function App() {
 	const { isLoggedIn, userData, isLoading, handleLogout } =
 		useContext(AuthContext);
-	const [showOnboarding, setShowOnboarding] = useState(false);
+	const [showSchoolboarding, setShowSchoolOnboarding] = useState(false);
+	const [showCollegeboarding, setShowCollegeOnboarding] = useState(false);
 
 	const logout = () => {
 		handleLogout();
@@ -22,8 +24,11 @@ function App() {
 		localStorage.removeItem("campusType");
 	};
 
-	const handleStartOnboarding = () => {
-		setShowOnboarding(true);
+	const handleSchoolOnboarding = () => {
+		setShowSchoolOnboarding(true);
+	};
+	const handleCollegeOnboarding = () => {
+		setShowCollegeOnboarding(true);
 	};
 
 	if (isLoading) {
@@ -40,7 +45,7 @@ function App() {
 					path="/login"
 					element={
 						!isLoggedIn ? (
-							<LogIn onStartOnboarding={handleStartOnboarding} />
+							<LogIn onSchoolOnboarding={handleSchoolOnboarding} onCollegeOnboarding={handleCollegeOnboarding}/>
 						) : (
 							<Navigate to="/" />
 						)
@@ -82,7 +87,7 @@ function App() {
 								<Layout logout={logout} userData={userData} />
 							)
 						) : (
-							<LandingPage onStartOnboarding={handleStartOnboarding} />
+							<LandingPage onStartOnboarding={handleCollegeOnboarding} />
 						)
 					}
 				/>
@@ -103,9 +108,14 @@ function App() {
 					}
 				/>
 			</Routes>
-			{showOnboarding && (
-				<OnboardingForm onClose={() => setShowOnboarding(false)} />
+			{showCollegeboarding && (
+				<OnboardingForm onClose={() => setShowCollegeOnboarding(false)} />
 			)}
+			{
+				showSchoolboarding && (
+					<OnboardingSchoolForm onClose={ () => setShowSchoolOnboarding(false)} />
+				)
+			}
 		</>
 	);
 }

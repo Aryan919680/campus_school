@@ -154,24 +154,6 @@ const CreateCampus = ({ onNext }) => {
 				/>
 			</div>
 
-			<div className="mt-4">
-				<label className="block text-sm font-medium text-gray-700">
-					Campus Logo
-				</label>
-				<input
-					type="file"
-					onChange={handleFileChange}
-					className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-				/>
-				{logoPreview && (
-					<img
-						src={logoPreview}
-						alt="Logo Preview"
-						className="mt-4 w-24 h-24"
-					/>
-				)}
-			</div>
-
 			<button
 				type="button"
 				onClick={handleNext}
