@@ -88,10 +88,10 @@ const CreateRole = ({ onPrevious, onSubmit }) => {
 				location: localStorage.getItem("schoolLocation") || "",
 				campus_details: {
 					school: {
-						board: selectedOption,
+						board: localStorage.getItem("selectedOptionBoard") || "",
 						code: localStorage.getItem("schoolCode") || "",
-						address: localStorage.getItem("schoolBranchLocation") || "",
-						branch_name: localStorage.getItem("schoolLocation") || "",
+						address: localStorage.getItem("schoolLocation") || "",
+						branch_name: localStorage.getItem("schoolBranchName") || "",
 						director: localStorage.getItem("schoolDirectorName") || "",
 						year: Number(localStorage.getItem("schoolFoundedYear")) || 0,
 					}

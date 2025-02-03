@@ -15,7 +15,7 @@ const CreateSchool = ({ onNext }) => {
 		localStorage.getItem("schoolLogo") || null
 	);
 	const [uploading, setUploading] = useState(false);
-    const [selectedOption, setSelectedOption] = useState(localStorage.getItem("selectedOption") || "");
+    const [selectedOption, setSelectedOption] = useState(localStorage.getItem("selectedOptionBoard") || "");
     const [otherInput, setOtherInput] = useState("");
 	const handleChange = (e) => {
 		console.log(e)
@@ -64,7 +64,7 @@ const CreateSchool = ({ onNext }) => {
 		localStorage.setItem("schoolLocation", schoolData.location);
 		localStorage.setItem("schoolFoundedYear", parseInt(schoolData.foundedYear));
         localStorage.setItem("schoolDirectorName", schoolData.directorName);
-        localStorage.setItem("selectedOption", selectedOption);
+        localStorage.setItem("selectedOptionBoard", selectedOption);
 		localStorage.setItem("schoolCode", schoolData.schoolCode);
 		localStorage.setItem("schoolBranchName", schoolData.schoolBranchName);
 		onNext();
