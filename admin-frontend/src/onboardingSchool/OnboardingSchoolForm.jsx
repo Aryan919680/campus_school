@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import CreateSchool from "./CreateSchool";
-import CreateBranch from "./CreateBranch";
 import CreateRole from "./CreateRole";
-import ReviewPage from "../onboarding/ReviewPage";
+
 
 const OnboardingSchoolForm = ({ onClose }) => {
 	const [step, setStep] = useState(1);
@@ -31,8 +30,8 @@ const OnboardingSchoolForm = ({ onClose }) => {
 		<div className="mb-8">
 			<h2 className="sr-only">Steps</h2>
 			<div>
-				<ol className="flex items-center justify-between gap-2 text-xs font-medium text-gray-500 sm:gap-4">
-					{["School", "Branch", "Admin", "Review"].map((label, index) => (
+				<ol className="flex items-center gap-2 text-xs font-medium text-gray-500 sm:gap-4">
+					{["School", "Admin"].map((label, index) => (
 						<li key={label} className="flex items-center justify-center gap-2">
 							<span
 								className={`size-6 rounded flex justify-center items-center ${
@@ -98,9 +97,11 @@ const OnboardingSchoolForm = ({ onClose }) => {
 				</div>
 				{renderProgressTracker()}
 				{step === 1 && <CreateSchool onNext={nextStep} />}
-				{step === 2 && <CreateBranch onNext={nextStep} onPrevious={prevStep} />}
-				{step === 3 && <CreateRole onNext={nextStep} onPrevious={prevStep} />}
-				{step === 4 && (
+				
+				{step === 2 && <CreateRole onNext={nextStep} onPrevious={prevStep} onSubmit={() => {
+							localStorage.removeItem("onboardingStep");
+							onClose();}}/>}
+				{/* {step === 4 && (
 					<ReviewPage isSchool = {isSchool}
 						onPrevious={prevStep}
 						onSubmit={() => {
@@ -108,7 +109,7 @@ const OnboardingSchoolForm = ({ onClose }) => {
 							onClose();
 						}}
 					/>
-				)}
+				)} */}
 			</div>
 		</div>
 	);

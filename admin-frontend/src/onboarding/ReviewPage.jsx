@@ -56,27 +56,6 @@ const ReviewPage = ({ onPrevious, onSubmit, isSchool }) => {
 
 	};
 
-
-	const campusData = {
-		logo: localStorage.getItem("campusLogo") || "",
-		name: localStorage.getItem("campusName") || "",
-		location: localStorage.getItem("campusLocation") || "",
-		foundedYear: localStorage.getItem("campusFoundedYear") || "",
-	};
-
-	const branchData = {
-		name: localStorage.getItem("branchName") || "",
-		location: localStorage.getItem("branchLocation") || "",
-	};
-
-	const adminData = {
-		name: localStorage.getItem("adminName") || "",
-		email: localStorage.getItem("adminEmail") || "",
-		role: localStorage.getItem("adminRole") || "admin",
-		photo: localStorage.getItem("adminPhoto") || "",
-		password: localStorage.getItem("adminPassword") || "",
-	};
-
 	// 	const handleSubmit = async () => {
 	// 		try {
 	// 			const headers = {

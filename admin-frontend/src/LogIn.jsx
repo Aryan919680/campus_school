@@ -117,7 +117,7 @@ const LogIn = ({ onStartOnboarding }) => {
 				>
 					<h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
 
-					<div className="mb-4">
+					{/* <div className="mb-4">
 						<label
 							className="block text-gray-700 text-sm font-bold mb-2"
 							htmlFor="campusType"
@@ -134,9 +134,9 @@ const LogIn = ({ onStartOnboarding }) => {
 							<option value="school">School</option>
 							<option value="college">College</option>
 						</select>
-					</div>
+					</div> */}
 
-					<div className="mb-4">
+					{/* <div className="mb-4">
 						<label
 							className="block text-gray-700 text-sm font-bold mb-2"
 							htmlFor="userType"
@@ -163,7 +163,7 @@ const LogIn = ({ onStartOnboarding }) => {
 								</>
 							)}
 						</select>
-					</div>
+					</div> */}
 
 					<div className="mb-4">
 						<label

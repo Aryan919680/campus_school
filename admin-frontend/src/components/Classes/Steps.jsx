@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
-import CreateCampus from "./CreateCampus";
-import CreateBranch from "./CreateBranch";
-import CreateRole from "./CreateRole";
-import ReviewPage from "./ReviewPage";
+import ClassForm from "./ClassForm";
+import ClassFee from "./ClassFee";
+import StudentAssignment from "./StudentAssignment";
 
-const OnboardingForm = ({ onClose }) => {
+
+const Steps = ({ formValues,
+    onClose,
+    handleInputChange,
+    handleSubmit,
+    errorMessage }) => {
 	const [step, setStep] = useState(1);
+	const [isSchool,setIsSchool] = useState(true);
 
 	useEffect(() => {
 		const storedStep = localStorage.getItem("onboardingStep");
@@ -30,8 +35,8 @@ const OnboardingForm = ({ onClose }) => {
 		<div className="mb-8">
 			<h2 className="sr-only">Steps</h2>
 			<div>
-				<ol className="flex items-center justify-between gap-2 text-xs font-medium text-gray-500 sm:gap-4">
-					{["College","Admin"].map((label, index) => (
+				<ol className="flex items-center gap-2 text-xs font-medium text-gray-500 sm:gap-4">
+					{["Class", "Fees","Assignments"].map((label, index) => (
 						<li key={label} className="flex items-center justify-center gap-2">
 							<span
 								className={`size-6 rounded flex justify-center items-center ${
@@ -74,7 +79,7 @@ const OnboardingForm = ({ onClose }) => {
 			<div className="bg-white p-8 rounded-lg shadow-xl md:w-[30vw] w-[100vw] ">
 				<div className="flex justify-between items-center mb-6">
 					<h2 className="text-2xl font-bold text-gray-700">
-						College Onboarding
+						School Onboarding
 					</h2>
 					<button
 						onClick={onClose}
@@ -96,14 +101,20 @@ const OnboardingForm = ({ onClose }) => {
 					</button>
 				</div>
 				{renderProgressTracker()}
-				{step === 1 && <CreateCampus onNext={nextStep} />}
-				{/* {step === 2 && <CreateBranch onNext={nextStep} onPrevious={prevStep} />} */}
-				{step === 2 && <CreateRole onNext={nextStep} onPrevious={prevStep}  onSubmit={() => {
-							localStorage.removeItem("onboardingStep");
-							onClose();
-						}}/>}
+				{step === 1 && <ClassForm onNext={nextStep} formValues={formValues}
+					onClose={onClose}
+				 	handleInputChange={handleInputChange}
+				 	handleSubmit={handleSubmit}
+				 	errorMessage={errorMessage}/>}
+				
+				{step === 2 && <ClassFee onNext={nextStep} onPrevious={prevStep} formValues={formValues}
+					onClose={onClose}
+				 	handleInputChange={handleInputChange}
+				 	handleSubmit={handleSubmit}
+				 	errorMessage={errorMessage}/>}
+                {step === 3 && <StudentAssignment onNext={nextStep} onPrevious={prevStep} />}
 				{/* {step === 4 && (
-					<ReviewPage
+					<ReviewPage isSchool = {isSchool}
 						onPrevious={prevStep}
 						onSubmit={() => {
 							localStorage.removeItem("onboardingStep");
@@ -116,4 +127,4 @@ const OnboardingForm = ({ onClose }) => {
 	);
 };
 
-export default OnboardingForm;
+export default Steps;

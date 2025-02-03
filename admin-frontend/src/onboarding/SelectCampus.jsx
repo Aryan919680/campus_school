@@ -7,7 +7,7 @@ const SelectCampus = ({ onClose }) => {
         { value: "school", label: "School" },
         { value: "college", label: "College" },
     ];
-
+    const [changePage,setChangePage] = useState(false);
     const [selectedOption, setSelectedOption] = useState("");
 
     const handleSelect = (event) => {
@@ -15,6 +15,12 @@ const SelectCampus = ({ onClose }) => {
         setSelectedOption(value);
 
     };
+    const onSubmit = () =>{
+        if(selectedOption){
+            setChangePage(true);
+        }
+   
+    }
     return (
         <ol className="flex items-center justify-between gap-2 text-xs font-medium text-gray-500 sm:gap-4">
             <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
@@ -45,8 +51,15 @@ const SelectCampus = ({ onClose }) => {
                             ))}
                         </select>
                     </div>
+                    <div className="flex justify-between mt-8">
+                    <button 
+                    onClick={onSubmit}
+                    className="py-2 px-4 bg-gray-600 text-white font-semibold rounded-md hover:bg-gray-700 transition duration-300"
+                    type="submit">
+                    Submit</button>
+                    </div>
                     {
-                        selectedOption === "college" ? <OnboardingForm  onClose={onClose}/> : selectedOption ==="school" &&  <OnboardingSchoolForm onClose={onClose} />
+                        changePage && selectedOption === "college" ? <OnboardingForm  onClose={onClose}/> : changePage && selectedOption ==="school" &&  <OnboardingSchoolForm onClose={onClose} />
                     }
                 </div>
             </div>

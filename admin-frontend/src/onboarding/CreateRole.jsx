@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
-const CreateRole = ({ onPrevious, onNext }) => {
+import API_ENDPOINTS from "../API/apiEndpoints";
+const CreateRole = ({ onPrevious, onSubmit }) => {
 	const [roleData, setRoleData] = useState({
 		name: localStorage.getItem("collegeAdminName") || "",
 		email: localStorage.getItem("collegeAdminEmail") || "",
@@ -24,58 +24,80 @@ const CreateRole = ({ onPrevious, onNext }) => {
 			setSelectedOption(value);
 	
 		};
-	const [photoPreview, setPhotoPreview] = useState(
-		localStorage.getItem("collegeAdminPhoto") || ""
-	);
+	// const [photoPreview, setPhotoPreview] = useState(
+	// 	localStorage.getItem("collegeAdminPhoto") || ""
+	// );
+
+
+
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
 		setRoleData((prevData) => ({ ...prevData, [name]: value }));
 	};
 
-	const handleFileChange = (e) => {
-		const file = e.target.files[0];
-		setRoleData((prevData) => ({ ...prevData, photo: file }));
+	// const handleFileChange = (e) => {
+	// 	const file = e.target.files[0];
+	// 	setRoleData((prevData) => ({ ...prevData, photo: file }));
 
-		const reader = new FileReader();
-		reader.onloadend = () => {
-			setPhotoPreview(reader.result);
-		};
-		reader.readAsDataURL(file);
-	};
+	// 	const reader = new FileReader();
+	// 	reader.onloadend = () => {
+	// 		setPhotoPreview(reader.result);
+	// 	};
+	// 	reader.readAsDataURL(file);
+	// };
 
 	const handleNext = async () => {
-		try {
-			let photoUrl = localStorage.getItem("collegeAdminPhoto");
+		// try {
+		// 	let photoUrl = localStorage.getItem("collegeAdminPhoto");
 
-			if (roleData.photo) {
-				const formData = new FormData();
-				formData.append("file", roleData.photo);
-				formData.append(
-					"upload_preset",
-					import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
-				);
+		// 	if (roleData.photo) {
+		// 		const formData = new FormData();
+		// 		formData.append("file", roleData.photo);
+		// 		formData.append(
+		// 			"upload_preset",
+		// 			import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
+		// 		);
 
-				const uploadResponse = await axios.post(
-					`https://api.cloudinary.com/v1_1/${
-						import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
-					}/image/upload`,
-					formData
-				);
+		// 		const uploadResponse = await axios.post(
+		// 			`https://api.cloudinary.com/v1_1/${
+		// 				import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
+		// 			}/image/upload`,
+		// 			formData
+		// 		);
 
-				photoUrl = uploadResponse.data.secure_url;
-				localStorage.setItem("collegeAdminPhoto", photoUrl);
-			}
+		// 		photoUrl = uploadResponse.data.secure_url;
+		// 		localStorage.setItem("collegeAdminPhoto", photoUrl);
+		// 	}
 
 			localStorage.setItem("collegeAdminName", roleData.name);
 			localStorage.setItem("collegeAdminEmail", roleData.email);
 			localStorage.setItem("collegeAdminRole", roleData.role); // Always "admin"
 			localStorage.setItem("collegeAdminPassword", password);
-
-			onNext();
-		} catch (error) {
-			console.error("Error uploading photo:", error);
-		}
+			const collegeData = {
+				name: localStorage.getItem("campusName") || "",
+				type: "COLLEGE",
+				location: localStorage.getItem("campusLocation") || "",
+				campus_details: {
+					college: {
+						code : localStorage.getItem("collegeCode") || 0,
+						address: "",
+						director: localStorage.getItem("directorName") || "",
+						year: Number(localStorage.getItem("campusFoundedYear")) || 0,
+					}
+				},
+				admin: {
+					role: "admin",
+					email: localStorage.getItem("collegeAdminEmail") || "",
+					password: localStorage.getItem("collegeAdminPassword") || "",
+					name:  "",
+				}
+		
+			};
+			handleSubmit(collegeData);
+		// } catch (error) {
+		// 	console.error("Error uploading photo:", error);
+		// }
 	};
 
 	const validatePassword = (value) => {
@@ -98,6 +120,39 @@ const CreateRole = ({ onPrevious, onNext }) => {
 		setPassword(value);
 		validatePassword(value);
 	  };
+
+	  const handleSubmit = async (collegeData) => {
+		
+		try {
+			const headers = {
+				"Content-Type": "application/json",
+				Accept: "application/json",
+			};
+				const schoolResponse = await axios.post(
+					API_ENDPOINTS.CREATE_CAMPUS,
+
+
+					collegeData
+					,
+					{ headers }
+				);
+				console.log(schoolResponse)
+				if (schoolResponse) {
+					const schoolId = schoolResponse.data.data.id;
+					localStorage.setItem("schoolId", schoolId);
+					localStorage.setItem("otpVerified", "true");
+					onSubmit();
+				}
+		
+			
+
+		} catch (error) {
+			console.error("Error details:", error.response?.data || error.message);
+			alert(
+				`Submission failed: ${error.response?.data?.message || error.message}`
+			);
+		}
+	};
 	return (
 		<form>
 			<h2 className="text-2xl font-semibold mb-6 text-center">
@@ -105,7 +160,7 @@ const CreateRole = ({ onPrevious, onNext }) => {
 			</h2>
 
 			<div className="space-y-4">
-				<div>
+				{/* <div>
 					<label
 						htmlFor="name"
 						className="block text-sm font-medium text-gray-700"
@@ -121,7 +176,7 @@ const CreateRole = ({ onPrevious, onNext }) => {
 						className="mt-1 block w-full border border-gray-300 rounded-md p-2"
 						required
 					/>
-				</div>
+				</div> */}
 
 				<div>
 					<label
@@ -185,7 +240,7 @@ const CreateRole = ({ onPrevious, onNext }) => {
 					/>
 				</div>
 
-				<div className="mt-8">
+				{/* <div className="mt-8">
 					<span className="block text-sm font-medium text-gray-900 mb-2">
 						Upload your photo
 					</span>
@@ -230,7 +285,7 @@ const CreateRole = ({ onPrevious, onNext }) => {
 							/>
 						</label>
 					</div>
-				</div>
+				</div> */}
 			</div>
 
 			<div className="flex justify-between mt-8">
@@ -246,7 +301,7 @@ const CreateRole = ({ onPrevious, onNext }) => {
 					onClick={handleNext}
 					className="py-2 px-4 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 transition duration-300"
 				>
-					Next
+					Submit
 				</button>
 			</div>
 		</form>

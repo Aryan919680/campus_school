@@ -15,6 +15,7 @@ import Payroll from "./components/Finance/Payroll";
 import Department from "./components/Department/Department";
 import Attendance from "./components/Attendance/Attendance";
 import Support from "./components/Support/Support";
+import Classes from "./components/Classes/Classes";
 
 const Layout = ({ logout }) => {
 	const [userData, setUserData] = useState(() => {
@@ -71,6 +72,8 @@ const Layout = ({ logout }) => {
 					<Routes>
 						<Route path="/" element={<Dashboard />} />
 						<Route path="/employees" element={<Employees />} />
+						<Route path='/classes' element={<Classes />} />
+					
 						<Route path="/students" element={<Students />} />
 						<Route path="/finance/*" element={<Finance />}>
 							<Route path="summary" element={<Summary />} />
