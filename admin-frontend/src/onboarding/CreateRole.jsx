@@ -24,30 +24,11 @@ const CreateRole = ({ onPrevious, onSubmit }) => {
 			setSelectedOption(value);
 	
 		};
-	const [photoPreview, setPhotoPreview] = useState(
-		localStorage.getItem("collegeAdminPhoto") || ""
-	);
+	// const [photoPreview, setPhotoPreview] = useState(
+	// 	localStorage.getItem("collegeAdminPhoto") || ""
+	// );
 
-	const collegeData = {
-		name: localStorage.getItem("campusName") || "",
-		type: "COLLEGE",
-		location: localStorage.getItem("campusLocation") || "",
-		campus_details: {
-			college: {
-				code : localStorage.getItem("collegeCode") || 0,
-				address: "",
-				director: localStorage.getItem("directorName") || "",
-				year: Number(localStorage.getItem("campusFoundedYear")) || 0,
-			}
-		},
-		admin: {
-			role: "admin",
-			email: localStorage.getItem("collegeAdminEmail") || "",
-			password: localStorage.getItem("collegeAdminPassword") || "",
-			name:  "",
-		}
 
-	};
 
 
 	const handleChange = (e) => {
@@ -55,48 +36,68 @@ const CreateRole = ({ onPrevious, onSubmit }) => {
 		setRoleData((prevData) => ({ ...prevData, [name]: value }));
 	};
 
-	const handleFileChange = (e) => {
-		const file = e.target.files[0];
-		setRoleData((prevData) => ({ ...prevData, photo: file }));
+	// const handleFileChange = (e) => {
+	// 	const file = e.target.files[0];
+	// 	setRoleData((prevData) => ({ ...prevData, photo: file }));
 
-		const reader = new FileReader();
-		reader.onloadend = () => {
-			setPhotoPreview(reader.result);
-		};
-		reader.readAsDataURL(file);
-	};
+	// 	const reader = new FileReader();
+	// 	reader.onloadend = () => {
+	// 		setPhotoPreview(reader.result);
+	// 	};
+	// 	reader.readAsDataURL(file);
+	// };
 
 	const handleNext = async () => {
-		try {
-			let photoUrl = localStorage.getItem("collegeAdminPhoto");
+		// try {
+		// 	let photoUrl = localStorage.getItem("collegeAdminPhoto");
 
-			if (roleData.photo) {
-				const formData = new FormData();
-				formData.append("file", roleData.photo);
-				formData.append(
-					"upload_preset",
-					import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
-				);
+		// 	if (roleData.photo) {
+		// 		const formData = new FormData();
+		// 		formData.append("file", roleData.photo);
+		// 		formData.append(
+		// 			"upload_preset",
+		// 			import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
+		// 		);
 
-				const uploadResponse = await axios.post(
-					`https://api.cloudinary.com/v1_1/${
-						import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
-					}/image/upload`,
-					formData
-				);
+		// 		const uploadResponse = await axios.post(
+		// 			`https://api.cloudinary.com/v1_1/${
+		// 				import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
+		// 			}/image/upload`,
+		// 			formData
+		// 		);
 
-				photoUrl = uploadResponse.data.secure_url;
-				localStorage.setItem("collegeAdminPhoto", photoUrl);
-			}
+		// 		photoUrl = uploadResponse.data.secure_url;
+		// 		localStorage.setItem("collegeAdminPhoto", photoUrl);
+		// 	}
 
 			localStorage.setItem("collegeAdminName", roleData.name);
 			localStorage.setItem("collegeAdminEmail", roleData.email);
 			localStorage.setItem("collegeAdminRole", roleData.role); // Always "admin"
 			localStorage.setItem("collegeAdminPassword", password);
-			handleSubmit();
-		} catch (error) {
-			console.error("Error uploading photo:", error);
-		}
+			const collegeData = {
+				name: localStorage.getItem("campusName") || "",
+				type: "COLLEGE",
+				location: localStorage.getItem("campusLocation") || "",
+				campus_details: {
+					college: {
+						code : localStorage.getItem("collegeCode") || 0,
+						address: "",
+						director: localStorage.getItem("directorName") || "",
+						year: Number(localStorage.getItem("campusFoundedYear")) || 0,
+					}
+				},
+				admin: {
+					role: "admin",
+					email: localStorage.getItem("collegeAdminEmail") || "",
+					password: localStorage.getItem("collegeAdminPassword") || "",
+					name:  "",
+				}
+		
+			};
+			handleSubmit(collegeData);
+		// } catch (error) {
+		// 	console.error("Error uploading photo:", error);
+		// }
 	};
 
 	const validatePassword = (value) => {
@@ -120,8 +121,8 @@ const CreateRole = ({ onPrevious, onSubmit }) => {
 		validatePassword(value);
 	  };
 
-	  const handleSubmit = async () => {
-		console.log(collegeData)
+	  const handleSubmit = async (collegeData) => {
+		
 		try {
 			const headers = {
 				"Content-Type": "application/json",
@@ -239,7 +240,7 @@ const CreateRole = ({ onPrevious, onSubmit }) => {
 					/>
 				</div>
 
-				<div className="mt-8">
+				{/* <div className="mt-8">
 					<span className="block text-sm font-medium text-gray-900 mb-2">
 						Upload your photo
 					</span>
@@ -284,7 +285,7 @@ const CreateRole = ({ onPrevious, onSubmit }) => {
 							/>
 						</label>
 					</div>
-				</div>
+				</div> */}
 			</div>
 
 			<div className="flex justify-between mt-8">
