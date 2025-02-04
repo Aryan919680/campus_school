@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import ClassFee from "./ClassFee";
-
-const ClassForm = ({ onClose, handleSubmit, errorMessage }) => {
+import API_ENDPOINTS from '../../API/apiEndpoints'
+const ClassForm = ({ onClose, errorMessage }) => {
     useEffect(() => {
         document.body.style.overflow = "hidden";
         return () => {
@@ -16,6 +17,8 @@ const ClassForm = ({ onClose, handleSubmit, errorMessage }) => {
     const [classInput, setClassInput] = useState("");
     const [sectionsInput, setSectionsInput] = useState("");
     const [showClassFee, setShowClassFee] = useState(false);
+    const [loading, setLoading] = useState(false);
+
     // Handle Class Name Input
     const handleClassChange = (event) => {
         setClassInput(event.target.value);
@@ -26,9 +29,6 @@ const ClassForm = ({ onClose, handleSubmit, errorMessage }) => {
         setSectionsInput(event.target.value.toUpperCase());
     };
 
-    const handleNext = () => {
-        setShowClassFee(true);
-    };
     // Add Class with Sections
     const addClassWithSections = () => {
         if (!classInput.trim()) return alert("Please enter a class name.");
@@ -69,10 +69,41 @@ const ClassForm = ({ onClose, handleSubmit, errorMessage }) => {
         localStorage.setItem("classSections", JSON.stringify(updatedClassSections));
     };
 
+    const handleNext = async () => {
+        if (classSections.length === 0) {
+            alert("Please add at least one class before proceeding.");
+            return;
+        }
+
+        const payload = {
+            data: classSections.map(({ class: className, sections }) => ({
+                className,
+                subclasses: sections.map(section => ({ name: section })),
+            })),
+        };
+
+        console.log("Sending payload:", payload);
+
+        setLoading(true);
+        try {
+            const response = await axios.post(API_ENDPOINTS.CREATE_CLASS, payload, {
+                headers: { "Content-Type": "application/json" },
+            });
+
+            console.log("API Response:", response.data);
+            setShowClassFee(true);
+        } catch (error) {
+            console.error("Error submitting data:", error.response?.data || error.message);
+            alert("Failed to submit data. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="fixed inset-0 z-50 flex justify-center items-center h-full w-full bg-black rounded-md bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-80 border border-gray-100">
             <div className="bg-gray-800 p-8 rounded-xl w-3/12">
-                <form onSubmit={handleSubmit} className="text-black">
+                <form className="text-black">
                     {/* Enter Class Name */}
                     <div className="mb-4">
                         <label className="block text-sm font-medium text-white">Class Name</label>
@@ -149,20 +180,17 @@ const ClassForm = ({ onClose, handleSubmit, errorMessage }) => {
                         </button>
                         <button
                             className="px-4 py-2 w-1/2 text-white bg-green-600 rounded-lg"
-                            type="submit"
+                            type="button"
                             onClick={handleNext}
+                            disabled={loading}
                         >
-                            Next
+                            {loading ? "Processing..." : "Next"}
                         </button>
                     </div>
                 </form>
             </div>
-            {
-                showClassFee && <ClassFee  />
-            }
+            {showClassFee && <ClassFee />}
         </div>
-
-
     );
 };
 

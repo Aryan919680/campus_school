@@ -3,8 +3,13 @@ const getUserIdFromLocalStorage = () => {
   return userData && userData.id ? userData.id : null;
 };
 
+const getCampusId = () => {
+  const userData = JSON.parse(localStorage.getItem("userData"));
+  return userData ? userData.data.campusId : null;
+};
 const userId = getUserIdFromLocalStorage();
-console.log("User ID:", userId);
+const campusId = getCampusId();
+console.log("campusId ID:", campusId);
 
 if (!userId) {
   console.error("User ID not found in localStorage");
@@ -15,11 +20,15 @@ const API_ENDPOINTS = {
   VERIFY_OTP: (roleId) =>
     `${import.meta.env.VITE_BASE_URL}/api/v1/admin/verify-email/${roleId}`,
 
+ 
+ 
   //campus
   FECTH_CAMPUS_BY_ID: (campusId) =>
     `${import.meta.env.VITE_BASE_URL}/api/v1/campus/fetch-campus/${campusId}`,
   UPDATE_CAMPUS: `${import.meta.env.VITE_BASE_URL}/api/v1/campus/update-campus`,
 
+   //create class
+  CREATE_CLASS : `${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${campusId}`,
   // Onboarding
   CREATE_CAMPUS: `${import.meta.env.VITE_BASE_URL}/api/v1/campus/register`,
   CREATE_BRANCH: `${import.meta.env.VITE_BASE_URL}/api/v1/campus/reg/branch`,
