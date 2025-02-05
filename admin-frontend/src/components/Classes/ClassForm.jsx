@@ -14,6 +14,7 @@ const ClassForm = ({ onClose, errorMessage }) => {
     const [classSections, setClassSections] = useState(
         JSON.parse(localStorage.getItem("classSections")) || []
     );
+    
     const [classInput, setClassInput] = useState("");
     const [sectionsInput, setSectionsInput] = useState("");
     const [showClassFee, setShowClassFee] = useState(false);
@@ -86,11 +87,11 @@ const ClassForm = ({ onClose, errorMessage }) => {
 
         setLoading(true);
         try {
-            const response = await axios.post(API_ENDPOINTS.CREATE_CLASS, payload, {
-                headers: { "Content-Type": "application/json" },
-            });
+            // const response = await axios.post(API_ENDPOINTS.CREATE_CLASS, payload, {
+            //     headers: { "Content-Type": "application/json" },
+            // });
 
-            console.log("API Response:", response.data);
+            // console.log("API Response:", response.data);
             setShowClassFee(true);
         } catch (error) {
             console.error("Error submitting data:", error.response?.data || error.message);
@@ -101,6 +102,11 @@ const ClassForm = ({ onClose, errorMessage }) => {
     };
 
     return (
+        <div>
+
+       {
+
+        !showClassFee &&
         <div className="fixed inset-0 z-50 flex justify-center items-center h-full w-full bg-black rounded-md bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-80 border border-gray-100">
             <div className="bg-gray-800 p-8 rounded-xl w-3/12">
                 <form className="text-black">
@@ -189,7 +195,10 @@ const ClassForm = ({ onClose, errorMessage }) => {
                     </div>
                 </form>
             </div>
-            {showClassFee && <ClassFee />}
+           
+        </div>
+}
+        {showClassFee && <ClassFee setShowFees={setShowClassFee} />}
         </div>
     );
 };
