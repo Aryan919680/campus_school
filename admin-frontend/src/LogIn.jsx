@@ -10,7 +10,7 @@ const LogIn = ({ onSchoolOnboarding,onCollegeOnboarding }) => {
 		useContext(AuthContext);
 	const [credentials, setCredentials] = useState({ email: "", password: "" });
 	const [campusType, setCampusType] = useState("school");
-	const [userType, setUserType] = useState("admin");
+	const [userType, setUserType] = useState("ADMIN");
 	const [errorMessage, setErrorMessage] = useState("");
 	const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
 	const [showForgotPassword, setShowForgotPassword] = useState(false);

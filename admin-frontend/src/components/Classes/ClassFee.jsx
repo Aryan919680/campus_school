@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-
+import axios from "axios";
+import API_ENDPOINTS from "../../API/apiEndpoints";
 const ClassFee = ({ setShowFees }) => {
     useEffect(() => {
         document.body.style.overflow = "hidden";
@@ -12,11 +13,35 @@ const ClassFee = ({ setShowFees }) => {
     const [feeEntries, setFeeEntries] = useState([]);
     const [savedFees, setSavedFees] = useState([]);
     const [errorMessage, setErrorMessage] = useState("");
+    const userData =  JSON.parse(localStorage.getItem("userData"));
+    const parsedData =userData ;
+ const token = parsedData.token;
+ useEffect(() => {
+    const fetchClassOptions = async () => {
+        try {
+            const response = await axios.get(API_ENDPOINTS.FETCH_CLASS, {
+                headers: { 
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                },
+            });
+            console.log(response.data.data.class)
+            const classOptions = response.data.data.class.map((classItem) => ({
+                value: classItem.classId,
+                label: `Class ${classItem.className}`,
+            }));
+            setClassOptions(classOptions);
+            // Update state with class data
+            //setClassOptions(response.data.class);
+        } catch (error) {
+            console.error("Error fetching class options:", error.response?.data || error.message);
+            alert("Failed to fetch class data. Please try again.");
+        }
+    };
 
-    useEffect(() => {
-        const storedClasses = JSON.parse(localStorage.getItem("classSections")) || [];
-        setClassOptions(storedClasses.map(item => ({ value: item.class, label: item.class })));
-    }, []);
+    fetchClassOptions();
+}, [token]); // Ensure token is available when fetching
+
 
     const typeOptions = [
         { value: "annual", label: "Annual" },

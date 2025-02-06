@@ -8,19 +8,19 @@ const getCampusId = () => {
   return userData ? userData.data.campusId : null;
 };
 const userId = getUserIdFromLocalStorage();
-const campusId = getCampusId();
-console.log("campusId ID:", campusId);
+const campusIdTest = getCampusId();
+console.log("campusId ID:", campusIdTest);
 
 if (!userId) {
   console.error("User ID not found in localStorage");
 }
 
+ 
 const API_ENDPOINTS = {
   // verify otp
   VERIFY_OTP: (roleId) =>
     `${import.meta.env.VITE_BASE_URL}/api/v1/admin/verify-email/${roleId}`,
 
- 
  
   //campus
   FECTH_CAMPUS_BY_ID: (campusId) =>
@@ -28,7 +28,9 @@ const API_ENDPOINTS = {
   UPDATE_CAMPUS: `${import.meta.env.VITE_BASE_URL}/api/v1/campus/update-campus`,
 
    //create class
-  CREATE_CLASS : `${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${campusId}`,
+  CREATE_CLASS : `${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${campusIdTest}`,
+  FETCH_CLASS : `${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${campusIdTest}`,
+ // CREATE_FEES : `${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${campusIdTest}/${}/fees`
   // Onboarding
   CREATE_CAMPUS: `${import.meta.env.VITE_BASE_URL}/api/v1/campus/register`,
   CREATE_BRANCH: `${import.meta.env.VITE_BASE_URL}/api/v1/campus/reg/branch`,

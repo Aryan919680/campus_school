@@ -9,7 +9,7 @@ const CreateRole = ({ onPrevious, onSubmit }) => {
 	const [roleData, setRoleData] = useState({
 		email: localStorage.getItem("adminEmail") || "",
 		branchId: Number(localStorage.getItem("branchId")) || "",
-		role: "admin",
+		role: "ADMIN",
 	});
 	const [password, setPassword] = useState(localStorage.getItem("adminPassword") || "");
 	const [selectedOption, setSelectedOption] = useState(localStorage.getItem("selectedOption") || "");
@@ -71,7 +71,7 @@ const [showPassword, setShowPassword] = useState(false);
 				},
 			},
 			admin: {
-				role: "admin",
+				role: "ADMIN",
 				email: localStorage.getItem("adminEmail"),
 				password: password,
 				name: "",

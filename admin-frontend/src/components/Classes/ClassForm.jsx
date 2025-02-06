@@ -19,7 +19,9 @@ const ClassForm = ({ onClose, errorMessage }) => {
     const [sectionsInput, setSectionsInput] = useState("");
     const [showClassFee, setShowClassFee] = useState(false);
     const [loading, setLoading] = useState(false);
-
+    const userData =  JSON.parse(localStorage.getItem("userData"));
+    const parsedData =userData ;
+ const token = parsedData.token;
     // Handle Class Name Input
     const handleClassChange = (event) => {
         setClassInput(event.target.value);
@@ -71,27 +73,25 @@ const ClassForm = ({ onClose, errorMessage }) => {
     };
 
     const handleNext = async () => {
-        if (classSections.length === 0) {
-            alert("Please add at least one class before proceeding.");
-            return;
-        }
-
-        const payload = {
-            data: classSections.map(({ class: className, sections }) => ({
-                className,
-                subclasses: sections.map(section => ({ name: section })),
-            })),
+              const payload = {
+            data: classSections.map(section => ({
+                className: section.class.replace("Grade ", ""), 
+                subclasses: section.sections.map(name => ({ name })) 
+            }))
         };
-
-        console.log("Sending payload:", payload);
 
         setLoading(true);
         try {
-            // const response = await axios.post(API_ENDPOINTS.CREATE_CLASS, payload, {
-            //     headers: { "Content-Type": "application/json" },
-            // });
+            const response = await axios.post(API_ENDPOINTS.CREATE_CLASS, payload, {
+                headers: { 
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                
+                },
+                
+            });
 
-            // console.log("API Response:", response.data);
+            console.log("API Response:", response.data);
             setShowClassFee(true);
         } catch (error) {
             console.error("Error submitting data:", error.response?.data || error.message);
@@ -188,7 +188,7 @@ const ClassForm = ({ onClose, errorMessage }) => {
                             className="px-4 py-2 w-1/2 text-white bg-green-600 rounded-lg"
                             type="button"
                             onClick={handleNext}
-                            disabled={loading}
+                          //  disabled={loading}
                         >
                             {loading ? "Processing..." : "Next"}
                         </button>
