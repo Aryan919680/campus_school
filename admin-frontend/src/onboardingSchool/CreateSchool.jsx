@@ -9,7 +9,7 @@ const CreateSchool = ({ onNext }) => {
 		foundedYear: localStorage.getItem("schoolFoundedYear") || "",
 		logo: localStorage.getItem("schoolLogo") || "",
 		schoolCode : localStorage.getItem("schoolCode")|| "",
-		branchName: localStorage.getItem("schoolBranchName") || "",
+		schoolBranchName: localStorage.getItem("schoolBranchName") || "",
 	});
 	const [logoPreview, setLogoPreview] = useState(
 		localStorage.getItem("schoolLogo") || null
@@ -180,16 +180,16 @@ const CreateSchool = ({ onNext }) => {
 			</div>
 			<div className="mb-4">
                 <label
-                    htmlFor="branchName"
+                    htmlFor="schoolBranchName"
                     className="block text-sm font-medium text-gray-700"
                 >
                     Branch Name
                 </label>
                 <input
-                    id="branchName"
-                    name="branchName"
+                    id="schoolBranchName"
+                    name="schoolBranchName"
                     type="text"
-                    value={schoolData.branchName}
+                    value={schoolData.schoolBranchName}
                     onChange={handleChange}
                     className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                     required

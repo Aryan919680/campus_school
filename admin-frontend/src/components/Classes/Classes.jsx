@@ -4,6 +4,7 @@ import axios from "axios";
 import API_ENDPOINTS from "../../API/apiEndpoints";
 import ListTable from "../List/ListTable"; // Assuming ListTable is in the same folder
 import EditClass from "./EditClass";
+import CheckFees from "./CheckFees";
 
 const Classes = () => {
   const [openForm, setOpenForm] = useState(false);
@@ -12,33 +13,42 @@ const Classes = () => {
   const [classes, setClasses] = useState([]);
   const[isEdit,setIsEdit] = useState(false);
   const [selectedClassForEdit, setSelectedClassForEdit] = useState([]); 
+  const [isClassFees,setIsClassFees] = useState(false);
+  const [selectedClassId, setSelectedClassId] = useState(null);
   const userData = JSON.parse(localStorage.getItem("userData"));
   const parsedData = userData;
   const token = parsedData.token;
 
-  useEffect(() => {
-    const fetchClassOptions = async () => {
-      try {
-        const response = await axios.get(API_ENDPOINTS.FETCH_CLASS, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        console.log(response.data.data.class);
-        const classes = response.data.data.class;
-        setClasses(classes); // Only update classes if data changes
-        console.log(classes)
-      } catch (error) {
-        console.error("Error fetching class options:", error.response?.data || error.message);
-        alert("Failed to fetch class data. Please try again.");
-      }
-    };
+  const fetchClassOptions = useCallback(async () => {
+    try {
+      const response = await axios.get(API_ENDPOINTS.FETCH_CLASS, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      let classes = response.data.data.class;
 
-    if (classes.length === 0) {  
-      fetchClassOptions();
+      // Sorting classes based on className (assuming className contains numeric values)
+      classes.sort((a, b) => {
+        const numA = parseInt(a.className.match(/\d+/)?.[0] || 0, 10); // Extract number
+        const numB = parseInt(b.className.match(/\d+/)?.[0] || 0, 10);
+        return numA - numB; // Ascending order (1,2,3,...,10)
+      });
+  
+      setClasses(classes); 
+    } catch (error) {
+      console.error("Error fetching class options:", error.response?.data || error.message);
+      alert("Failed to fetch class data. Please try again.");
     }
-  }, [token, classes]);
+  }, [token]);
+  
+  useEffect(() => {
+    fetchClassOptions();
+  }, [fetchClassOptions]);
+  
+
+
   const onClose = useCallback(() => {
     setOpenForm(false);
     setErrorMessage("");
@@ -55,16 +65,39 @@ const Classes = () => {
 
   const handleEdit = (classId) => {
     const classToEdit = classes.find((classData) => classData.classId === classId);
-    console.log(classToEdit)
     setSelectedClassForEdit(classToEdit); 
-    console.log(selectedClassForEdit) 
     setIsEdit(true); 
   };
-  console.log(selectedClassForEdit) 
 
-  const handleDelete = ()=>{
-    
-  }
+  const handleDelete = async (classId) => {
+  
+    try {
+      const response = await axios.delete(
+        `${API_ENDPOINTS.DELETE_CLASS}/${classId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      if (response.status === 200) {
+        alert("Class deleted successfully!");
+        setClasses(classes.filter((classData) => classData.classId !== classId));
+      }
+    } catch (error) {
+      console.error("Error deleting class:", error.response?.data || error.message);
+      alert("Failed to delete class. Please try again.");
+    }
+  };
+  const handleCheckFees = (classId) => {
+    alert(`Checking fees for Class ID: ${classId}`);
+    setSelectedClassId(classId);
+    setIsClassFees(true);
+    // You can replace this with actual logic to fetch and display fee details
+  };
+  
   const showDataList = useMemo(() => {
     return classes.map((classData) => (
       <tr key={classData.classId}>
@@ -74,19 +107,27 @@ const Classes = () => {
           </td>
         <td className="text-center">{classData.teacher}</td>
         <td className="text-center">
-          {/* Add Edit and Delete buttons */}
-          <button
+
+        {/* <button
+          onClick={() => handleCheckFees(classData.classId)}
+          className="bg-yellow-500 text-white font-bold py-2 px-4 rounded mr-2"
+        >
+          Check Fees
+        </button> */}
+          {/* <button
             onClick={() => handleEdit(classData.classId)}
             className="bg-yellow-500 text-white font-bold py-2 px-4 rounded mr-2"
           >
             Edit
-          </button>
+          </button> */}
           <button
             onClick={() => handleDelete(classData.classId)}
             className="bg-red-500 text-white font-bold py-2 px-4 rounded"
           >
-            Delete
+            Delete Class
           </button>
+        
+
         </td>
       </tr>
     ));
@@ -124,6 +165,7 @@ const Classes = () => {
           onClose={onClose}
           handleInputChange={handleInputChange}
           errorMessage={errorMessage}
+          refreshClasses={fetchClassOptions}
         />
       )}
 
@@ -144,6 +186,9 @@ const Classes = () => {
           isEdit={true} />
         )
       }
+      
+{/* {isClassFees && (<CheckFees setIsClassFees={setIsClassFees} classId={selectedClassId} />)} */}
+      
     </div>
   );
 };

@@ -15,6 +15,7 @@ const ClassFee = ({ setShowFees }) => {
     const [errorMessage, setErrorMessage] = useState("");
     const userData =  JSON.parse(localStorage.getItem("userData"));
     const parsedData =userData ;
+    console.log(parsedData)
  const token = parsedData.token;
  useEffect(() => {
     const fetchClassOptions = async () => {
@@ -25,14 +26,11 @@ const ClassFee = ({ setShowFees }) => {
                     Authorization: `Bearer ${token}`
                 },
             });
-            console.log(response.data.data.class)
             const classOptions = response.data.data.class.map((classItem) => ({
                 value: classItem.classId,
                 label: `Class ${classItem.className}`,
             }));
             setClassOptions(classOptions);
-            // Update state with class data
-            //setClassOptions(response.data.class);
         } catch (error) {
             console.error("Error fetching class options:", error.response?.data || error.message);
             alert("Failed to fetch class data. Please try again.");
@@ -40,11 +38,11 @@ const ClassFee = ({ setShowFees }) => {
     };
 
     fetchClassOptions();
-}, [token]); // Ensure token is available when fetching
+}, [token]); 
 
 
     const typeOptions = [
-        { value: "annual", label: "Annual" },
+        { value: "Yearly", label: "Yearly" },
         { value: "monthly", label: "Monthly" }
     ];
 
@@ -55,9 +53,18 @@ const ClassFee = ({ setShowFees }) => {
 
     const updateFeeEntry = (index, field, value) => {
         const updatedEntries = [...feeEntries];
-        updatedEntries[index][field] = value;
+    
+        if (field === "className") {
+            const selectedClass = classOptions.find(option => option.value === value);
+            updatedEntries[index]["classId"] = value; // Store classId separately
+            updatedEntries[index]["className"] = selectedClass ? selectedClass.label : ""; // Store className
+        } else {
+            updatedEntries[index][field] = value;
+        }
+    
         setFeeEntries(updatedEntries);
     };
+    
 
     const addOtherFee = (index) => {
         const updatedEntries = [...feeEntries];
@@ -82,15 +89,63 @@ const ClassFee = ({ setShowFees }) => {
         setErrorMessage("");
     };
 
-    const saveFees = () => {
-        if (feeEntries.some(entry => !entry.className || !entry.tuitionFee || !entry.feeType)) {
-            setErrorMessage("All fields are required for each entry.");
+    const saveFees = async () => {
+        if (feeEntries.length === 0) {
+            setErrorMessage("Please add at least one fee entry before saving.");
             return;
         }
-        setSavedFees([...savedFees, ...feeEntries]);
-        setFeeEntries([]);
-        setErrorMessage("");
+    
+        for (const entry of feeEntries) {
+            if (!entry.className || !entry.tuitionFee || !entry.feeType) {
+                setErrorMessage("All fields are required for each entry.");
+                return;
+            }
+        }
+    
+        const campusId = parsedData.data.campusId; // Assuming campusId is available in userData
+    
+        try {
+            for (const entry of feeEntries) {
+                const payload = {
+                    fees: [
+                        {
+                            name: "Tuition Fee",
+                            amount: Number(entry.tuitionFee),
+                            type: entry.feeType.toUpperCase(),
+                        },
+                        ...entry.otherFees.map(fee => ({
+                            name: fee.name,
+                            amount: Number(fee.amount),
+                            type: fee.feeType.toUpperCase(),
+                        })),
+                    ],
+                };
+                console.log(payload)
+    
+                const response = await axios.post(
+                    `${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${campusId}/${entry.classId}/fees`,
+                    payload,
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+    
+                console.log("Fee structure saved:", response.data);
+            }
+    
+            alert("Fee structures saved successfully!");
+            setSavedFees([...savedFees, ...feeEntries]); // Update the saved fees list
+            setFeeEntries([]); // Clear form after successful save
+            setErrorMessage("");
+        } catch (error) {
+            console.error("Error saving fee structure:", error.response?.data || error.message);
+            alert("Failed to save fee structure. Please try again.");
+        }
     };
+    
 
     return (
         <div className="fixed inset-0 z-50 flex justify-center items-center h-full w-full bg-black bg-opacity-80">

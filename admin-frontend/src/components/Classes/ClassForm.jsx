@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ClassFee from "./ClassFee";
 import API_ENDPOINTS from '../../API/apiEndpoints'
-const ClassForm = ({ onClose, errorMessage }) => {
+const ClassForm = ({ onClose, errorMessage,refreshClasses }) => {
     useEffect(() => {
         document.body.style.overflow = "hidden";
         return () => {
@@ -90,8 +90,12 @@ const ClassForm = ({ onClose, errorMessage }) => {
                 },
                 
             });
-
-            console.log("API Response:", response.data);
+            if (response) {
+                alert("Class added successfully!");
+                refreshClasses();
+            }
+            localStorage.removeItem("classSections");
+        setClassSections([]);
             setShowClassFee(true);
         } catch (error) {
             console.error("Error submitting data:", error.response?.data || error.message);

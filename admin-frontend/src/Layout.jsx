@@ -22,7 +22,7 @@ const Layout = ({ logout }) => {
 		const storedUserData = localStorage.getItem("userData");
 		return storedUserData ? JSON.parse(storedUserData) : null;
 	});
-
+     
 	const [isSidebarExpanded, setIsSidebarExpanded] = useState(
 		getSidebarStateFromLocalStorage()
 	);
@@ -43,7 +43,7 @@ const Layout = ({ logout }) => {
 	const toggleSidebar = () => {
 		setIsSidebarExpanded(!isSidebarExpanded);
 	};
-
+	const campusType = userData.data.campusType;
 	const isMobile = window.innerWidth < 768;
 
 	return (
@@ -69,10 +69,19 @@ const Layout = ({ logout }) => {
 						isSidebarExpanded && !isMobile ? "ml-0" : "ml-0"
 					} w-full`}
 				>
-					<Routes>
+					{
+						campusType === "SCHOOL" && 
+						<Routes>
+						<Route path="/" element={<Classes />} />
+						<Route path="/classes" element={<Classes />} />
+					</Routes>
+					}
+					{
+						campusType === "COLLEGE" &&
+						<Routes>
 						<Route path="/" element={<Dashboard />} />
 						<Route path="/employees" element={<Employees />} />
-						<Route path='/classes' element={<Classes />} />
+						{/* <Route path='/classes' element={<Classes />} /> */}
 					
 						<Route path="/students" element={<Students />} />
 						<Route path="/finance/*" element={<Finance />}>
@@ -87,6 +96,8 @@ const Layout = ({ logout }) => {
 						<Route path="/support" element={<Support />} />
 						<Route path="*" element={<NotFound />} />
 					</Routes>
+					}
+					
 				</main>
 			</div>
 		</div>

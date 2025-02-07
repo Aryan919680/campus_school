@@ -30,6 +30,8 @@ const API_ENDPOINTS = {
    //create class
   CREATE_CLASS : `${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${campusIdTest}`,
   FETCH_CLASS : `${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${campusIdTest}`,
+  DELETE_CLASS:`${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${campusIdTest}`,
+  FETCH_FEES:`${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${campusIdTest}`,
  // CREATE_FEES : `${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${campusIdTest}/${}/fees`
   // Onboarding
   CREATE_CAMPUS: `${import.meta.env.VITE_BASE_URL}/api/v1/campus/register`,
