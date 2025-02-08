@@ -11,7 +11,7 @@ const CreateRole = ({ onPrevious, onSubmit }) => {
 		name: localStorage.getItem("collegeAdminName") || "",
 		email: localStorage.getItem("collegeAdminEmail") || "",
 		branchId: Number(localStorage.getItem("collegeBranchId")) || "",
-		role: "admin", // Automatically set to "admin"
+		role: "ADMIN", // Automatically set to "admin"
 		photo: null,
 	});
 	const [isValid, setIsValid] = useState(false);
@@ -97,7 +97,7 @@ const CreateRole = ({ onPrevious, onSubmit }) => {
 				},
 			},
 			admin: {
-				role: "admin",
+				role: "ADMIN",
 				email: localStorage.getItem("collegeAdminEmail") || "",
 				password: localStorage.getItem("collegeAdminPassword") || "",
 				name: "",
