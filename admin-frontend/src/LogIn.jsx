@@ -56,9 +56,7 @@ const LogIn = ({ onSchoolOnboarding,onCollegeOnboarding }) => {
 		e.preventDefault();
 		try {
 			let endpoint = API_ENDPOINTS.ADMIN_LOGIN;
-			if (campusType === "college") {
-				endpoint = API_ENDPOINTS.COLLEGE_LOGIN;
-			}
+			
 
 			const response = await axios.post(endpoint, { ...credentials, userType });
 			if (response.data.success) {
@@ -70,6 +68,7 @@ const LogIn = ({ onSchoolOnboarding,onCollegeOnboarding }) => {
 				localStorage.setItem("userData", JSON.stringify(response.data.data));
 				localStorage.setItem("userType", userType);
 				localStorage.setItem("campusType", campusType);
+				window.dispatchEvent(new Event("userDataUpdated"));
 				setUserData(response.data.data);
 
 				refreshAuthState();
@@ -90,7 +89,8 @@ const LogIn = ({ onSchoolOnboarding,onCollegeOnboarding }) => {
 			);
 		}
 	};
-
+	window.addEventListener("userDataUpdated", () => {
+	  });
 	const handleForgotPassword = async (e) => {
 		e.preventDefault();
 		try {

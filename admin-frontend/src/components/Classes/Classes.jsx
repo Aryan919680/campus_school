@@ -28,12 +28,10 @@ const Classes = () => {
         },
       });
       let classes = response.data.data.class;
-
-      // Sorting classes based on className (assuming className contains numeric values)
       classes.sort((a, b) => {
-        const numA = parseInt(a.className.match(/\d+/)?.[0] || 0, 10); // Extract number
+        const numA = parseInt(a.className.match(/\d+/)?.[0] || 0, 10); 
         const numB = parseInt(b.className.match(/\d+/)?.[0] || 0, 10);
-        return numA - numB; // Ascending order (1,2,3,...,10)
+        return numA - numB; 
       });
   
       setClasses(classes); 

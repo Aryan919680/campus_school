@@ -3,17 +3,43 @@ const getUserIdFromLocalStorage = () => {
   return userData && userData.id ? userData.id : null;
 };
 
-const getCampusId = () => {
-  const userData = JSON.parse(localStorage.getItem("userData"));
-  return userData ? userData.data.campusId : null;
-};
+// const getCampusId = () => {
+//   const userData = JSON.parse(localStorage.getItem("userData"));
+//   return userData ? userData.data.campusId : null;
+// };
 const userId = getUserIdFromLocalStorage();
-const campusIdTest = getCampusId();
-console.log("campusId ID:", campusIdTest);
+// const campusIdTest = getCampusId();
+// console.log("campusId ID:", campusIdTest);
 
 if (!userId) {
   console.error("User ID not found in localStorage");
 }
+
+
+const getCampusId = () => {
+  const userData = JSON.parse(localStorage.getItem("userData"));
+  return userData?.data?.campusId || null;
+};
+
+// Wait for localStorage to be populated
+const waitForUserData = (callback, interval = 500, maxAttempts = 10) => {
+  let attempts = 0;
+  const checkUserData = setInterval(() => {
+    const campusId = getCampusId();
+    if (campusId || attempts >= maxAttempts) {
+      clearInterval(checkUserData);
+      callback(campusId);
+    }
+    attempts++;
+  }, interval);
+};
+
+waitForUserData((campusId) => {
+  console.log("Campus ID:", campusId);
+  if (!campusId) {
+    console.error("User data not found");
+  }
+});
 
  
 const API_ENDPOINTS = {
@@ -28,10 +54,10 @@ const API_ENDPOINTS = {
   UPDATE_CAMPUS: `${import.meta.env.VITE_BASE_URL}/api/v1/campus/update-campus`,
 
    //create class
-  CREATE_CLASS : `${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${campusIdTest}`,
-  FETCH_CLASS : `${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${campusIdTest}`,
-  DELETE_CLASS:`${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${campusIdTest}`,
-  FETCH_FEES:`${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${campusIdTest}`,
+  CREATE_CLASS : `${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${getCampusId()}`,
+  FETCH_CLASS : `${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${getCampusId()}`,
+  DELETE_CLASS:`${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${getCampusId()}`,
+  FETCH_FEES:`${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${getCampusId()}`,
  // CREATE_FEES : `${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${campusIdTest}/${}/fees`
   // Onboarding
   CREATE_CAMPUS: `${import.meta.env.VITE_BASE_URL}/api/v1/campus/register`,
