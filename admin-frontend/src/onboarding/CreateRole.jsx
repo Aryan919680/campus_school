@@ -18,6 +18,7 @@ const CreateRole = ({ onPrevious, onSubmit }) => {
 	const [password, setPassword] = useState(localStorage.getItem("collegeAdminPassword") || "");
 	const [successMessage, setSuccessMessage] = useState(""); // Success message state
 	const [showPassword, setShowPassword] = useState(false);
+	const [isValidEmail, setIsValidEmail] = useState(false);
 	const options = [
 		{ value: "dean", label: "DEAN" },
 		{ value: "hod", label: "HOD" },
@@ -31,10 +32,17 @@ const CreateRole = ({ onPrevious, onSubmit }) => {
 	};
 
 	const handleChange = (e) => {
-		const { name, value } = e.target;
-		setRoleData((prevData) => ({ ...prevData, [name]: value }));
-	};
+        const { name, value } = e.target;
+        setRoleData((prevData) => ({ ...prevData, [name]: value }));
+        if (name === "email") {
+            validateEmail(value);
+        }
+    };
 
+	const validateEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        setIsValidEmail(emailRegex.test(email));
+    };
 	const validatePassword = (value) => {
 		const conditions = {
 			hasUpperCase: /[A-Z]/.test(value),
@@ -53,6 +61,7 @@ const CreateRole = ({ onPrevious, onSubmit }) => {
 	};
 
 	const handleSubmit = async (collegeData) => {
+		if (!isValidEmail || !isValid) return;
 		try {
 			const headers = {
 				"Content-Type": "application/json",
@@ -68,6 +77,7 @@ const CreateRole = ({ onPrevious, onSubmit }) => {
 				// Set success message and trigger redirect after a delay
 				setSuccessMessage("Registration successful! Redirecting to login...");
 				setTimeout(() => {
+					localStorage.clear();
 					localStorage.removeItem("onboardingStep");
 					navigate('login');
 				}, 3000);
@@ -146,6 +156,7 @@ const CreateRole = ({ onPrevious, onSubmit }) => {
 						className="mt-1 block w-full border border-gray-300 rounded-md p-2"
 						required
 					/>
+						 {!isValidEmail && <p className="text-red-600 text-sm">Invalid email format</p>}
 				</div>
 
 				<div>

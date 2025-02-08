@@ -15,6 +15,7 @@ const CreateRole = ({ onPrevious, onSubmit }) => {
 	const [selectedOption, setSelectedOption] = useState(localStorage.getItem("selectedOption") || "");
 	const [isValid, setIsValid] = useState(false);
 	const [successMessage, setSuccessMessage] = useState(""); // Success message state
+	const [isValidEmail, setIsValidEmail] = useState(false);
 const [showPassword, setShowPassword] = useState(false);
 	const options = [
 		{ value: "director", label: "Director" },
@@ -27,9 +28,17 @@ const [showPassword, setShowPassword] = useState(false);
 	};
 
 	const handleChange = (e) => {
-		const { name, value } = e.target;
-		setRoleData((prevData) => ({ ...prevData, [name]: value }));
-	};
+        const { name, value } = e.target;
+        setRoleData((prevData) => ({ ...prevData, [name]: value }));
+        if (name === "email") {
+            validateEmail(value);
+        }
+    };
+
+    const validateEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        setIsValidEmail(emailRegex.test(email));
+    };
 
 	const validatePassword = (value) => {
 		const conditions = {
@@ -52,6 +61,7 @@ const [showPassword, setShowPassword] = useState(false);
 	};
 
 	const handleNext = () => {
+		if (!isValidEmail || !isValid) return;
 		localStorage.setItem("adminEmail", roleData.email);
 		localStorage.setItem("adminRole", roleData.role);
 		localStorage.setItem("adminPassword", password);
@@ -90,6 +100,7 @@ const [showPassword, setShowPassword] = useState(false);
 			const schoolResponse = await axios.post(API_ENDPOINTS.CREATE_CAMPUS, schoolData, { headers });
 
 			if (schoolResponse) {
+				localStorage.clear()
 				localStorage.setItem("schoolId", schoolResponse.data.data.id);
 				localStorage.setItem("otpVerified", "true");
 
@@ -146,6 +157,7 @@ const [showPassword, setShowPassword] = useState(false);
 						className="mt-1 block w-full border border-gray-300 rounded-md p-2"
 						required
 					/>
+					 {!isValidEmail && <p className="text-red-600 text-sm">Invalid email format</p>}
 				</div>
 
 				<div>

@@ -8,6 +8,7 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 	const [schoolName, setSchoolName] = useState("");
 	const [campusLogo, setCampusLogo] = useState("");
 	const [campusId, setCampusId] = useState(null);
+	const [campusType,setCampusType] = useState();
 	const [campusDetails, setCampusDetails] = useState({
 		id: null,
 		name: "",
@@ -22,8 +23,8 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 		if (storedUserData) {
 			const userData = JSON.parse(storedUserData);
 			setSchoolName(userData.schoolName);
-			setCampusId(userData.campusId);
-
+			setCampusId(userData.data.campusId);
+            setCampusType(userData.data.campusType)
 			// Fetch campus details by campusId
 			if (userData.campusId) {
 				fetchCampusDetails(userData.campusId);
@@ -197,6 +198,67 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 					</div>
 				</div>
 			</div>
+			{
+				campusType === "SCHOOL" && <nav className="p-4 space-y-2 font-medium h-full flex flex-col mt-4">
+				{/* <NavItems
+					to="/"
+					icon="ic:round-dashboard"
+					title="Dashboard"
+					isSidebarExpanded={isSidebarExpanded}
+				/> */}
+				<NavItems
+					to="/Classes"
+					icon="mingcute:department-fill"
+					title="Classes"
+					isSidebarExpanded={isSidebarExpanded}
+				/>
+				
+				{/* <NavItems
+					to="/Employees"
+					icon="clarity:employee-group-solid"
+					title="Employees"
+					isSidebarExpanded={isSidebarExpanded}
+				/>
+				<NavItems
+					to="/Students"
+					icon="solar:square-academic-cap-bold"
+					title="Students"
+					isSidebarExpanded={isSidebarExpanded}
+				/>
+				<NavItems
+					to="/Finance"
+					icon="material-symbols:finance-mode-rounded"
+					title="Finance"
+					isSidebarExpanded={isSidebarExpanded}
+				/>
+				<NavItems
+					to="/Department"
+					icon="mingcute:department-fill"
+					title="Department"
+					isSidebarExpanded={isSidebarExpanded}
+				/>
+				<NavItems
+					to="/Attendance"
+					icon="fluent:task-list-square-add-24-filled"
+					title="Attendance"
+					isSidebarExpanded={isSidebarExpanded}
+				/>
+				<NavItems
+					to="/Event"
+					icon="material-symbols:event"
+					title="Event Management"
+					isSidebarExpanded={isSidebarExpanded}
+				/>
+				<NavItems
+					to="/Support"
+					icon="material-symbols:support-agent-rounded"
+					title="Support"
+					isSidebarExpanded={isSidebarExpanded}
+				/> */}
+			</nav>
+			}
+		{	
+		campusType === "COLLEGE" &&
 			<nav className="p-4 space-y-2 font-medium h-full flex flex-col mt-4">
 				<NavItems
 					to="/"
@@ -253,7 +315,7 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 					title="Support"
 					isSidebarExpanded={isSidebarExpanded}
 				/>
-			</nav>
+			</nav>}
 		</aside>
 	);
 };
