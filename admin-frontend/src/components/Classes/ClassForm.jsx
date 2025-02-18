@@ -10,7 +10,6 @@ const ClassForm = ({ onClose, errorMessage,refreshClasses }) => {
         };
     }, []);
 
-    // Retrieve stored data or initialize empty array
     const [classSections, setClassSections] = useState(
         JSON.parse(localStorage.getItem("classSections")) || []
     );
@@ -21,8 +20,8 @@ const ClassForm = ({ onClose, errorMessage,refreshClasses }) => {
     const [loading, setLoading] = useState(false);
     const userData =  JSON.parse(localStorage.getItem("userData"));
     const parsedData =userData ;
- const token = parsedData.token;
-    // Handle Class Name Input
+    const token = parsedData.token;
+  
     const handleClassChange = (event) => {
         setClassInput(event.target.value);
     };
@@ -95,7 +94,6 @@ const ClassForm = ({ onClose, errorMessage,refreshClasses }) => {
                 refreshClasses();
             }
             localStorage.removeItem("classSections");
-        setClassSections([]);
             setShowClassFee(true);
         } catch (error) {
             console.error("Error submitting data:", error.response?.data || error.message);
@@ -202,7 +200,7 @@ const ClassForm = ({ onClose, errorMessage,refreshClasses }) => {
            
         </div>
 }
-        {showClassFee && <ClassFee setShowFees={setShowClassFee} />}
+        {showClassFee && <ClassFee setShowFees={setShowClassFee} classSections={classSections} onClose={onClose}/>}
         </div>
     );
 };

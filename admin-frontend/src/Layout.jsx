@@ -16,6 +16,7 @@ import Department from "./components/Department/Department";
 import Attendance from "./components/Attendance/Attendance";
 import Support from "./components/Support/Support";
 import Classes from "./components/Classes/Classes";
+import Departments from "./components/Departments/Department";
 
 const Layout = ({ logout }) => {
 	const [userData, setUserData] = useState(() => {
@@ -79,11 +80,13 @@ const Layout = ({ logout }) => {
 					{
 						campusType === "COLLEGE" &&
 						<Routes>
-						<Route path="/" element={<Dashboard />} />
-						<Route path="/employees" element={<Employees />} />
+								<Route path="/" element={<Departments />} />
+							<Route path="/department" element={<Departments />} />
+						{/* <Route path="/" element={<Dashboard />} />
+						<Route path="/employees" element={<Employees />} /> */}
 						{/* <Route path='/classes' element={<Classes />} /> */}
 					
-						<Route path="/students" element={<Students />} />
+						{/* <Route path="/students" element={<Students />} />
 						<Route path="/finance/*" element={<Finance />}>
 							<Route path="summary" element={<Summary />} />
 							<Route path="transactions" element={<Transactions />} />
@@ -94,7 +97,7 @@ const Layout = ({ logout }) => {
 						<Route path="/department" element={<Department />} />
 						<Route path="/attendance" element={<Attendance />} />
 						<Route path="/support" element={<Support />} />
-						<Route path="*" element={<NotFound />} />
+						<Route path="*" element={<NotFound />} /> */}
 					</Routes>
 					}
 					

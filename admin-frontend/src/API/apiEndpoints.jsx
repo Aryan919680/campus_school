@@ -40,7 +40,6 @@ waitForUserData((campusId) => {
     console.error("User data not found");
   }
 });
-
  
 const API_ENDPOINTS = {
   // verify otp
@@ -59,6 +58,14 @@ const API_ENDPOINTS = {
   DELETE_CLASS:`${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${getCampusId()}`,
   FETCH_FEES:`${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${getCampusId()}`,
  // CREATE_FEES : `${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${campusIdTest}/${}/fees`
+
+ //DEPARTMENT
+ CREATE_DEPARTMENT :`${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${getCampusId()}/register`,
+ GET_DEPARTMENTS: `${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${getCampusId()}`,
+ DELETE_DEPARTMENT: `${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${getCampusId()}`,
+ SUBMIT_COURSES: `${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${getCampusId()}/department`,
+ GET_COURSES_OF_DEPARTMENT: `${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${getCampusId()}/department`,
+ SUBMIT_FEES: `${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${getCampusId()}`,
   // Onboarding
   CREATE_CAMPUS: `${import.meta.env.VITE_BASE_URL}/api/v1/campus/register`,
   CREATE_BRANCH: `${import.meta.env.VITE_BASE_URL}/api/v1/campus/reg/branch`,
@@ -187,8 +194,8 @@ const API_ENDPOINTS = {
   }/api/v1/department/${userId}/reg`,
   UPDATE_DEPARTMENTS: (departmentId) =>
     `${import.meta.env.VITE_BASE_URL}/api/v1/department/update/${departmentId}`,
-  DELETE_DEPARTMENT: (departmentId) =>
-    `${import.meta.env.VITE_BASE_URL}/api/v1/department/delete/${departmentId}`,
+  // DELETE_DEPARTMENT: (departmentId) =>
+  //   `${import.meta.env.VITE_BASE_URL}/api/v1/department/delete/${departmentId}`,
   FETCH_ALL_DEPARTMENTS: `${
     import.meta.env.VITE_BASE_URL
   }/api/v1/department/fetchAll/${userId}`,

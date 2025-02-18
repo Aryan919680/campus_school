@@ -260,20 +260,20 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 		{	
 		campusType === "COLLEGE" &&
 			<nav className="p-4 space-y-2 font-medium h-full flex flex-col mt-4">
-				<NavItems
+				{/* <NavItems
 					to="/"
 					icon="ic:round-dashboard"
 					title="Dashboard"
 					isSidebarExpanded={isSidebarExpanded}
-				/>
+				/> */}
 				<NavItems
-					to="/Classes"
+					to="/Department"
 					icon="mingcute:department-fill"
-					title="Classes"
+					title="Department"
 					isSidebarExpanded={isSidebarExpanded}
 				/>
 				
-				<NavItems
+				{/* <NavItems
 					to="/Employees"
 					icon="clarity:employee-group-solid"
 					title="Employees"
@@ -314,7 +314,7 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 					icon="material-symbols:support-agent-rounded"
 					title="Support"
 					isSidebarExpanded={isSidebarExpanded}
-				/>
+				/> */}
 			</nav>}
 		</aside>
 	);

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import API_ENDPOINTS from "../../API/apiEndpoints";
-const ClassFee = ({ setShowFees }) => {
+import ValidationScreen from "./ValidationScreen";
+const ClassFee = ({ setShowFees,classSections,onClose }) => {
     useEffect(() => {
         document.body.style.overflow = "hidden";
         return () => {
@@ -13,9 +14,10 @@ const ClassFee = ({ setShowFees }) => {
     const [feeEntries, setFeeEntries] = useState([]);
     const [savedFees, setSavedFees] = useState([]);
     const [errorMessage, setErrorMessage] = useState("");
+    const [showValidationScreen, setShowValidationScreen] = useState(false);
     const userData =  JSON.parse(localStorage.getItem("userData"));
     const parsedData =userData ;
-    console.log(parsedData)
+    
  const token = parsedData.token;
  useEffect(() => {
     const fetchClassOptions = async () => {
@@ -52,6 +54,7 @@ const ClassFee = ({ setShowFees }) => {
     };
 
     const updateFeeEntry = (index, field, value) => {
+        console.log("here",)
         const updatedEntries = [...feeEntries];
     
         if (field === "className") {
@@ -63,6 +66,7 @@ const ClassFee = ({ setShowFees }) => {
         }
     
         setFeeEntries(updatedEntries);
+        console.log(updatedEntries)
     };
     
 
@@ -89,6 +93,10 @@ const ClassFee = ({ setShowFees }) => {
         setErrorMessage("");
     };
 
+    const nextPage = () =>{
+      //  setShowFees(false)
+        setShowValidationScreen(true);
+    }
     const saveFees = async () => {
         if (feeEntries.length === 0) {
             setErrorMessage("Please add at least one fee entry before saving.");
@@ -102,8 +110,7 @@ const ClassFee = ({ setShowFees }) => {
             }
         }
     
-        const campusId = parsedData.data.campusId; // Assuming campusId is available in userData
-    
+        const campusId = parsedData.data.campusId;
         try {
             for (const entry of feeEntries) {
                 const payload = {
@@ -120,7 +127,6 @@ const ClassFee = ({ setShowFees }) => {
                         })),
                     ],
                 };
-                console.log(payload)
     
                 const response = await axios.post(
                     `${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${campusId}/${entry.classId}/fees`,
@@ -132,13 +138,13 @@ const ClassFee = ({ setShowFees }) => {
                         },
                     }
                 );
-    
-                console.log("Fee structure saved:", response.data);
+
             }
     
             alert("Fee structures saved successfully!");
-            setSavedFees([...savedFees, ...feeEntries]); // Update the saved fees list
-            setFeeEntries([]); // Clear form after successful save
+            setSavedFees([...savedFees, ...feeEntries]); 
+           
+            setFeeEntries([]);
             setErrorMessage("");
         } catch (error) {
             console.error("Error saving fee structure:", error.response?.data || error.message);
@@ -146,6 +152,10 @@ const ClassFee = ({ setShowFees }) => {
         }
     };
     
+    const closeAll = () =>{
+        setShowFees(false);
+        onClose();
+    }
 
     return (
         <div className="fixed inset-0 z-50 flex justify-center items-center h-full w-full bg-black bg-opacity-80">
@@ -157,10 +167,14 @@ const ClassFee = ({ setShowFees }) => {
                     </div>
                     
                     <div className="space-y-4 max-h-96 overflow-y-auto p-2 border border-gray-500 rounded-lg scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-700">
-                        {feeEntries.map((entry, index) => (
+                    {feeEntries.map((entry, index) => (
                             <div key={index} className="p-3 border border-gray-500 rounded-lg">
                                 <label className="block text-sm text-white">Select Class</label>
-                                <select value={entry.className} onChange={(e) => updateFeeEntry(index, "className", e.target.value)} className="w-full p-2 border rounded-md">
+                                <select 
+                                    value={entry.classId} 
+                                    onChange={(e) => updateFeeEntry(index, "classId", e.target.value)} 
+                                    className="w-full p-2 border rounded-md"
+                                >
                                     <option value="">-- Select Class --</option>
                                     {classOptions.map(option => (
                                         <option key={option.value} value={option.value}>{option.label}</option>
@@ -241,7 +255,8 @@ const ClassFee = ({ setShowFees }) => {
                     
                     <div className="flex justify-end mt-4 gap-4">
                         <button type="button" onClick={saveFees} className="px-4 py-2 text-white bg-green-600 rounded-lg">Save Fees</button>
-                        <button type="button" onClick={() => setShowFees(false)} className="px-4 py-2 text-white border-red-500 border-2 rounded-lg hover:bg-red-500">Cancel</button>
+                        <button type="button" onClick={nextPage} className="px-4 py-2 text-white bg-green-600 rounded-lg">Next Page</button>      
+                        <button type="button" onClick={() => setShowFees(false)} className="px-4 py-2 text-white border-red-500 border-2 rounded-lg hover:bg-red-500">Previous</button>
                     </div>
                 </form>
 
@@ -266,6 +281,8 @@ const ClassFee = ({ setShowFees }) => {
                     )}
                 </div>
             </div>
+            {showValidationScreen && <ValidationScreen classSections={classSections}
+             savedFees={savedFees} setShowValidationScreen={setShowValidationScreen} closeAll={closeAll}/>}
         </div>
     );
 };

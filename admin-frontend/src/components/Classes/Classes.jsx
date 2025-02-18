@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import ClassForm from "./ClassForm";
 import axios from "axios";
 import API_ENDPOINTS from "../../API/apiEndpoints";
-import ListTable from "../List/ListTable"; // Assuming ListTable is in the same folder
+import ListTable from "../List/ListTable";
 import EditClass from "./EditClass";
 import CheckFees from "./CheckFees";
 
