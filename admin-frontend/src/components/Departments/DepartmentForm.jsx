@@ -103,7 +103,7 @@ const DepartmentForm = ({ onClose, refreshDepartments,showCoursePage }) => {
                     <button
                         type="button"
                         onClick={addDepartment}
-                        className="w-full px-4 py-2 mb-4 text-white bg-blue-600 rounded-lg hover:bg-blue-500"
+                        className="w-full px-4 py-2 mb-4 text-white bg-green-600 rounded-lg bg-linear-blue "
                     >
                         Add Department
                     </button>

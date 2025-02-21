@@ -128,13 +128,13 @@ const CourseForm = ({ closeCoursePage,openFeesPage }) => {
                     <button
                         type="button"
                         onClick={handleAddCourse}
-                        className="w-full px-4 py-2 mb-4 text-white bg-blue-600 rounded-lg hover:bg-blue-500"
+                        className="w-full px-4 py-2 mb-4 text-white bg-blue-600 rounded-lg bg-linear-blue"
                     >
                         Add Course
                     </button>
                     {courses.length > 0 && (
                         <div className="mb-4 p-3 bg-gray-700 rounded-md text-white">
-                            <label className="block text-sm font-medium">Added Courses:</label>
+                            <label className="block text-sm font-medium ">Added Courses:</label>
                             <ul className="mt-2 space-y-2">
                                 {courses.map((course, index) => (
                                     <li key={index} className="p-2 bg-gray-600 rounded-md">

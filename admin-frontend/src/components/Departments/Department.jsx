@@ -29,7 +29,7 @@ const Departments = () => {
       setDepartments(response.data.data);
     } catch (error) {
       console.error("Error fetching department options:", error.response?.data || error.message);
-      alert("Failed to fetch department data. Please try again.");
+      alert("Session expired. Please log in again.");
     }
   }, [token]);
 
@@ -87,7 +87,7 @@ const Departments = () => {
   const closeAllPages = () =>{
     setShowCourse(false);
     setOpenForm(false);
-    setShowCourse(true);
+    setShowFeesPage(false)
   }
   
   const showCourseData = async(departmentId)=>{
