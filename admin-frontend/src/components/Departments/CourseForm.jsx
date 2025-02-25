@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import API_ENDPOINTS from "../../API/apiEndpoints";
 
-const CourseForm = ({ closeCoursePage,openFeesPage }) => {
+const CourseForm = ({ closeCoursePage, openFeesPage }) => {
     useEffect(() => {
         document.body.style.overflow = "hidden";
         fetchDepartments();
@@ -13,11 +13,13 @@ const CourseForm = ({ closeCoursePage,openFeesPage }) => {
 
     const [courses, setCourses] = useState([]);
     const [courseInput, setCourseInput] = useState("");
+    const [courseCodeInput, setCourseCodeInput] = useState("");
     const [durationInput, setDurationInput] = useState("");
     const [semestersInput, setSemestersInput] = useState("");
     const [specializationInput, setSpecializationInput] = useState("");
     const [departments, setDepartments] = useState([]);
     const [selectedDepartment, setSelectedDepartment] = useState("");
+    const [courseAdded, setCourseAdded] = useState(false);
     const userData = JSON.parse(localStorage.getItem("userData"));
     const token = userData?.token;
 
@@ -33,30 +35,33 @@ const CourseForm = ({ closeCoursePage,openFeesPage }) => {
     };
 
     const handleAddCourse = async () => {
-        if (!courseInput.trim() || !durationInput.trim() || !semestersInput.trim() || !selectedDepartment) {
+        if (!courseInput.trim() || !courseCodeInput.trim() || !durationInput.trim() || !semestersInput.trim() || !selectedDepartment) {
             return alert("Please fill in all required fields.");
         }
 
         const newCourse = {
             name: courseInput.trim(),
+            code: courseCodeInput.trim(),
             duration: parseInt(durationInput.trim()),
             numberOfSemesters: parseInt(semestersInput.trim()),
-            specialization: specializationInput.trim(),
+            specialization: specializationInput.trim() || null,
             departmentId: selectedDepartment,
             semesters: Array.from({ length: parseInt(semestersInput.trim()) }, (_, i) => ({ name: `Sem ${i + 1}` }))
         };
         try {
-          const response =  await axios.post(`${API_ENDPOINTS.SUBMIT_COURSES}/${selectedDepartment}/register`, { courses: [newCourse] }, {
+            const response = await axios.post(`${API_ENDPOINTS.SUBMIT_COURSES}/${selectedDepartment}/register`, { courses: [...courses, newCourse] }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log(response.data.data)
-            localStorage.setItem("courseId",response.data.data.courses[0].courseId)
+            console.log(response.data.data);
+            localStorage.setItem("courseId", response.data.data.courses[0].courseId);
             setCourses([...courses, newCourse]);
             setCourseInput("");
+            setCourseCodeInput("");
             setDurationInput("");
             setSemestersInput("");
             setSpecializationInput("");
             setSelectedDepartment("");
+            setCourseAdded(true);
         } catch (error) {
             console.error("Error adding course:", error);
         }
@@ -78,6 +83,16 @@ const CourseForm = ({ closeCoursePage,openFeesPage }) => {
                             onChange={(e) => setCourseInput(e.target.value)}
                             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none sm:text-sm"
                             placeholder="Enter course name"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label className="block text-sm font-medium text-white">Course Code:</label>
+                        <input
+                            type="text"
+                            value={courseCodeInput}
+                            onChange={(e) => setCourseCodeInput(e.target.value)}
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none sm:text-sm"
+                            placeholder="Enter course code"
                         />
                     </div>
                     <div className="mb-4">
@@ -125,40 +140,25 @@ const CourseForm = ({ closeCoursePage,openFeesPage }) => {
                             ))}
                         </select>
                     </div>
-                    <button
-                        type="button"
-                        onClick={handleAddCourse}
-                        className="w-full px-4 py-2 mb-4 text-white bg-blue-600 rounded-lg bg-linear-blue"
-                    >
-                        Add Course
-                    </button>
-                    {courses.length > 0 && (
-                        <div className="mb-4 p-3 bg-gray-700 rounded-md text-white">
-                            <label className="block text-sm font-medium ">Added Courses:</label>
-                            <ul className="mt-2 space-y-2">
-                                {courses.map((course, index) => (
-                                    <li key={index} className="p-2 bg-gray-600 rounded-md">
-                                        {course.name} - {course.duration} Years ({course.numberOfSemesters} Semesters) - {course.specialization || "No Specialization"} - {departments.find(d => d.departmentId === course.departmentId)?.name}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
+                    {!courseAdded && (
+                        <button
+                            type="button"
+                            onClick={handleAddCourse}
+                            className="w-full px-4 py-2 mb-4 text-white bg-blue-600 rounded-lg bg-linear-blue"
+                        >
+                            Add Course
+                        </button>
                     )}
+                    <div className="mb-4 text-white">
+                        {courses.map((course, index) => (
+                            <div key={index} className="p-2 bg-gray-700 rounded-md mb-2">
+                                {course.name} ({course.code})
+                            </div>
+                        ))}
+                    </div>
                     <div className="flex justify-end items-center mt-4 gap-4">
-                        <button
-                            className="px-4 py-2 w-1/2 text-white bg-red-600 rounded-lg hover:bg-red-500"
-                            type="button"
-                           onClick={closeCoursePage}
-                        >
-                            Previous
-                        </button>
-                        <button
-                            className="px-4 py-2 w-1/2 text-white bg-green-600 rounded-lg"
-                            type="button"
-                            onClick={handleSubmit}
-                        >
-                            Next
-                        </button>
+                        <button className="px-4 py-2 w-1/2 text-white bg-red-600 rounded-lg hover:bg-red-500" type="button" onClick={closeCoursePage}>Previous</button>
+                        <button className="px-4 py-2 w-1/2 text-white bg-green-600 rounded-lg" type="button" onClick={handleSubmit}>Next</button>
                     </div>
                 </form>
             </div>

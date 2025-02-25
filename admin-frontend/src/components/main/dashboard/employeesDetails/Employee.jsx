@@ -8,7 +8,7 @@ import EmployeeAddForm from "../../../Forms/EmployeeAddForm";
 import API_ENDPOINTS from "../../../../API/apiEndpoints";
 import axios from "axios";
 import { ContentSkeleton } from "../../../Skeleton/ContentSkeleton";
-
+import CreateEmployee from '../../../Employees/CreateEmployee'
 const Employee = () => {
 	const [teachers, setTeachers] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
@@ -18,7 +18,8 @@ const Employee = () => {
 	const [isEditing, setIsEditing] = useState(false);
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 	const dropdownRef = useRef(null);
-
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    const token = userData?.token;
 	const defaultMalePhoto =
 		"https://res.cloudinary.com/duyau9qkl/image/upload/v1717910208/images/w7y88n61dxedxzewwzpn.png";
 	const defaultFemalePhoto =
@@ -40,7 +41,9 @@ const Employee = () => {
 
 	const fetchTeachers = async () => {
 		try {
-			const response = await fetch(API_ENDPOINTS.FETCH_ALL_TEACHERS);
+			const response = await fetch(API_ENDPOINTS.FETCH_ALL_TEACHERS ,
+				{headers: { Authorization: `Bearer ${token}` }}
+			);
 			if (!response.ok) throw new Error("Network response was not ok");
 			const data = await response.json();
 
@@ -281,65 +284,8 @@ const Employee = () => {
 													className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 												/>
 											</div>
-											<div className="my-2">
-												<label
-													className="block text-gray-700 text-sm font-bold mb-2"
-													htmlFor="gender"
-												>
-													Gender:
-												</label>
-												<input
-													type="text"
-													name="gender"
-													value={selectedProfile.gender}
-													onChange={handleChange}
-													className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-												/>
-											</div>
-											<div className="my-2">
-												<label
-													className="block text-gray-700 text-sm font-bold mb-2"
-													htmlFor="dob"
-												>
-													Date Of Birth:
-												</label>
-												<input
-													type="text"
-													name="dob"
-													value={selectedProfile.dob}
-													onChange={handleChange}
-													className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-												/>
-											</div>
-											<div className="my-2">
-												<label
-													className="block text-gray-700 text-sm font-bold mb-2"
-													htmlFor="contactNumber"
-												>
-													Contact Number:
-												</label>
-												<input
-													type="number"
-													name="contactNumber"
-													value={selectedProfile.contactNumber}
-													onChange={handleChange}
-													className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-												/>
-											</div>
-											<div className="my-2">
-												<label
-													className="block text-gray-700 text-sm font-bold mb-2"
-													htmlFor="photo"
-												>
-													Profile Photo:
-												</label>
-												<input
-													type="file"
-													name="photo"
-													onChange={handlePhotoChange}
-													className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-												/>
-											</div>
+										
+								
 											<button
 												onClick={handleSaveProfile}
 												className="bg-emerald-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
@@ -399,7 +345,10 @@ const Employee = () => {
 						setModalOpen={setFormModalOpen}
 						responsiveWidth={"md:w-fit"}
 					>
-						<EmployeeAddForm onEmployeeAdded={handleEmployeeAdded} />
+						{formModalOpen && 
+						<CreateEmployee setFormModalOpen={setFormModalOpen}/>
+}
+						{/* <EmployeeAddForm onEmployeeAdded={handleEmployeeAdded} /> */}
 					</Modal>
 				</div>
 			)}

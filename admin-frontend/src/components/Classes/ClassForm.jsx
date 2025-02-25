@@ -140,7 +140,7 @@ const ClassForm = ({ onClose, errorMessage,refreshClasses }) => {
                     <button
                         type="button"
                         onClick={addClassWithSections}
-                        className="w-full px-4 py-2 mb-4 text-white bg-blue-600 rounded-lg hover:bg-blue-500"
+                        className="w-full px-4 py-2 mb-4 text-white bg-linear-blue rounded-lg hover:bg-blue-500"
                     >
                         Add Class & Sections
                     </button>

@@ -9,7 +9,8 @@ const Employees = () => {
 	const navigate = useNavigate();
 	const [leaves, setLeaves] = useState([]);
 	const [teachers, setTeachers] = useState({});
-
+	const userData = JSON.parse(localStorage.getItem("userData"));
+    const token = userData?.token;
 	const defaultMalePhoto =
 		"https://res.cloudinary.com/duyau9qkl/image/upload/v1717910208/images/w7y88n61dxedxzewwzpn.png";
 	const defaultFemalePhoto =
@@ -87,7 +88,9 @@ const Employees = () => {
 
 	const fetchTeachers = async () => {
 		try {
-			const response = await axios.get(API_ENDPOINTS.FETCH_ALL_TEACHERS);
+			const response = await axios.get(API_ENDPOINTS.FETCH_ALL_TEACHERS,
+					{headers: { Authorization: `Bearer ${token}` }}
+			);
 			const teachersData = response.data.data || [];
 			const teachersObj = teachersData.reduce((acc, teacher) => {
 				acc[teacher.id] = teacher;
@@ -121,6 +124,7 @@ const Employees = () => {
 				</div>
 			</div>
 			<Employee />
+		
 		</>
 	);
 };

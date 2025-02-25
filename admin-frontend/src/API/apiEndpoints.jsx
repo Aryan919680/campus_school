@@ -40,32 +40,32 @@ waitForUserData((campusId) => {
     console.error("User data not found");
   }
 });
- 
+
 const API_ENDPOINTS = {
   // verify otp
   VERIFY_OTP: (roleId) =>
     `${import.meta.env.VITE_BASE_URL}/api/v1/admin/verify-email/${roleId}`,
 
- 
+
   //campus
   FECTH_CAMPUS_BY_ID: (campusId) =>
     `${import.meta.env.VITE_BASE_URL}/api/v1/campus/fetch-campus/${campusId}`,
   UPDATE_CAMPUS: `${import.meta.env.VITE_BASE_URL}/api/v1/campus/update-campus`,
 
-   //create class
-  CREATE_CLASS : `${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${getCampusId()}`,
-  FETCH_CLASS : `${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${getCampusId()}`,
-  DELETE_CLASS:`${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${getCampusId()}`,
-  FETCH_FEES:`${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${getCampusId()}`,
- // CREATE_FEES : `${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${campusIdTest}/${}/fees`
+  //create class
+  CREATE_CLASS: `${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${getCampusId()}`,
+  FETCH_CLASS: `${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${getCampusId()}`,
+  DELETE_CLASS: `${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${getCampusId()}`,
+  FETCH_FEES: `${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${getCampusId()}`,
+  // CREATE_FEES : `${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${campusIdTest}/${}/fees`
 
- //DEPARTMENT
- CREATE_DEPARTMENT :`${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${getCampusId()}/register`,
- GET_DEPARTMENTS: `${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${getCampusId()}`,
- DELETE_DEPARTMENT: `${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${getCampusId()}`,
- SUBMIT_COURSES: `${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${getCampusId()}/department`,
- GET_COURSES_OF_DEPARTMENT: `${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${getCampusId()}/department`,
- SUBMIT_FEES: `${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${getCampusId()}`,
+  //DEPARTMENT
+  CREATE_DEPARTMENT: `${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${getCampusId()}/register`,
+  GET_DEPARTMENTS: `${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${getCampusId()}`,
+  DELETE_DEPARTMENT: `${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${getCampusId()}`,
+  SUBMIT_COURSES: `${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${getCampusId()}/department`,
+  GET_COURSES_OF_DEPARTMENT: `${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${getCampusId()}/department`,
+  SUBMIT_FEES: `${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${getCampusId()}`,
   // Onboarding
   CREATE_CAMPUS: `${import.meta.env.VITE_BASE_URL}/api/v1/campus/register`,
   CREATE_BRANCH: `${import.meta.env.VITE_BASE_URL}/api/v1/campus/reg/branch`,
@@ -75,83 +75,69 @@ const API_ENDPOINTS = {
   CREATE_ADMIN: `${import.meta.env.VITE_BASE_URL}/api/v1/admin/reg`,
   VERIFY_EMAIL: `${import.meta.env.VITE_BASE_URL}/api/v1/admin/verify-email/1`,
   ADMIN_LOGIN: `${import.meta.env.VITE_BASE_URL}/api/v1/admin/login`,
+
   UPDATE_ADMIN: (userId) =>
     `${import.meta.env.VITE_BASE_URL}/api/v1/admin/${userId}`,
   FETCH_ADMIN_BY_ID: (userId) =>
     `${import.meta.env.VITE_BASE_URL}/api/v1/admin/${userId}`,
   FETCH_ALL_ADMIN: `${import.meta.env.VITE_BASE_URL}/api/v1/admin`,
-  ADMIN_FORGOT_PASSWORD: `${
-    import.meta.env.VITE_BASE_URL
-  }/api/v1/admin/forget-password`,
+  ADMIN_FORGOT_PASSWORD: `${import.meta.env.VITE_BASE_URL
+    }/api/v1/admin/forget-password`,
   ADMIN_RESET_PASSWORD: (userId, token) =>
-    `${
-      import.meta.env.VITE_BASE_URL
+    `${import.meta.env.VITE_BASE_URL
     }/api/v1/admin/reset-password/${token}/${userId}`,
   ADMIN_LOGOUT: `${import.meta.env.VITE_BASE_URL}/api/v1/admin/logout`,
   DELETE_ADMIN: (userId) =>
     `${import.meta.env.VITE_BASE_URL}/api/v1/admin/${userId}`,
   // EMPLOYEE/TEACHERS
-  REGISTER_TEACHER: `${
-    import.meta.env.VITE_BASE_URL
-  }/api/v1/teacher/${userId}/reg`,
-  FETCH_ALL_TEACHERS: `${
-    import.meta.env.VITE_BASE_URL
-  }/api/v1/teacher/${userId}/fetchAll`,
+//  60002bf9-7e65-49a5-9d2c-ce5ddd291337
+REGISTER_EMPLOYEES :`${import.meta.env.VITE_BASE_URL}/api/v1/employee/campus/${getCampusId()}/register`,
+  REGISTER_TEACHER: `${import.meta.env.VITE_BASE_URL
+    }/api/v1/teacher/${userId}/reg`,
+  FETCH_ALL_TEACHERS: `${import.meta.env.VITE_BASE_URL
+    }/api/v1/employee/campus/${getCampusId()}`,
   FETCH_TEACHERS: (teacherId) =>
-    `${
-      import.meta.env.VITE_BASE_URL
+    `${import.meta.env.VITE_BASE_URL
     }/api/v1/teacher/${userId}/fetch/${teacherId}`,
   UPDATE_TEACHERS: (id) =>
     `${import.meta.env.VITE_BASE_URL}/api/v1/teacher/${userId}/update/${id}`,
   DELETE_TEACHERS: (id) =>
     `${import.meta.env.VITE_BASE_URL}/api/v1/teacher/${userId}/delete/${id}`,
-  DELETE_ALL_TEACHERS: `${
-    import.meta.env.VITE_BASE_URL
-  }/api/v1/teacher/${userId}/deleteAllTeacher`,
+  DELETE_ALL_TEACHERS: `${import.meta.env.VITE_BASE_URL
+    }/api/v1/teacher/${userId}/deleteAllTeacher`,
   LOGIN_TEACHERS: `${import.meta.env.VITE_BASE_URL}/api/v1/teacher/login`,
   // ATTENDANCE
   MARK_FACULTY_TEACHERS: (userId) =>
-    `${
-      import.meta.env.VITE_BASE_URL
+    `${import.meta.env.VITE_BASE_URL
     }/api/v1/attendance/markFacultyAttendance/${userId}`,
   FACULTY_ATTENDANCE_DATE: (userId, date) =>
-    `${
-      import.meta.env.VITE_BASE_URL
+    `${import.meta.env.VITE_BASE_URL
     }/api/v1/attendance/fetchFacultyAttendance/${userId}/${date}`,
   FACULTY_ATTENDANCE_BY_DATE_ID: (date, id) =>
-    `${
-      import.meta.env.VITE_BASE_URL
+    `${import.meta.env.VITE_BASE_URL
     }/api/v1/attendance/faculty-attendanceById/${date}/${id}`,
   UPDATE_ATTENDANCE: (userId) =>
-    `${
-      import.meta.env.VITE_BASE_URL
+    `${import.meta.env.VITE_BASE_URL
     }/api/v1/attendance/updateFacultyAttendance/${userId}`,
   SELECTED_DATE_ATTENDANCE: (userId) =>
-    `${
-      import.meta.env.VITE_BASE_URL
+    `${import.meta.env.VITE_BASE_URL
     }/api/v1/attendance/getAttendenceByDate/${userId}`,
   // STUDENTS
-  REGISTER_STUDENTS: `${
-    import.meta.env.VITE_BASE_URL
-  }/api/v1/student/${userId}/reg`,
+  REGISTER_STUDENTS: `${import.meta.env.VITE_BASE_URL
+    }/api/v1/student/${userId}/reg`,
   FETCH_STUDENT: (studentID) =>
-    `${
-      import.meta.env.VITE_BASE_URL
+    `${import.meta.env.VITE_BASE_URL
     }/api/v1/student/${userId}/fetch/${studentID}`,
-  FETCH_ALL_STUDENTS: `${
-    import.meta.env.VITE_BASE_URL
-  }/api/v1/student/${userId}/fetchAll`,
+  FETCH_ALL_STUDENTS: `${import.meta.env.VITE_BASE_URL
+    }/api/v1/student/${userId}/fetchAll`,
   UPDATE_STUDENTS: (eventId) =>
-    `${
-      import.meta.env.VITE_BASE_URL
+    `${import.meta.env.VITE_BASE_URL
     }/api/v1/student/${userId}/update/${eventId}`,
   DELETE_STUDENTS: (eventId) =>
-    `${
-      import.meta.env.VITE_BASE_URL
+    `${import.meta.env.VITE_BASE_URL
     }/api/v1/student/${userId}/deleteStudent/${eventId}`,
-  DELETE_ALL_STUDENTSS: `${
-    import.meta.env.VITE_BASE_URL
-  }/api/v1/student/${userId}/deleteAllStudent`,
+  DELETE_ALL_STUDENTSS: `${import.meta.env.VITE_BASE_URL
+    }/api/v1/student/${userId}/deleteAllStudent`,
   LOGIN_STUDENTS: `${import.meta.env.VITE_BASE_URL}/api/v1/student/login`,
   // SUBJECTS
   CREATE_SUBJECT: (departmentId) =>
@@ -178,27 +164,22 @@ const API_ENDPOINTS = {
     `${import.meta.env.VITE_BASE_URL}/api/v1/event/delete-event/${eventId}`,
   // LEAVE
   APPLY_LEAVE: `${import.meta.env.VITE_BASE_URL}/api/v1/Leave/apply-leave`,
-  FETCH_ALL_LEAVES_TEACHER_ID: `${
-    import.meta.env.VITE_BASE_URL
-  }/api/v1/leave/fetch-leaves/`,
-  FETCH_ALL_PENDING_LEAVES: `${
-    import.meta.env.VITE_BASE_URL
-  }/api/v1/leave/pending-leaves`,
+  FETCH_ALL_LEAVES_TEACHER_ID: `${import.meta.env.VITE_BASE_URL
+    }/api/v1/leave/fetch-leaves/`,
+  FETCH_ALL_PENDING_LEAVES: `${import.meta.env.VITE_BASE_URL
+    }/api/v1/leave/pending-leaves`,
   UPDATE_LEAVES: (teacherId, action) =>
-    `${
-      import.meta.env.VITE_BASE_URL
+    `${import.meta.env.VITE_BASE_URL
     }/api/v1/leave/change-status/${teacherId}/${action}`,
   // DEPARTMENT
-  CREATE_DEPARTMENTS: `${
-    import.meta.env.VITE_BASE_URL
-  }/api/v1/department/${userId}/reg`,
+  CREATE_DEPARTMENTS: `${import.meta.env.VITE_BASE_URL
+    }/api/v1/department/${userId}/reg`,
   UPDATE_DEPARTMENTS: (departmentId) =>
     `${import.meta.env.VITE_BASE_URL}/api/v1/department/update/${departmentId}`,
   // DELETE_DEPARTMENT: (departmentId) =>
   //   `${import.meta.env.VITE_BASE_URL}/api/v1/department/delete/${departmentId}`,
-  FETCH_ALL_DEPARTMENTS: `${
-    import.meta.env.VITE_BASE_URL
-  }/api/v1/department/fetchAll/${userId}`,
+  FETCH_ALL_DEPARTMENTS: `${import.meta.env.VITE_BASE_URL
+    }/api/v1/department/fetchAll/${userId}`,
   FETCH_DEPARTMENTS: (departmentId) =>
     `${import.meta.env.VITE_BASE_URL}/api/v1/department/fetch/${departmentId}`,
   //SUPPORT
@@ -209,8 +190,7 @@ const API_ENDPOINTS = {
   FETCH_PAYMENT_DETAILS: (studentID) =>
     `${import.meta.env.VITE_BASE_URL}/api/v1/payment/status/${studentID}`,
   UPDATE_PAYMENT_DETAILS: (paymentid, studentID) =>
-    `${
-      import.meta.env.VITE_BASE_URL
+    `${import.meta.env.VITE_BASE_URL
     }/api/v1/payment/create/${paymentid}/${studentID}`,
 };
 

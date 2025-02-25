@@ -28,14 +28,17 @@ const EmployeeAddForm = ({ onEmployeeAdded }) => {
 	const [photoLoading, setPhotoLoading] = useState(false);
 	const [departments, setDepartments] = useState([]);
 	const [isCurrentAddressSame, setIsCurrentAddressSame] = useState(false);
-
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    const token = userData?.token;
 	useEffect(() => {
 		document.documentElement.classList.add("no-scroll");
 		document.body.classList.add("no-scroll");
 
 		const fetchDepartments = async () => {
 			try {
-				const response = await axios.get(API_ENDPOINTS.FETCH_ALL_DEPARTMENTS);
+				const response = await axios.get(API_ENDPOINTS.GET_DEPARTMENTS,
+					{headers: { Authorization: `Bearer ${token}` }}
+				);
 				setDepartments(response.data.data);
 			} catch (error) {
 				console.error("Error fetching departments:", error);
@@ -119,37 +122,6 @@ const EmployeeAddForm = ({ onEmployeeAdded }) => {
 		}
 	};
 
-	const handlePhotoUpload = async (e) => {
-		setPhotoLoading(true);
-		const file = e.target.files[0];
-		const photoFormData = new FormData();
-		photoFormData.append("file", file);
-		photoFormData.append(
-			"upload_preset",
-			import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
-		);
-
-		try {
-			const response = await axios.post(
-				`https://api.cloudinary.com/v1_1/${
-					import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
-				}/image/upload`,
-				photoFormData
-			);
-			setFormData((prevData) => ({
-				...prevData,
-				photo: response.data.secure_url,
-			}));
-		} catch (error) {
-			console.error(
-				"Error uploading photo:",
-				error.response?.data || error.message
-			);
-		} finally {
-			setPhotoLoading(false);
-		}
-	};
-
 	const handleCheckboxChange = () => {
 		setIsCurrentAddressSame((prev) => !prev);
 		setFormData((prevData) => ({
@@ -163,50 +135,51 @@ const EmployeeAddForm = ({ onEmployeeAdded }) => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		if (!validateForm()) return;
-
+	//	if (!validateForm()) return;
+	
 		setLoading(true);
 		setError(null);
-
-		const selectedDepartment = departments.find(
-			(dept) => dept.name === formData.departmentName
-		);
-
+	
 		try {
-			let response;
-			if (formData.employeeType === "Faculty") {
-				response = await axios.post(
-					API_ENDPOINTS.REGISTER_TEACHER,
+			const payload = {
+				employees: [
 					{
-						...formData,
-						departmentId: selectedDepartment ? selectedDepartment.id : null,
-					},
-					{
-						headers: {
-							Authorization: `Bearer ${import.meta.env.VITE_API_KEY}`,
+						name: formData.name,
+						email: formData.email,
+						role: formData.role,
+						extraDetails: {
+							
+							gender: formData.gender,
+							dob: formData.dob,
+							contactNumber: formData.contactNumber,
+							permanent_address: formData.permanent_address,
+							currentAddress: formData.currentAddress,
+							departmentName: formData.departmentName,
 						},
-					}
-				);
-			} else {
-				// TODO: Implement API endpoint for registering other employee types
-				console.warn(
-					"API for registering other employee types is not implemented yet"
-				);
-				// Placeholder for when the API is implemented:
-				// response = await axios.post(API_ENDPOINTS.REGISTER_OTHER_EMPLOYEE, formData);
-			}
+					},
+				],
+			};
+	
+			const response = await axios.post(
+				API_ENDPOINTS.REGISTER_EMPLOYEES, // Ensure correct API endpoint
+				payload,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			);
+	
 			console.log("Response:", response?.data);
 			onEmployeeAdded();
 		} catch (error) {
-			console.error(
-				"Error:",
-				error.response?.data?.message || "An error occurred"
-			);
+			console.error("Error:", error.response?.data?.message || "An error occurred");
 			setError(error.response?.data?.message || "An error occurred");
 		} finally {
 			setLoading(false);
 		}
 	};
+	
 
 	return (
 		<form
@@ -214,7 +187,7 @@ const EmployeeAddForm = ({ onEmployeeAdded }) => {
 			className="max-w-lg mx-auto p-4 bg-white rounded shadow"
 		>
 			<div className="flex justify-center mb-4">
-				{["Faculty", "Other"].map((type) => (
+				{["Faculty"].map((type) => (
 					<button
 						key={type}
 						type="button"
@@ -244,40 +217,7 @@ const EmployeeAddForm = ({ onEmployeeAdded }) => {
 				<p className="text-red-500 text-xs">{errors.otherType}</p>
 			)}
 			<div className="flex gap-4 justify-between items-center">
-				<div>
-					{formData.photo ? (
-						<img
-							src={formData.photo}
-							alt="Employee Photo"
-							className="w-24 h-24 rounded-full object-cover cursor-pointer"
-							onClick={() => document.getElementById("photoUpload").click()}
-						/>
-					) : (
-						<div
-							className="w-24 h-24 rounded-full bg-[url('https://res.cloudinary.com/duyau9qkl/image/upload/v1717910208/images/w7y88n61dxedxzewwzpn.png')] bg-cover flex items-center justify-center cursor-pointer relative"
-							onClick={() => document.getElementById("photoUpload").click()}
-						>
-							{photoLoading ? (
-								<p>Uploading...</p>
-							) : (
-								<span className="text-xs p-1 rounded-full absolute right-0 bottom-0 bg-gray-200">
-									<Icon
-										icon="majesticons:camera"
-										className="h-6 w-6 flex-shrink-0"
-									/>
-								</span>
-							)}
-						</div>
-					)}
-					<input
-						type="file"
-						id="photoUpload"
-						className="hidden"
-						onChange={handlePhotoUpload}
-						accept="image/*"
-						disabled={photoLoading}
-					/>
-				</div>
+			
 				<div className="flex-1">
 					<FloatingInput
 						type="text"
@@ -289,15 +229,7 @@ const EmployeeAddForm = ({ onEmployeeAdded }) => {
 					/>
 					{errors.name && <p className="text-red-500 text-xs">{errors.name}</p>}
 
-					<FloatingInput
-						type="date"
-						id="dob"
-						formTitle="Date of Birth"
-						value={formData.dob}
-						handleChange={handleChange}
-						formName="dob"
-					/>
-					{errors.dob && <p className="text-red-500 text-xs">{errors.dob}</p>}
+				
 				</div>
 			</div>
 			<div className="flex gap-2">

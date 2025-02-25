@@ -82,12 +82,13 @@ const Layout = ({ logout }) => {
 						<Routes>
 								<Route path="/" element={<Departments />} />
 							<Route path="/department" element={<Departments />} />
+							<Route path="/employees" element={<Employees />} />
 						{/* <Route path="/" element={<Dashboard />} />
-						<Route path="/employees" element={<Employees />} /> */}
+						
 						{/* <Route path='/classes' element={<Classes />} /> */}
 					
-						{/* <Route path="/students" element={<Students />} />
-						<Route path="/finance/*" element={<Finance />}>
+						<Route path="/students" element={<Students />} />
+					{/* 	<Route path="/finance/*" element={<Finance />}>
 							<Route path="summary" element={<Summary />} />
 							<Route path="transactions" element={<Transactions />} />
 							<Route path="student-fees" element={<StudentFees />} />

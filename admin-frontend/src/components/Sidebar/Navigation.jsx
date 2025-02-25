@@ -273,19 +273,21 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 					isSidebarExpanded={isSidebarExpanded}
 				/>
 				
-				{/* <NavItems
+				<NavItems
 					to="/Employees"
 					icon="clarity:employee-group-solid"
 					title="Employees"
 					isSidebarExpanded={isSidebarExpanded}
 				/>
-				<NavItems
+
+				 <NavItems
 					to="/Students"
 					icon="solar:square-academic-cap-bold"
 					title="Students"
 					isSidebarExpanded={isSidebarExpanded}
 				/>
-				<NavItems
+
+				{/*<NavItems
 					to="/Finance"
 					icon="material-symbols:finance-mode-rounded"
 					title="Finance"

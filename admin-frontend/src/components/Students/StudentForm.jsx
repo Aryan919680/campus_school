@@ -26,11 +26,15 @@ const StudentForm = ({ isOpen, onClose, onStudentAdd }) => {
 	const [formErrors, setFormErrors] = useState({});
 	const [photoLoading, setPhotoLoading] = useState(false);
 	const [departments, setDepartments] = useState([]);
-
+	const userData = JSON.parse(localStorage.getItem("userData"));
+	const token = userData?.token;
+  
 	useEffect(() => {
 		const fetchDepartments = async () => {
 			try {
-				const response = await axios.get(API_ENDPOINTS.FETCH_ALL_DEPARTMENTS);
+				const response = await axios.get(API_ENDPOINTS.GET_DEPARTMENTS,
+					{headers: { Authorization: `Bearer ${token}` }}
+				);
 				if (Array.isArray(response.data.data)) {
 					setDepartments(response.data.data);
 				} else {
@@ -54,36 +58,7 @@ const StudentForm = ({ isOpen, onClose, onStudentAdd }) => {
 		}));
 	};
 
-	const handlePhotoUpload = async (e) => {
-		setPhotoLoading(true);
-		const file = e.target.files[0];
-		const photoFormData = new FormData();
-		photoFormData.append("file", file);
-		photoFormData.append(
-			"upload_preset",
-			import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
-		);
-
-		try {
-			const response = await axios.post(
-				`https://api.cloudinary.com/v1_1/${
-					import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
-				}/image/upload`,
-				photoFormData
-			);
-			setFormData((prevData) => ({
-				...prevData,
-				photo: response.data.secure_url,
-			}));
-		} catch (error) {
-			console.error(
-				"Error uploading photo:",
-				error.response?.data || error.message
-			);
-		} finally {
-			setPhotoLoading(false);
-		}
-	};
+	
 
 	const validateForm = () => {
 		const errors = {};
@@ -110,33 +85,89 @@ const StudentForm = ({ isOpen, onClose, onStudentAdd }) => {
 		return Object.keys(errors).length === 0;
 	};
 
+	// const handleSubmit = async (e) => {
+	// 	e.preventDefault();
+	// 	if (!validateForm()) {
+	// 		return;
+	// 	}
+
+	// 	const selectedDepartment = departments.find(
+	// 		(dept) => dept.name === formData.departmentName
+	// 	);
+
+	// 	try {
+	// 		const response = await fetch(API_ENDPOINTS.REGISTER_STUDENTS, {
+	// 			method: "POST",
+	// 			headers: {
+	// 				"Content-Type": "application/json",
+	// 			},
+	// 			body: JSON.stringify({
+	// 				...formData,
+	// 				rollNo: parseInt(formData.rollNo),
+	// 				departmentId: selectedDepartment ? selectedDepartment.id : null,
+	// 			}),
+	// 		});
+	// 		if (!response.ok) {
+	// 			const errorData = await response.json();
+	// 			console.error("Error response:", errorData);
+	// 			throw new Error("Network response was not ok");
+	// 		}
+	// 		const data = await response.json();
+	// 		onStudentAdd(data.data);
+	// 		onClose();
+	// 	} catch (error) {
+	// 		console.error("Error:", error);
+	// 	}
+	// };
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		if (!validateForm()) {
 			return;
 		}
-
+	
 		const selectedDepartment = departments.find(
 			(dept) => dept.name === formData.departmentName
 		);
-
+	
+		const payload = {
+			students: [
+				{
+					name: formData.name,
+					gender: formData.gender.toUpperCase(), // Convert to expected format
+					email: formData.email,
+					semesterId: "ad69c1ef-93bf-4631-9e02-1dd13c5896fd", // Replace with actual semesterId
+					extraDetails: {
+						rollNo: formData.rollNo,
+						dob: formData.dob,
+						contactNumber: formData.contactNumber,
+						departmentId: selectedDepartment ? selectedDepartment.id : null,
+						permanent_address: formData.permanent_address,
+						currentAddress: formData.currentAddress,
+						fatherName: formData.fatherName,
+						motherName: formData.motherName,
+						fatherContactNumber: formData.fatherContactNumber,
+						photo: formData.photo,
+					}
+				}
+			]
+		};
+	
 		try {
 			const response = await fetch(API_ENDPOINTS.REGISTER_STUDENTS, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({
-					...formData,
-					rollNo: parseInt(formData.rollNo),
-					departmentId: selectedDepartment ? selectedDepartment.id : null,
-				}),
+				body: JSON.stringify(payload),
 			});
+	
 			if (!response.ok) {
 				const errorData = await response.json();
 				console.error("Error response:", errorData);
 				throw new Error("Network response was not ok");
 			}
+	
 			const data = await response.json();
 			onStudentAdd(data.data);
 			onClose();
@@ -144,7 +175,7 @@ const StudentForm = ({ isOpen, onClose, onStudentAdd }) => {
 			console.error("Error:", error);
 		}
 	};
-
+	
 	return (
 		<Modal
 			modalOpen={isOpen}
@@ -154,40 +185,7 @@ const StudentForm = ({ isOpen, onClose, onStudentAdd }) => {
 		>
 			<form onSubmit={handleSubmit} className="w-96">
 				<div className="flex gap-4 justify-between items-center">
-					<div className="">
-						{formData.photo ? (
-							<img
-								src={formData.photo}
-								alt="Student Photo"
-								className="w-24 h-24 rounded-full object-cover cursor-pointer"
-								onClick={() => document.getElementById("photoUpload").click()}
-							/>
-						) : (
-							<div
-								className="w-24 h-24 rounded-full bg-[url('https://res.cloudinary.com/duyau9qkl/image/upload/v1717910208/images/w7y88n61dxedxzewwzpn.png')] bg-cover flex items-center justify-center cursor-pointer relative"
-								onClick={() => document.getElementById("photoUpload").click()}
-							>
-								{photoLoading ? (
-									<p>Uploading...</p>
-								) : (
-									<span className="text-xs p-1 rounded-full absolute right-0 bottom-0 bg-gray-200">
-										<Icon
-											icon="majesticons:camera"
-											className="h-6 w-6 flex-shrink-0"
-										/>
-									</span>
-								)}
-							</div>
-						)}
-						<input
-							type="file"
-							id="photoUpload"
-							className="hidden"
-							onChange={handlePhotoUpload}
-							accept="image/*"
-							disabled={photoLoading}
-						/>
-					</div>
+					
 					<div className="flex-1">
 						<FloatingInput
 							type="text"
@@ -320,6 +318,7 @@ const StudentForm = ({ isOpen, onClose, onStudentAdd }) => {
 						<p className="text-red-500">{formErrors.departmentName}</p>
 					)}
 				</div>
+				
 
 				<FloatingInput
 					type="text"
