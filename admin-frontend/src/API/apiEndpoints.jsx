@@ -92,6 +92,7 @@ const API_ENDPOINTS = {
   // EMPLOYEE/TEACHERS
 //  60002bf9-7e65-49a5-9d2c-ce5ddd291337
 REGISTER_EMPLOYEES :`${import.meta.env.VITE_BASE_URL}/api/v1/employee/campus/${getCampusId()}/register`,
+DELETE_EMPLOYEE : `${import.meta.env.VITE_BASE_URL}/api/v1/employee/campus/${getCampusId()}`,
   REGISTER_TEACHER: `${import.meta.env.VITE_BASE_URL
     }/api/v1/teacher/${userId}/reg`,
   FETCH_ALL_TEACHERS: `${import.meta.env.VITE_BASE_URL
@@ -102,7 +103,7 @@ REGISTER_EMPLOYEES :`${import.meta.env.VITE_BASE_URL}/api/v1/employee/campus/${g
   UPDATE_TEACHERS: (id) =>
     `${import.meta.env.VITE_BASE_URL}/api/v1/teacher/${userId}/update/${id}`,
   DELETE_TEACHERS: (id) =>
-    `${import.meta.env.VITE_BASE_URL}/api/v1/teacher/${userId}/delete/${id}`,
+    `${import.meta.env.VITE_BASE_URL}/api/v1/employee/campus/${getCampusId()}/${id}}`,
   DELETE_ALL_TEACHERS: `${import.meta.env.VITE_BASE_URL
     }/api/v1/teacher/${userId}/deleteAllTeacher`,
   LOGIN_TEACHERS: `${import.meta.env.VITE_BASE_URL}/api/v1/teacher/login`,
@@ -124,18 +125,20 @@ REGISTER_EMPLOYEES :`${import.meta.env.VITE_BASE_URL}/api/v1/employee/campus/${g
     }/api/v1/attendance/getAttendenceByDate/${userId}`,
   // STUDENTS
   REGISTER_STUDENTS: `${import.meta.env.VITE_BASE_URL
-    }/api/v1/student/${userId}/reg`,
+    }/api/v1/student/campus/${getCampusId()}/register`,
+    GET_STUDENTS_DATA : `${import.meta.env.VITE_BASE_URL
+    }/api/v1/student/campus/${getCampusId()}`, 
   FETCH_STUDENT: (studentID) =>
     `${import.meta.env.VITE_BASE_URL
     }/api/v1/student/${userId}/fetch/${studentID}`,
   FETCH_ALL_STUDENTS: `${import.meta.env.VITE_BASE_URL
-    }/api/v1/student/${userId}/fetchAll`,
+    }/api/v1/student/campus/${userId}/fetchAll`,
   UPDATE_STUDENTS: (eventId) =>
     `${import.meta.env.VITE_BASE_URL
     }/api/v1/student/${userId}/update/${eventId}`,
   DELETE_STUDENTS: (eventId) =>
     `${import.meta.env.VITE_BASE_URL
-    }/api/v1/student/${userId}/deleteStudent/${eventId}`,
+    }/api/v1/student/campus/${getCampusId()}/${eventId}`,
   DELETE_ALL_STUDENTSS: `${import.meta.env.VITE_BASE_URL
     }/api/v1/student/${userId}/deleteAllStudent`,
   LOGIN_STUDENTS: `${import.meta.env.VITE_BASE_URL}/api/v1/student/login`,

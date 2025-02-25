@@ -66,14 +66,16 @@ const Employee = () => {
 
 	const handleDeleteProfile = async (id) => {
 		try {
-			const response = await fetch(API_ENDPOINTS.DELETE_TEACHERS(id), {
+			const response = await fetch(`${API_ENDPOINTS.DELETE_EMPLOYEE}/${id}`, {
 				method: "DELETE",
+				headers: { Authorization: `Bearer ${token}` }
 			});
 			if (!response.ok) {
 				const errorData = await response.json();
 				throw new Error(`Network response was not ok: ${errorData.message}`);
 			}
-			setTeachers(teachers.filter((teacher) => teacher.id !== id));
+			await fetchTeachers();
+			
 		} catch (error) {
 			console.error("Error deleting teacher:", error);
 		}
@@ -131,32 +133,32 @@ const Employee = () => {
 		}));
 	};
 
-	const handlePhotoChange = async (e) => {
-		const file = e.target.files[0];
-		if (file) {
-			const formData = new FormData();
-			formData.append("file", file);
-			formData.append(
-				"upload_preset",
-				import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
-			);
+	// const handlePhotoChange = async (e) => {
+	// 	const file = e.target.files[0];
+	// 	if (file) {
+	// 		const formData = new FormData();
+	// 		formData.append("file", file);
+	// 		formData.append(
+	// 			"upload_preset",
+	// 			import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
+	// 		);
 
-			try {
-				const response = await axios.post(
-					`https://api.cloudinary.com/v1_1/${
-						import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
-					}/image/upload`,
-					formData
-				);
-				setSelectedProfile((prevProfile) => ({
-					...prevProfile,
-					photo: response.data.secure_url,
-				}));
-			} catch (error) {
-				console.error("Error uploading photo:", error);
-			}
-		}
-	};
+	// 		try {
+	// 			const response = await axios.post(
+	// 				`https://api.cloudinary.com/v1_1/${
+	// 					import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
+	// 				}/image/upload`,
+	// 				formData
+	// 			);
+	// 			setSelectedProfile((prevProfile) => ({
+	// 				...prevProfile,
+	// 				photo: response.data.secure_url,
+	// 			}));
+	// 		} catch (error) {
+	// 			console.error("Error uploading photo:", error);
+	// 		}
+	// 	}
+	// };
 
 	return (
 		<>
@@ -211,7 +213,7 @@ const Employee = () => {
 											photo: teacher.photo || getDefaultPhoto(teacher.gender),
 											name: teacher.name,
 											role: teacher.role,
-											id: teacher.id,
+											id: teacher.employeeId,
 											gender: teacher.gender,
 											dob: teacher.dob,
 											contactNumber: teacher.contactNumber,
@@ -225,7 +227,7 @@ const Employee = () => {
 											currentAddress: teacher.currentAddress,
 										})
 									}
-									onDelete={() => handleDeleteProfile(teacher.id)}
+									onDelete={() => handleDeleteProfile(teacher.employeeId)}
 								/>
 							))}
 						/>
@@ -346,7 +348,7 @@ const Employee = () => {
 						responsiveWidth={"md:w-fit"}
 					>
 						{formModalOpen && 
-						<CreateEmployee setFormModalOpen={setFormModalOpen}/>
+						<CreateEmployee setFormModalOpen={setFormModalOpen} onEmployeeAdded={handleEmployeeAdded}/>
 }
 						{/* <EmployeeAddForm onEmployeeAdded={handleEmployeeAdded} /> */}
 					</Modal>

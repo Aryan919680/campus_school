@@ -64,53 +64,53 @@ const Navbar = ({ logout, userData, toggleSidebar, setUserData }) => {
 	}, []);
 
 	// Fetch pending leaves
-	const fetchPendingLeaves = async () => {
-		try {
-			setIsLoading(true);
-			const response = await fetch(API_ENDPOINTS.FETCH_ALL_PENDING_LEAVES, {
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${localStorage.getItem("token")}`,
-				},
-			});
+	// const fetchPendingLeaves = async () => {
+	// 	try {
+	// 		setIsLoading(true);
+	// 		const response = await fetch(API_ENDPOINTS.FETCH_ALL_PENDING_LEAVES, {
+	// 			method: "GET",
+	// 			headers: {
+	// 				"Content-Type": "application/json",
+	// 				Authorization: `Bearer ${localStorage.getItem("token")}`,
+	// 			},
+	// 		});
 
-			if (!response.ok) {
-				throw new Error("Failed to fetch pending leaves");
-			}
+	// 		if (!response.ok) {
+	// 			throw new Error("Failed to fetch pending leaves");
+	// 		}
 
-			const data = await response.json();
-			console.log("API Response:", data); // Debug line
+	// 		const data = await response.json();
+	// 		console.log("API Response:", data); // Debug line
 
-			if (data.success && Array.isArray(data.leaves)) {
-				const formattedRequests = data.leaves.map((leave) => ({
-					id: leave.teacherId,
-					teacherId: leave.teacherId,
-					name: leave.name,
-					reason: leave.reason,
-					startDate: new Date(leave.dateFrom).toLocaleDateString(),
-					endDate: new Date(leave.dateTo).toLocaleDateString(),
-					status: leave.status,
-					applyDate: new Date(leave.applyDate).toLocaleDateString(),
-					noOfDays: leave.noOfDays,
-				}));
+	// 		if (data.success && Array.isArray(data.leaves)) {
+	// 			const formattedRequests = data.leaves.map((leave) => ({
+	// 				id: leave.teacherId,
+	// 				teacherId: leave.teacherId,
+	// 				name: leave.name,
+	// 				reason: leave.reason,
+	// 				startDate: new Date(leave.dateFrom).toLocaleDateString(),
+	// 				endDate: new Date(leave.dateTo).toLocaleDateString(),
+	// 				status: leave.status,
+	// 				applyDate: new Date(leave.applyDate).toLocaleDateString(),
+	// 				noOfDays: leave.noOfDays,
+	// 			}));
 
-				setPendingRequests(formattedRequests);
-				setHasPendingRequests(formattedRequests.length > 0);
-			}
-		} catch (error) {
-			console.error("Error fetching leaves:", error);
-		} finally {
-			setIsLoading(false);
-		}
-	};
+	// 			setPendingRequests(formattedRequests);
+	// 			setHasPendingRequests(formattedRequests.length > 0);
+	// 		}
+	// 	} catch (error) {
+	// 		console.error("Error fetching leaves:", error);
+	// 	} finally {
+	// 		setIsLoading(false);
+	// 	}
+	// };
 
 	// Set up polling for leaves
-	useEffect(() => {
-		fetchPendingLeaves();
-		const interval = setInterval(fetchPendingLeaves, 30000);
-		return () => clearInterval(interval);
-	}, []);
+	// useEffect(() => {
+	// 	//fetchPendingLeaves();
+	// 	const interval = setInterval(fetchPendingLeaves, 30000);
+	// 	return () => clearInterval(interval);
+	// }, []);
 
 	// Handle click outside notification
 	useEffect(() => {

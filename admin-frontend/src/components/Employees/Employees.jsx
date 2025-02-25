@@ -17,41 +17,41 @@ const Employees = () => {
 		"https://res.cloudinary.com/duyau9qkl/image/upload/v1717910872/images/dxflhaspx3rm1kcak2is.png";
 
 	useEffect(() => {
-		fetchLeaves();
+		// fetchLeaves();
 		fetchTeachers();
 	}, []);
 
-	const fetchLeaves = async () => {
-		try {
-			const response = await axios.get(API_ENDPOINTS.FETCH_ALL_PENDING_LEAVES);
-			if (Array.isArray(response.data.leaves)) {
-				const validLeaves = await fetchValidLeaves(response.data.leaves);
-				setLeaves(validLeaves);
-			} else {
-				console.error("Unexpected data format:", response.data);
-			}
-		} catch (error) {
-			console.error("Error fetching leaves:", error);
-		}
-	};
+	// const fetchLeaves = async () => {
+	// 	try {
+	// 		const response = await axios.get(API_ENDPOINTS.FETCH_ALL_PENDING_LEAVES);
+	// 		if (Array.isArray(response.data.leaves)) {
+	// 			const validLeaves = await fetchValidLeaves(response.data.leaves);
+	// 			setLeaves(validLeaves);
+	// 		} else {
+	// 			console.error("Unexpected data format:", response.data);
+	// 		}
+	// 	} catch (error) {
+	// 		console.error("Error fetching leaves:", error);
+	// 	}
+	// };
 
-	const fetchValidLeaves = async (leaves) => {
-		const validLeaves = [];
-		for (const leave of leaves) {
-			try {
-				const teacher = await fetchTeacherDetails(leave.teacherId);
-				if (teacher) {
-					validLeaves.push({ ...leave, teacherDetails: teacher });
-				}
-			} catch (error) {
-				console.error(
-					`Error fetching teacher details for teacherId ${leave.teacherId}:`,
-					error
-				);
-			}
-		}
-		return validLeaves;
-	};
+	// const fetchValidLeaves = async (leaves) => {
+	// 	const validLeaves = [];
+	// 	for (const leave of leaves) {
+	// 		try {
+	// 			const teacher = await fetchTeacherDetails(leave.teacherId);
+	// 			if (teacher) {
+	// 				validLeaves.push({ ...leave, teacherDetails: teacher });
+	// 			}
+	// 		} catch (error) {
+	// 			console.error(
+	// 				`Error fetching teacher details for teacherId ${leave.teacherId}:`,
+	// 				error
+	// 			);
+	// 		}
+	// 	}
+	// 	return validLeaves;
+	// };
 
 	const fetchTeacherDetails = async (teacherId) => {
 		try {
@@ -69,22 +69,22 @@ const Employees = () => {
 		}
 	};
 
-	const updateLeaveStatus = async (teacherId, action) => {
-		try {
-			const response = await axios.put(
-				API_ENDPOINTS.UPDATE_LEAVES(teacherId, action),
-				{ status: action }
-			);
-			if (response.status === 200) {
-				fetchLeaves();
-			}
-		} catch (error) {
-			console.error("Error updating leave status:", error);
-		}
-	};
+	// const updateLeaveStatus = async (teacherId, action) => {
+	// 	try {
+	// 		const response = await axios.put(
+	// 			API_ENDPOINTS.UPDATE_LEAVES(teacherId, action),
+	// 			{ status: action }
+	// 		);
+	// 		if (response.status === 200) {
+	// 			fetchLeaves();
+	// 		}
+	// 	} catch (error) {
+	// 		console.error("Error updating leave status:", error);
+	// 	}
+	// };
 
-	const handleApprove = (teacherId) => updateLeaveStatus(teacherId, "Accept");
-	const handleReject = (teacherId) => updateLeaveStatus(teacherId, "Reject");
+	// const handleApprove = (teacherId) => updateLeaveStatus(teacherId, "Accept");
+	// const handleReject = (teacherId) => updateLeaveStatus(teacherId, "Reject");
 
 	const fetchTeachers = async () => {
 		try {

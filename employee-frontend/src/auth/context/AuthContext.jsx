@@ -73,7 +73,7 @@ const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     const response = await axios.post(
-      `${import.meta.env.VITE_BASE_URL}/api/v1/teacher/login`,
+      `${import.meta.env.VITE_BASE_URL}/api/v1/employee/login`,
       credentials
     );
     const responseData = response.data;
