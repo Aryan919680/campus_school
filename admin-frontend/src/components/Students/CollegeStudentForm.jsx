@@ -3,7 +3,7 @@ import axios from "axios";
 import API_ENDPOINTS from "../../API/apiEndpoints";
 import * as XLSX from "xlsx";
 
-const CreateStudent = ({ onClose, onStudentAdded }) => {
+const CollegeStudentForm = ({ onClose, onStudentAdded }) => {
     const userData = JSON.parse(localStorage.getItem("userData"));
     const token = userData?.token;
     
@@ -328,4 +328,4 @@ const CreateStudent = ({ onClose, onStudentAdded }) => {
     );
 };
 
-export default CreateStudent;
+export default CollegeStudentForm;

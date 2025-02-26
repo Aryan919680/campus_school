@@ -32,38 +32,78 @@ const ClassForm = ({ onClose, errorMessage,refreshClasses }) => {
     };
 
     // Add Class with Sections
+    // const addClassWithSections = () => {
+    //     if (!classInput.trim()) return alert("Please enter a class name.");
+    //     if (!sectionsInput.match(/^([A-Z])\s*to\s*([A-Z])$/i)) return alert("Invalid section format. Use 'A to D'.");
+
+    //     const match = sectionsInput.match(/^([A-Z])\s*to\s*([A-Z])$/i);
+    //     const start = match[1].charCodeAt(0);
+    //     const end = match[2].charCodeAt(0);
+
+    //     if (start > end) return alert("Invalid section range.");
+
+    //     const newSections = Array.from({ length: end - start + 1 }, (_, i) =>
+    //         String.fromCharCode(start + i)
+    //     );
+
+    //     // Prevent duplicate class entries
+    //     const existingIndex = classSections.findIndex(item => item.class === classInput.trim());
+    //     let updatedClassSections = [...classSections];
+
+    //     if (existingIndex !== -1) {
+    //         updatedClassSections[existingIndex].sections = newSections;
+    //     } else {
+    //         updatedClassSections.push({ class: classInput.trim(), sections: newSections });
+    //     }
+
+    //     setClassSections(updatedClassSections);
+    //     localStorage.setItem("classSections", JSON.stringify(updatedClassSections));
+
+    //     // Reset inputs
+    //     setClassInput("");
+    //     setSectionsInput("");
+    // };
     const addClassWithSections = () => {
         if (!classInput.trim()) return alert("Please enter a class name.");
-        if (!sectionsInput.match(/^([A-Z])\s*to\s*([A-Z])$/i)) return alert("Invalid section format. Use 'A to D'.");
-
-        const match = sectionsInput.match(/^([A-Z])\s*to\s*([A-Z])$/i);
-        const start = match[1].charCodeAt(0);
-        const end = match[2].charCodeAt(0);
-
-        if (start > end) return alert("Invalid section range.");
-
-        const newSections = Array.from({ length: end - start + 1 }, (_, i) =>
-            String.fromCharCode(start + i)
-        );
-
+    
+        const singleSectionMatch = sectionsInput.match(/^[A-Z]$/i);  // Match single letter
+        const rangeMatch = sectionsInput.match(/^([A-Z])\s*to\s*([A-Z])$/i);  // Match range like "A to D"
+        
+        let newSections = [];
+    
+        if (singleSectionMatch) {
+            newSections = [sectionsInput.toUpperCase()];
+        } else if (rangeMatch) {
+            const start = rangeMatch[1].charCodeAt(0);
+            const end = rangeMatch[2].charCodeAt(0);
+    
+            if (start > end) return alert("Invalid section range.");
+    
+            newSections = Array.from({ length: end - start + 1 }, (_, i) =>
+                String.fromCharCode(start + i)
+            );
+        } else {
+            return alert("Invalid section format. Use 'A' or 'A to D'.");
+        }
+    
         // Prevent duplicate class entries
         const existingIndex = classSections.findIndex(item => item.class === classInput.trim());
         let updatedClassSections = [...classSections];
-
+    
         if (existingIndex !== -1) {
             updatedClassSections[existingIndex].sections = newSections;
         } else {
             updatedClassSections.push({ class: classInput.trim(), sections: newSections });
         }
-
+    
         setClassSections(updatedClassSections);
         localStorage.setItem("classSections", JSON.stringify(updatedClassSections));
-
+    
         // Reset inputs
         setClassInput("");
         setSectionsInput("");
     };
-
+    
     // Remove a class
     const removeClass = (classToRemove) => {
         const updatedClassSections = classSections.filter(item => item.class !== classToRemove);

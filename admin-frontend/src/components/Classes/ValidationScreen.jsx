@@ -2,7 +2,7 @@ import React from "react";
 
 const ValidationScreen = ({ classSections, savedFees, setShowValidationScreen, closeAll }) => {
   return (
-    <div className="fixed inset-0 z-50 flex justify-center items-center h-full w-full bg-black bg-opacity-80">
+    <div className="fixed inset-0 z-50 flex justify-center items-center h-full w-full  bg-opacity-80">
             <div className="bg-gray-800 p-6 rounded-xl w-4/12 max-h-[80vh] overflow-y-auto text-white">
         <h2 className="text-xl font-bold mb-4">Review Setup Summary</h2>
 

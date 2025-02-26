@@ -76,6 +76,7 @@ const Layout = ({ logout }) => {
 						<Route path="/" element={<Classes />} />
 						<Route path="/classes" element={<Classes />} />
 						<Route path="/employees" element={<Employees />} />
+						<Route path="/students" element={<Students />} />
 					</Routes>
 					}
 					{

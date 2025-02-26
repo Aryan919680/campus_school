@@ -101,29 +101,29 @@ const Employee = () => {
 		setIsEditing(true);
 	};
 
-	const handleSaveProfile = async () => {
-		try {
-			const response = await fetch(
-				API_ENDPOINTS.UPDATE_TEACHERS(selectedProfile.id),
-				{
-					method: "PUT",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify(selectedProfile),
-				}
-			);
-			if (!response.ok) {
-				const errorData = await response.json();
-				throw new Error(`Network response was not ok: ${errorData.message}`);
-			}
-			fetchTeachers();
-			setModalOpen(false);
-			setIsEditing(false);
-		} catch (error) {
-			console.error("Error updating teacher:", error);
-		}
-	};
+	// const handleSaveProfile = async () => {
+	// 	try {
+	// 		const response = await fetch(
+	// 			API_ENDPOINTS.UPDATE_TEACHERS(selectedProfile.id),
+	// 			{
+	// 				method: "PUT",
+	// 				headers: {
+	// 					"Content-Type": "application/json",
+	// 				},
+	// 				body: JSON.stringify(selectedProfile),
+	// 			}
+	// 		);
+	// 		if (!response.ok) {
+	// 			const errorData = await response.json();
+	// 			throw new Error(`Network response was not ok: ${errorData.message}`);
+	// 		}
+	// 		fetchTeachers();
+	// 		setModalOpen(false);
+	// 		setIsEditing(false);
+	// 	} catch (error) {
+	// 		console.error("Error updating teacher:", error);
+	// 	}
+	// };
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -167,7 +167,7 @@ const Employee = () => {
 			) : (
 				<div className="bg-white p-8 rounded-md w-full">
 					<div className="flex items-center justify-between pb-6 ">
-						<h2 className="text-gray-600 font-semibold">Employee Details</h2>
+						<h2 className="text-gray-600 font-semibold  text-2xl">Employee Details</h2>
 						<div>
 							<ListTableBtn
 								text={"Add Employee"}
@@ -192,19 +192,20 @@ const Employee = () => {
 						<ListTable
 							ListName={"Name"}
 							ListRole={"Role"}
-							ListDepartment={"Department"}
+							ListDepartment={"Email"}
 							ListAction={"Actions"}
 							showDataList={teachers.map((teacher) => (
 								<CommonTable
 									key={teacher.id}
-									profile={teacher.photo || getDefaultPhoto(teacher.gender)}
+									// profile={teacher.photo || getDefaultPhoto(teacher.gender)}
 									name={teacher.name}
 									role={teacher.role}
-									id={
-										Array.isArray(teacher.subject) && teacher.subject.length > 0
-											? teacher.subject[0].department.name
-											: "N/A"
-									}
+									// id={
+									// 	Array.isArray(teacher.subject) && teacher.subject.length > 0
+									// 		? teacher.subject[0].department.name
+									// 		: "N/A"
+									// }
+									id={teacher.email}
 									dangerAction={"Remove"}
 									action1={"View Profile"}
 									buttonHide={"hidden"}
@@ -233,7 +234,7 @@ const Employee = () => {
 						/>
 					)}
 
-					{selectedProfile && (
+					{/* {selectedProfile && (
 						<Modal
 							modalOpen={modalOpen}
 							setModalOpen={setModalOpen}
@@ -340,7 +341,7 @@ const Employee = () => {
 								</div>
 							</div>
 						</Modal>
-					)}
+					)} */}
 
 					<Modal
 						modalOpen={formModalOpen}

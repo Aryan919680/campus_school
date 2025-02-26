@@ -56,9 +56,10 @@ const ClassFee = ({ setShowFees,classSections,onClose }) => {
     const updateFeeEntry = (index, field, value) => {
         console.log("here",)
         const updatedEntries = [...feeEntries];
-    
-        if (field === "className") {
+         console.log(field)
+        if (field === "classId") {
             const selectedClass = classOptions.find(option => option.value === value);
+            console.log(selectedClass,"aa")
             updatedEntries[index]["classId"] = value; // Store classId separately
             updatedEntries[index]["className"] = selectedClass ? selectedClass.label : ""; // Store className
         } else {
@@ -104,7 +105,9 @@ const ClassFee = ({ setShowFees,classSections,onClose }) => {
         }
     
         for (const entry of feeEntries) {
+            console.log(entry.className,entry.tuitionFee,entry.feeType)
             if (!entry.className || !entry.tuitionFee || !entry.feeType) {
+                console.log("here")
                 setErrorMessage("All fields are required for each entry.");
                 return;
             }
