@@ -13,7 +13,7 @@ const AttendanceOver = () => {
       <div className="bg-white flex items-center flex-col rounded-2xl shadow-lg p-6 w-full md:w-58 lg:w-64">
         <h1 className="text-xl lg:text-2xl font-bold">Total Subjects</h1>
         <p className="text-4xl font-bold my-6 text-primary-foreground">
-          {data.subject.length}
+          {/* {data.subject.length} */}
         </p>
         <div className="flex gap-2 text-primary-foreground">
           <ViewClass/>

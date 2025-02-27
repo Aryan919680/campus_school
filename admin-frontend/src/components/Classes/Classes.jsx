@@ -99,28 +99,16 @@ const Classes = () => {
   const showDataList = useMemo(() => {
     return classes.map((classData) => (
       <tr key={classData.classId}>
-        <td className="text-center">{classData.className}</td>
-        <td className="text-center"> 
+        	<td className="px-2 py-5 bg-white text-center text-sm md:text-base"><p className="text-gray-900 whitespace-no-wrap">{classData.className}</p></td>
+          <td className="px-2 py-5 bg-white text-center text-sm md:text-base"><p className="text-gray-900 whitespace-no-wrap">
         {classData.subClass.map((subsection) => subsection.subClassName).join(", ")}
+        </p>
           </td>
-        <td className="text-center">{classData.teacher}</td>
-        <td className="text-center">
-
-        {/* <button
-          onClick={() => handleCheckFees(classData.classId)}
-          className="bg-yellow-500 text-white font-bold py-2 px-4 rounded mr-2"
-        >
-          Check Fees
-        </button> */}
-          {/* <button
-            onClick={() => handleEdit(classData.classId)}
-            className="bg-yellow-500 text-white font-bold py-2 px-4 rounded mr-2"
-          >
-            Edit
-          </button> */}
+          <td className="px-2 py-5 bg-white text-center text-sm md:text-base"><p className="text-gray-900 whitespace-no-wrap">N/A</p></td>
+          <td className="px-2 py-5 bg-white text-center text-sm md:text-base">
           <button
             onClick={() => handleDelete(classData.classId)}
-            className="bg-red-500 text-white font-bold py-2 px-4 rounded"
+            className={`border rounded-md px-4 py-2 text-sm/none text-gray-600 hover:bg-gray-50 hover:text-gray-700`}
           >
             Delete Class
           </button>

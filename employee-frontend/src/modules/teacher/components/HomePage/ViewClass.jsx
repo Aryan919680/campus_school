@@ -23,9 +23,9 @@ const ViewClass = () => {
           <DialogTitle>Subjects</DialogTitle>
         </DialogHeader>
 
-        {data.subject.map((item) => (
+        {/* {data.subject.map((item) => (
           <div className="text-2xl font-bold">{item.subjectName}</div>
-        ))}
+        ))} */}
       </DialogContent>
     </Dialog>
   );

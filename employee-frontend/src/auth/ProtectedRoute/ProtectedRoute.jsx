@@ -6,8 +6,9 @@ const ProtectedRoute = ({ children }) => {
 	const { data, isAuthenticated } = useContext(AuthContext);
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState(true);
-
+    console.log("here 11")
 	useEffect(() => {
+		console.log(isAuthenticated)
 		if (!isAuthenticated) {
 			navigate("/login", { replace: true });
 		} else {

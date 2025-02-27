@@ -14,6 +14,7 @@ import Marks from "./modules/teacher/pages/ProvideMarks";
 import Lessonplan from "./modules/teacher/pages/Lessonplan";
 
 const router = createBrowserRouter(
+	
 	[
 		{
 			path: "/login",
@@ -100,6 +101,7 @@ const router = createBrowserRouter(
 );
 
 function App() {
+	console.log("here")
 	return (
 		<div className="flex">
 			<RouterProvider router={router} />

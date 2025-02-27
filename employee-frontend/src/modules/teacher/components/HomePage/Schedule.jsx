@@ -16,34 +16,34 @@ const Schedule = () => {
   const [finalData, setFinalData] = useState([]);
   const [error, setError] = useState(false);
 
-  async function fetchSchedule() {
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/api/v1/timeTable/teacher-schedule/${
-          data.id
-        }/${getTodaysDay().toLowerCase()}`
-      );
-      console.log(response.data.timetable);
-      setFinalData(response.data.timetable);
-    } catch (err) {
-      console.log(err.response.status);
-      if (err.response.status) {
-        setError("no schedule today");
-      }
-    }
-  }
+  // async function fetchSchedule() {
+  //   try {
+  //     const response = await axios.get(
+  //       `${import.meta.env.VITE_BASE_URL}/api/v1/timeTable/teacher-schedule/${
+  //         data.id
+  //       }/${getTodaysDay().toLowerCase()}`
+  //     );
+  //     console.log(response.data.timetable);
+  //     setFinalData(response.data.timetable);
+  //   } catch (err) {
+  //     console.log(err.response.status);
+  //     if (err.response.status) {
+  //       setError("no schedule today");
+  //     }
+  //   }
+  // }
 
-  useEffect(() => {
-    setError(false);
-    if (finalData.length == 0) {
-      setFinalData(schedule);
-    }
-    // console.log(selected);
-    // console.log(finalData);
+  // useEffect(() => {
+  //   setError(false);
+  //   if (finalData.length == 0) {
+  //     setFinalData(schedule);
+  //   }
+  //   // console.log(selected);
+  //   // console.log(finalData);
 
-    // console.log(selected);
-    fetchSchedule();
-  },[]);
+  //   // console.log(selected);
+  //   fetchSchedule();
+  // },[]);
 
   return (
     <div className="py-6">
