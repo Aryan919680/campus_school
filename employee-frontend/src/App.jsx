@@ -12,7 +12,7 @@ import TimeTable from "./modules/teacher/pages/TimeTable";
 import SupportPage from "./modules/teacher/pages/SupportPage";
 import Marks from "./modules/teacher/pages/ProvideMarks";
 import Lessonplan from "./modules/teacher/pages/Lessonplan";
-
+const teacherData = localStorage.getItem("teacherData");
 const router = createBrowserRouter(
 	
 	[
@@ -101,7 +101,6 @@ const router = createBrowserRouter(
 );
 
 function App() {
-	console.log("here")
 	return (
 		<div className="flex">
 			<RouterProvider router={router} />

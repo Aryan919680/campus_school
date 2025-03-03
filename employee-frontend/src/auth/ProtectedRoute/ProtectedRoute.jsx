@@ -12,6 +12,7 @@ const ProtectedRoute = ({ children }) => {
 		if (!isAuthenticated) {
 			navigate("/login", { replace: true });
 		} else {
+			console.log(children)
 			if (
 				children.type.name === "TimeTable" &&
 				data.AdditionalRole !== "class teacher"

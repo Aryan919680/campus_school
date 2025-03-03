@@ -10,22 +10,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import AttendanceComponent from "../components/HomePage/AttendanceComponent";
-
-const departments = [
-  { id: "dept1", name: "Computer Science" },
-  { id: "dept2", name: "Mechanical Engineering" },
-];
-
-const courses = [
-  { id: "course1", name: "Data Structures", departmentId: "dept1", semesterId: "sem1" },
-  { id: "course2", name: "Thermodynamics", departmentId: "dept2", semesterId: "sem2" },
-];
-
-const semesters = [
-  { id: "sem1", name: "Semester 1", courseId: "course1" },
-  { id: "sem2", name: "Semester 2", courseId: "course2" },
-];
-
+import LeaveRequestPage from "../components/LeavePage/LeaveRequestPage";
+import SchoolHomePage from "./SchoolHomePage";
 const HomePage = () => {
   const [showDefaultPage, setShowDefaultPage] = useState(true);
   const [showAttendancePage, setShowAttendancePage] = useState(false);
@@ -36,19 +22,25 @@ const HomePage = () => {
   const [attendanceData, setAttendanceData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
+  const [showLeavePage,setShowLeavePage] = useState(false);
+  const [departments, setDepartments] = useState([]);
+  const [courses, setCourses] = useState([]);
+  const [semesters, setSemesters] = useState([]);
+  const [attendance, setAttendance] = useState({});
   const teacherData = JSON.parse(localStorage.getItem("teacherData"));
+  console.log(teacherData)
   const campusId = teacherData?.campusId;
   const token = localStorage.getItem("token");
+  
 
   // Fetch attendance data when filters change
   useEffect(() => {
     if (!date || !selectedSemester) return;
-
-    setLoading(true);
+if(teacherData.campusType === "COLLEGE"){
+setLoading(true);
     setError(null);
-
-    fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/attendance/campus/${campusId}/students?date=${date}&semesterId=8690f9f1-bdd4-45b9-ab77-705746a193f9`, {
+    
+    fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/attendance/campus/${campusId}/students?date=${date}&semesterId=${selectedSemester}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -65,11 +57,43 @@ const HomePage = () => {
         setError(error.message);
         setLoading(false);
       });
+}
+    
   }, [date, selectedSemester, campusId, token]);
+
+  useEffect(() => {
+    if(teacherData.campusType === "COLLEGE")
+    fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${campusId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then((data) => setDepartments(data.data || []))
+      .catch((err) => console.error("Error fetching departments:", err));
+  }, [campusId, token]);
+
+  useEffect(() => {
+    if (!selectedDepartment) return;
+    fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${campusId}/department/${selectedDepartment}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setCourses(data.data || []);
+      })
+      .catch((err) => console.error("Error fetching courses:", err));
+  }, [selectedDepartment, campusId, token]);
+
+  useEffect(() => {
+    if (!selectedCourse) return;
+    const selectedCourseObj = courses.find((course) => course.courseId === selectedCourse);
+    setSemesters(selectedCourseObj ? selectedCourseObj.semester : []);
+  }, [selectedCourse, courses]);
+
 
   const handleShowAttendance = () => {
     setShowAttendancePage(true);
     setShowDefaultPage(false);
+    setShowLeavePage(false);
   };
 
   const onClose = () => {
@@ -123,12 +147,15 @@ const HomePage = () => {
       .catch((err) => console.error("Error deleting attendance:", err));
   };
   
-  // Filter courses based on the selected department
+
   const filteredCourses = courses.filter((course) => course.departmentId === selectedDepartment);
 
-  // Filter semesters based on the selected course
-  const filteredSemesters = semesters.filter((sem) => sem.courseId === selectedCourse);
 
+  const handleShowLeavePage = () =>{
+     setShowLeavePage(true);
+     setShowAttendancePage(false);
+     setShowDefaultPage(false);
+  }
   return (
     <div className="w-full ml-6 rounded-xl p-4">
       <h1 className="text-3xl font-bold pt-6 mb-6">Attendance Management</h1>
@@ -137,11 +164,12 @@ const HomePage = () => {
         <Button variant="outline" className={cn("w-[280px] text-left font-normal")} onClick={handleShowAttendance}>
           Mark Student Attendance
         </Button>
-        <Button variant="outline" className={cn("w-[280px] text-left font-normal")}>Leave Requests</Button>
+        <Button variant="outline" className={cn("w-[280px] text-left font-normal")} onClick={handleShowLeavePage}>Leave Requests</Button>
       </div>
 
       {showAttendancePage && <AttendanceComponent onClose={onClose} />}
-
+      {showLeavePage && <LeaveRequestPage />}
+  
       {showDefaultPage && (
         <div>
           <div className="border p-4 rounded-lg shadow-lg">
@@ -151,55 +179,61 @@ const HomePage = () => {
               <label className="font-medium">Select Date:</label>
               <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
             </div>
-
-            <div className="mb-4">
-              <label className="font-medium">Select Department:</label>
-              <Select onValueChange={setSelectedDepartment}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Department" />
-                </SelectTrigger>
-                <SelectContent>
-                  {departments.map((dept) => (
-                    <SelectItem key={dept.id} value={dept.id}>
-                      {dept.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="mb-4">
-              <label className="font-medium">Select Course:</label>
-              <Select onValueChange={setSelectedCourse} disabled={!selectedDepartment}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Course" />
-                </SelectTrigger>
-                <SelectContent>
-                  {filteredCourses.map((course) => (
-                    <SelectItem key={course.id} value={course.id}>
-                      {course.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="mb-4">
+            {
+              teacherData.campusType === "COLLEGE" && <div>
+              <div className="mb-4">
+                <label className="font-medium">Select Department:</label>
+                <Select onValueChange={setSelectedDepartment} value={selectedDepartment || ""}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Department" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {departments.map((dept) => (
+                      <SelectItem key={dept.departmentId} value={dept.departmentId}>
+                        {dept.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+  
+              <div className="mb-4">
+                <label className="font-medium">Select Course:</label>
+                <Select onValueChange={setSelectedCourse} disabled={!selectedDepartment}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Course" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {filteredCourses.map((course) => (
+                      <SelectItem key={course.courseId} value={course.courseId}>
+                        {course.courseName}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+  
+              <div className="mb-4">
               <label className="font-medium">Select Semester:</label>
-              <Select onValueChange={setSelectedSemester} disabled={!selectedCourse}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Semester" />
-                </SelectTrigger>
-                <SelectContent>
-                  {filteredSemesters.map((sem) => (
-                    <SelectItem key={sem.id} value={sem.id}>
-                      {sem.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            <Select value={selectedSemester} onValueChange={setSelectedSemester} disabled={!selectedCourse}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select Semester" />
+              </SelectTrigger>
+              <SelectContent>
+                {semesters.map((sem) => (
+                  <SelectItem key={sem.semesterId} value={sem.semesterId}>{sem.semesterName}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
+          </div>
+            }
+            {
+              teacherData.campusType === "SCHOOL" && <SchoolHomePage />
+            }
+           
+        </div>
+        
 
           {/* Attendance Table */}
           <div className="mt-6">
