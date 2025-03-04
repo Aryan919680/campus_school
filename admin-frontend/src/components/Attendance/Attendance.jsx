@@ -33,7 +33,7 @@ const Attendance = () => {
 			try {
 				setIsLoading(true);
 				await Promise.all([fetchTeachers(), fetchDepartments()]);
-				await fetchMonthlyAttendance(); // Fetch monthly attendance after initial data
+				//await fetchMonthlyAttendance(); // Fetch monthly attendance after initial data
 			} catch (err) {
 				setError("Failed to fetch initial data. Please try again.");
 			} finally {
@@ -45,8 +45,8 @@ const Attendance = () => {
 
 	useEffect(() => {
 		if (teachers.length > 0 && oldestTeacherDate) {
-			fetchAttendanceData();
-			fetchMonthlyAttendance(); // Fetch monthly attendance when selectedDate changes
+		//	fetchAttendanceData();
+		//	fetchMonthlyAttendance(); // Fetch monthly attendance when selectedDate changes
 		}
 	}, [selectedDate, teachers, oldestTeacherDate]);
 
@@ -69,7 +69,7 @@ const Attendance = () => {
 
 	const fetchDepartments = async () => {
 		try {
-			const response = await axios.get(API_ENDPOINTS.FETCH_ALL_DEPARTMENTS);
+			const response = await axios.get(API_ENDPOINTS.GET_DEPARTMENTS);
 			setDepartments(response.data.data || []);
 		} catch (error) {
 			throw new Error("Failed to fetch departments");
@@ -276,20 +276,20 @@ const Attendance = () => {
 		});
 	}, [monthlyAttendance]);
 
-	if (isLoading) {
-		return <div className="text-center mt-8">Loading...</div>;
-	}
+	// if (isLoading) {
+	// 	return <div className="text-center mt-8">Loading...</div>;
+	// }
 
-	if (error) {
-		return <div className="text-center mt-8 text-red-500">{error}</div>;
-	}
+	// if (error) {
+	// 	return <div className="text-center mt-8 text-red-500">{error}</div>;
+	// }
 
 	return (
 		<div className="container mx-auto p-4">
 			<h1 className="text-2xl font-bold mb-4">Employee Attendance</h1>
 
 			<div className="w-full flex gap-4 mb-4">
-				<select
+				{/* <select
 					onChange={handleDepartmentChange}
 					value={selectedDepartment}
 					className="border p-2 rounded w-40"
@@ -300,7 +300,7 @@ const Attendance = () => {
 							{department.name}
 						</option>
 					))}
-				</select>
+				</select> */}
 				<input
 					type="date"
 					value={selectedDate.format("YYYY-MM-DD")}
@@ -316,9 +316,9 @@ const Attendance = () => {
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
 						{filteredTeachers.map((teacher) => (
 							<EmployeeCard
-								key={teacher.id}
+								key={teacher.employeeId}
 								employee={teacher}
-								attendance={attendance[teacher.id]} // Now can be undefined
+								attendance={attendance[teacher.employeeId]} // Now can be undefined
 								onAttendanceChange={handleAttendanceChange}
 								selectedDate={selectedDate}
 							/>

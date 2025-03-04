@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-// import { toast } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 
 const LeaveRequest = () => {
   const [fromDate, setFromDate] = useState("");
@@ -15,7 +15,7 @@ const LeaveRequest = () => {
 
   const handleSubmit = async () => {
     if (!fromDate || !toDate || !reason) {
-    //   toast.error("All fields are required");
+      toast.error("All fields are required");
       return;
     }
 
@@ -35,7 +35,7 @@ const LeaveRequest = () => {
 
       const data = await response.json();
       if (response.ok) {
-        // toast.success("Leave request submitted successfully");
+        alert("Leave request submitted successfully!");
         setFromDate("");
         setToDate("");
         setReason("");
@@ -43,7 +43,7 @@ const LeaveRequest = () => {
         throw new Error(data.message || "Failed to submit leave request");
       }
     } catch (error) {
-    //   toast.error(error.message);
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }

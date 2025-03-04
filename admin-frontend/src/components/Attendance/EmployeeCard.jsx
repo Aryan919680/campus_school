@@ -131,16 +131,16 @@ const EmployeeCard = ({
 						<div className="flex gap-2 justify-end">
 							<div className="flex items-center">
 								<input
-									id={`absent-radio-${employee.id}`}
+									id={`absent-radio-${employee.employeeId}`}
 									type="radio"
-									name={`attendance-${employee.id}`}
+									name={`attendance-${employee.employeeId}`}
 									className="hidden"
 									value="Absent"
 									checked={selectedOption === "Absent"}
 									onChange={() => handleRadioChange("Absent")}
 								/>
 								<label
-									htmlFor={`absent-radio-${employee.id}`}
+									htmlFor={`absent-radio-${employee.employeeId}`}
 									className={`flex items-center justify-center w-8 h-8 border-2 rounded-full text-red-500 font-bold cursor-pointer ${
 										selectedOption === "Absent"
 											? "bg-red-500 border-red-500 text-white"
@@ -152,16 +152,16 @@ const EmployeeCard = ({
 							</div>
 							<div className="flex items-center">
 								<input
-									id={`present-radio-${employee.id}`}
+									id={`present-radio-${employee.employeeId}`}
 									type="radio"
-									name={`attendance-${employee.id}`}
+									name={`attendance-${employee.employeeId}`}
 									className="hidden"
 									value="Present"
 									checked={selectedOption === "Present"}
 									onChange={() => handleRadioChange("Present")}
 								/>
 								<label
-									htmlFor={`present-radio-${employee.id}`}
+									htmlFor={`present-radio-${employee.employeeId}`}
 									className={`flex items-center justify-center w-8 h-8 border-2 rounded-full text-green-500 font-bold cursor-pointer ${
 										selectedOption === "Present"
 											? "bg-green-500 border-green-500 text-white"

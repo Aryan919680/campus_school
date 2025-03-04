@@ -13,39 +13,39 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }) {
   const [holidays, setHolidays] = useState([]);
   const { data } = useContext(AuthContext);
 
-  const fetchHolidays = useCallback(async () => {
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/api/v1/holiday/fetch/${data.campusId}`
-      );
-      console.log(response.data);
+  // const fetchHolidays = useCallback(async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `${import.meta.env.VITE_BASE_URL}/api/v1/holiday/fetch/${data.campusId}`
+  //     );
+  //     console.log(response.data);
 
-      setHolidays(() => {
-        const arr = [];
-        const holidaysWithReasons = [];
+  //     setHolidays(() => {
+  //       const arr = [];
+  //       const holidaysWithReasons = [];
 
-        Object.keys(response.data).forEach((key) => {
-          response.data[key].forEach((holiday) => {
-            const parts = holiday.date.split("/");
-            const day = parseInt(parts[0], 10);
-            const month = parseInt(parts[1], 10) - 1;
-            const year = parseInt(parts[2], 10);
-            const dateObj = new Date(year, month, day);
+  //       Object.keys(response.data).forEach((key) => {
+  //         response.data[key].forEach((holiday) => {
+  //           const parts = holiday.date.split("/");
+  //           const day = parseInt(parts[0], 10);
+  //           const month = parseInt(parts[1], 10) - 1;
+  //           const year = parseInt(parts[2], 10);
+  //           const dateObj = new Date(year, month, day);
 
-            arr.push(dateObj);
-            holidaysWithReasons.push({ date: dateObj, reason: holiday.reason });
-          });
-        });
+  //           arr.push(dateObj);
+  //           holidaysWithReasons.push({ date: dateObj, reason: holiday.reason });
+  //         });
+  //       });
 
-        return holidaysWithReasons;
-      });
-    } catch (e) {
-      console.error(e);
-    }
-  }, []);
+  //       return holidaysWithReasons;
+  //     });
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  // }, []);
 
   useEffect(() => {
-    fetchHolidays();
+    // fetchHolidays();
   }, []);
 
   return (

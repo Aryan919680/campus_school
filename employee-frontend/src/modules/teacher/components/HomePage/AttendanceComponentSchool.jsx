@@ -5,14 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 
-export default function AttendanceComponent({ onClose }) {
+export default function AttendanceComponentSchool({ onClose,handleShowAttendance }) {
   const [date, setDate] = useState("");
-  const [departments, setDepartments] = useState([]);
-  const [courses, setCourses] = useState([]);
-  const [semesters, setSemesters] = useState([]);
-  const [selectedDepartment, setSelectedDepartment] = useState("");
-  const [selectedCourse, setSelectedCourse] = useState("");
-  const [selectedSemester, setSelectedSemester] = useState("");
+  const [classes, setClasses] = useState([]);
+  const [selectedClass, setSelectedClass] = useState("");
+  const [subClasses, setSubClasses] = useState([]);
+  const [selectedSubClass, setSelectedSubClass] = useState("");
   const [students, setStudents] = useState([]);
   const [attendance, setAttendance] = useState({});
   const token = localStorage.getItem("token");
@@ -20,39 +18,29 @@ export default function AttendanceComponent({ onClose }) {
   const campusId = teacherData?.campusId;
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${campusId}`, {
+    fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${campusId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
-      .then((data) => setDepartments(data.data || []))
-      .catch((err) => console.error("Error fetching departments:", err));
+      .then((data) => setClasses(data.data.class || []))
+      .catch((err) => console.error("Error fetching classes:", err));
   }, [campusId, token]);
 
   useEffect(() => {
-    if (!selectedDepartment) return;
-    fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${campusId}/department/${selectedDepartment}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => res.json())
-      .then((data) => setCourses(data.data || []))
-      .catch((err) => console.error("Error fetching courses:", err));
-  }, [selectedDepartment, campusId, token]);
+    if (!selectedClass) return;
+    const selectedClassObj = classes.find((cls) => cls.classId === selectedClass);
+    setSubClasses(selectedClassObj ? selectedClassObj.subClass : []);
+  }, [selectedClass, classes]);
 
   useEffect(() => {
-    if (!selectedCourse) return;
-    const selectedCourseObj = courses.find((course) => course.courseId === selectedCourse);
-    setSemesters(selectedCourseObj ? selectedCourseObj.semester : []);
-  }, [selectedCourse, courses]);
-
-  useEffect(() => {
-    if (!selectedCourse || !selectedSemester) return;
-    fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/student/campus/${campusId}?semesterId=${selectedSemester}&courseId=${selectedCourse}`, {
+    if (!selectedSubClass) return;
+    fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/student/campus/${campusId}?subClassId=${selectedSubClass}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
       .then((data) => setStudents(data.data || []))
       .catch((err) => console.error("Error fetching students:", err));
-  }, [selectedCourse, selectedSemester, campusId, token]);
+  }, [selectedSubClass, campusId, token]);
 
   const handleAttendanceChange = (id, status) => {
     setAttendance((prev) => ({ ...prev, [id]: status }));
@@ -79,6 +67,8 @@ export default function AttendanceComponent({ onClose }) {
       .catch((error) => console.error("Error saving attendance:", error));
   };
 
+  
+
   return (
     <Card className="p-6 max-w-lg mx-auto shadow-lg">
       <CardContent>
@@ -87,45 +77,32 @@ export default function AttendanceComponent({ onClose }) {
           <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
         </div>
         <div className="mb-4">
-          <Label>Select Department:</Label>
-          <Select value={selectedDepartment || ""} onValueChange={setSelectedDepartment}>
+          <Label>Select Class:</Label>
+          <Select value={selectedClass || ""} onValueChange={setSelectedClass}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select Department" />
+              <SelectValue placeholder="Select Class" />
             </SelectTrigger>
             <SelectContent>
-              {departments.map((dept) => (
-                <SelectItem key={dept.departmentId} value={dept.departmentId}>{dept.name}</SelectItem>
+              {classes.map((cls) => (
+                <SelectItem key={cls.classId} value={cls.classId}>{cls.className}</SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
         <div className="mb-4">
-          <Label>Select Course:</Label>
-          <Select onValueChange={setSelectedCourse}>
+          <Label>Select Sub-Class:</Label>
+          <Select onValueChange={setSelectedSubClass}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select Course" />
+              <SelectValue placeholder="Select Sub-Class" />
             </SelectTrigger>
             <SelectContent>
-              {courses.map((course) => (
-                <SelectItem key={course.courseId} value={course.courseId}>{course.courseName}</SelectItem>
+              {subClasses.map((subCls) => (
+                <SelectItem key={subCls.subClassId} value={subCls.subClassId}>{subCls.subClassName}</SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
-        <div className="mb-4">
-          <Label>Select Semester:</Label>
-          <Select onValueChange={setSelectedSemester}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select Semester" />
-            </SelectTrigger>
-            <SelectContent>
-              {semesters.map((sem) => (
-                <SelectItem key={sem.semesterId} value={sem.semesterId}>{sem.semesterName}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        {date && selectedCourse && students.length > 0 && (
+        {date && selectedSubClass && students.length > 0 && (
           <div className="border p-4 rounded-lg mt-4">
             <table className="w-full text-left">
               <thead>

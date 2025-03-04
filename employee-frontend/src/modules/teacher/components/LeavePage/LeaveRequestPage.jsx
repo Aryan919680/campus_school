@@ -30,37 +30,37 @@ const LeaveRequests = () => {
 
 
 
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${campusId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => res.json())
-      .then((data) => setDepartments(data.data || []))
-      .catch((err) => console.error("Error fetching departments:", err));
-  }, [campusId, token]);
+  // useEffect(() => {
+  //   fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${campusId}`, {
+  //     headers: { Authorization: `Bearer ${token}` },
+  //   })
+  //     .then((res) => res.json())
+  //     .then((data) => setDepartments(data.data || []))
+  //     .catch((err) => console.error("Error fetching departments:", err));
+  // }, [campusId, token]);
+
+  // useEffect(() => {
+  //   if (!selectedDepartment) return;
+  //   fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${campusId}/department/${selectedDepartment}`, {
+  //     headers: { Authorization: `Bearer ${token}` },
+  //   })
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       setCourses(data.data || []);
+  //     })
+  //     .catch((err) => console.error("Error fetching courses:", err));
+  // }, [selectedDepartment, campusId, token]);
+
+  // useEffect(() => {
+  //   if (!selectedCourse) return;
+  //   const selectedCourseObj = courses.find((course) => course.courseId === selectedCourse);
+  //   setSemesters(selectedCourseObj ? selectedCourseObj.semester : []);
+  // }, [selectedCourse, courses]);
+
+
 
   useEffect(() => {
-    if (!selectedDepartment) return;
-    fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${campusId}/department/${selectedDepartment}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setCourses(data.data || []);
-      })
-      .catch((err) => console.error("Error fetching courses:", err));
-  }, [selectedDepartment, campusId, token]);
-
-  useEffect(() => {
-    if (!selectedCourse) return;
-    const selectedCourseObj = courses.find((course) => course.courseId === selectedCourse);
-    setSemesters(selectedCourseObj ? selectedCourseObj.semester : []);
-  }, [selectedCourse, courses]);
-
-
-
-  useEffect(() => {
-    if (!selectedSemester) return;
+    //if (!selectedSemester) return;
     setLoading(true);
     setError(null);
 
@@ -109,7 +109,7 @@ const LeaveRequests = () => {
     <div className="w-full p-4">
       <h1 className="text-2xl font-bold mb-4">Leave Requests</h1>
 
-      <div className="mb-4">
+      {/* <div className="mb-4">
         <label className="font-medium">Select Department:</label>
         <Select onValueChange={setSelectedDepartment} value={selectedDepartment || ''}>
           <SelectTrigger>
@@ -158,7 +158,7 @@ const LeaveRequests = () => {
               ))}
           </SelectContent>
         </Select>
-      </div>
+      </div> */}
 
       <div className="mt-6">
    

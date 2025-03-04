@@ -11,8 +11,9 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import AttendanceComponent from "../components/HomePage/AttendanceComponent";
 import LeaveRequestPage from "../components/LeavePage/LeaveRequestPage";
+import AttendanceComponentSchool from "../components/HomePage/AttendanceComponentSchool";
 
-const SchoolHomePage = () => {
+const SchoolHomePage = ({handleShowAttendance}) => {
   const [showDefaultPage, setShowDefaultPage] = useState(true);
   const [showAttendancePage, setShowAttendancePage] = useState(false);
   const [date, setDate] = useState("");
@@ -73,18 +74,77 @@ const SchoolHomePage = () => {
       .catch((err) => console.error("Error fetching sub-sections:", err));
   }, [selectedClass, campusId, token]);
 
-  return (
+  const handleSchoolAttendence = () =>{
+  setShowLeavePage(false);
+    setShowAttendancePage(true);
+    setShowDefaultPage(false);
+  }
+  const handleEditAttendance = (attendanceId, newStatus) => {
+    fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/attendance/campus/${campusId}/students`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ status: newStatus, attendanceId: attendanceId }),
+    })
+      .then((res) => res.json())
+      .then((updatedAttendance) => {
+        setAttendanceData((prevData) =>
+          prevData.map((entry) =>
+            entry.attendanceId === attendanceId ? { ...entry, status: newStatus } : entry
+          )
+        );
+      })
+      .catch((err) => console.error("Failed to update attendance:", err));
+  };
+
+  const handleDeleteAttendance = (attendanceId) => {
+    fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/attendance/campus/${campusId}/students`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        attendanceIds: [attendanceId], // Send as an array
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to delete attendance record");
+        return response.json();
+      })
+      .then(() => {
+        // Remove deleted entry from UI
+        setAttendanceData((prevData) =>
+          prevData.filter((entry) => entry.attendanceId !== attendanceId)
+        );
+      })
+      .catch((err) => console.error("Error deleting attendance:", err));
+  };
+  
+  const handleSchoolLeavePage = () =>{
+    setShowLeavePage(true);
+    setShowAttendancePage(false);
+    setShowDefaultPage(false);
+  }
+
+  const onClose = () =>{
+    setShowDefaultPage(true);
+    setShowAttendancePage(false);
+  }
+    return (
     <div className="w-full ml-6 rounded-xl p-4">
-      <h1 className="text-3xl font-bold pt-6 mb-6">School Attendance Management</h1>
+    
       <div className="flex gap-4 mb-6">
-        <Button variant="outline" className={cn("w-[280px] text-left font-normal")} onClick={() => setShowAttendancePage(true)}>Mark Student Attendance</Button>
-        <Button variant="outline" className={cn("w-[280px] text-left font-normal")} onClick={() => setShowLeavePage(true)}>Leave Requests</Button>
+        <Button variant="outline" className={cn("w-[280px] text-left font-normal")} onClick={() => handleSchoolAttendence()}>Mark Student Attendance</Button>
+        <Button variant="outline" className={cn("w-[280px] text-left font-normal")} onClick={() => handleSchoolLeavePage()}>Leave Requests</Button>
       </div>
-      {showAttendancePage && <AttendanceComponent onClose={() => setShowAttendancePage(false)} />}
+      {showAttendancePage && <AttendanceComponentSchool onClose={() => onClose()} />}
       {showLeavePage && <LeaveRequestPage />}
       {showDefaultPage && (
         <div className="border p-4 rounded-lg shadow-lg">
-          <h2 className="text-xl font-bold mb-4">Filter Attendance</h2>
+         
           <div className="mb-4">
             <label className="font-medium">Select Date:</label>
             <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
@@ -135,6 +195,59 @@ const SchoolHomePage = () => {
           </div>
         </div>
       )}
+      {
+        showDefaultPage &&   <div className="mt-6">
+        <h2 className="text-xl font-bold mb-4">Student Attendance</h2>
+        {loading ? (
+          <p>Loading attendance...</p>
+        ) : error ? (
+          <p className="text-red-500">{error}</p>
+        ) : (
+          <div className="border p-4 rounded-lg shadow">
+         <table className="w-full text-left border-collapse border border-gray-300">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="border border-gray-300 p-2">Student Name</th>
+              <th className="border border-gray-300 p-2">Status</th>
+              <th className="border border-gray-300 p-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            { attendanceData.length > 0 ? (
+              attendanceData.map((entry) => (
+                <tr key={entry.attendanceId} className="border border-gray-300">
+                  <td className="border border-gray-300 p-2">{entry.student?.name || "N/A"}</td>
+                  <td className="border border-gray-300 p-2">
+                    <Select onValueChange={(newStatus) => handleEditAttendance(entry.attendanceId, newStatus)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder={entry.status} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="PRESENT">PRESENT</SelectItem>
+                        <SelectItem value="ABSENT">ABSENT</SelectItem>
+                        <SelectItem value="LATE">LATE</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </td>
+                  <td className="border border-gray-300 p-2">
+                    <Button variant="destructive" size="sm" onClick={() => handleDeleteAttendance(entry.attendanceId)}>
+                      Delete
+                    </Button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="3" className="text-center p-2">No attendance records found.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+          </div>
+        )}
+      </div>
+      }
+     
     </div>
   );
 };
