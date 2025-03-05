@@ -17,6 +17,7 @@ import Attendance from "./components/Attendance/Attendance";
 import Support from "./components/Support/Support";
 import Classes from "./components/Classes/Classes";
 import Departments from "./components/Departments/Department";
+import AttendancePage from "./components/Attendance/AttendencePage";
 
 const Layout = ({ logout }) => {
 	const [userData, setUserData] = useState(() => {
@@ -85,7 +86,7 @@ const Layout = ({ logout }) => {
 								<Route path="/" element={<Departments />} />
 							<Route path="/department" element={<Departments />} />
 							<Route path="/employees" element={<Employees />} />
-							<Route path="/attendance" element={<Attendance />} />
+							<Route path="/attendance" element={<AttendancePage />} />
 						{/* <Route path="/" element={<Dashboard />} />
 						
 						{/* <Route path='/classes' element={<Classes />} /> */}

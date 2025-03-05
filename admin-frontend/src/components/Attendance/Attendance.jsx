@@ -286,7 +286,7 @@ const Attendance = () => {
 
 	return (
 		<div className="container mx-auto p-4">
-			<h1 className="text-2xl font-bold mb-4">Employee Attendance</h1>
+			<h1 className="text-2xl font-bold mb-4">Mark Employee Attendance</h1>
 
 			<div className="w-full flex gap-4 mb-4">
 				{/* <select
