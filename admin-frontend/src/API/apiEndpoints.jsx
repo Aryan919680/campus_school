@@ -110,21 +110,25 @@ DELETE_EMPLOYEE : `${import.meta.env.VITE_BASE_URL}/api/v1/employee/campus/${get
     }/api/v1/teacher/${userId}/deleteAllTeacher`,
   LOGIN_TEACHERS: `${import.meta.env.VITE_BASE_URL}/api/v1/teacher/login`,
   // ATTENDANCE
-  MARK_FACULTY_TEACHERS: (userId) =>
-    `${import.meta.env.VITE_BASE_URL
-    }/api/v1/attendance/markFacultyAttendance/${userId}`,
-  FACULTY_ATTENDANCE_DATE: (userId, date) =>
-    `${import.meta.env.VITE_BASE_URL
-    }/api/v1/attendance/fetchFacultyAttendance/${userId}/${date}`,
-  FACULTY_ATTENDANCE_BY_DATE_ID: (date, id) =>
-    `${import.meta.env.VITE_BASE_URL
-    }/api/v1/attendance/faculty-attendanceById/${date}/${id}`,
-  UPDATE_ATTENDANCE: (userId) =>
-    `${import.meta.env.VITE_BASE_URL
-    }/api/v1/attendance/updateFacultyAttendance/${userId}`,
-  SELECTED_DATE_ATTENDANCE: (userId) =>
-    `${import.meta.env.VITE_BASE_URL
-    }/api/v1/attendance/getAttendenceByDate/${userId}`,
+  
+  MARK_ATTENDANCE : `${import.meta.env.VITE_BASE_URL}/api/v1/attendance/campus/${getCampusId()}/employees`,
+  GET_ATTENDANCE : `${import.meta.env.VITE_BASE_URL}/api/v1/attendance/campus/${getCampusId()}/employees`,
+  GET_LEAVE_REQUESTS : `${import.meta.env.VITE_BASE_URL}/api/v1/leave/campus/${getCampusId()}/employees`,
+  // MARK_FACULTY_TEACHERS: (userId) =>
+  //   `${import.meta.env.VITE_BASE_URL
+  //   }/api/v1/attendance/markFacultyAttendance/${userId}`,
+  // FACULTY_ATTENDANCE_DATE: (userId, date) =>
+  //   `${import.meta.env.VITE_BASE_URL
+  //   }/api/v1/attendance/fetchFacultyAttendance/${userId}/${date}`,
+  // FACULTY_ATTENDANCE_BY_DATE_ID: (date, id) =>
+  //   `${import.meta.env.VITE_BASE_URL
+  //   }/api/v1/attendance/faculty-attendanceById/${date}/${id}`,
+  // UPDATE_ATTENDANCE: (userId) =>
+  //   `${import.meta.env.VITE_BASE_URL
+  //   }/api/v1/attendance/updateFacultyAttendance/${userId}`,
+  // SELECTED_DATE_ATTENDANCE: (userId) =>
+  //   `${import.meta.env.VITE_BASE_URL
+  //   }/api/v1/attendance/getAttendenceByDate/${userId}`,
   // STUDENTS
   REGISTER_STUDENTS: `${import.meta.env.VITE_BASE_URL
     }/api/v1/student/campus/${getCampusId()}/register`,

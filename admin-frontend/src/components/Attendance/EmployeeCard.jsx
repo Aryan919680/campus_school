@@ -29,7 +29,7 @@ const EmployeeCard = ({
 
 	const handleRadioChange = (value) => {
 		setSelectedOption(value);
-		onAttendanceChange(employee.id, value);
+		onAttendanceChange(employee.employeeId, value);
 	};
 
 	const fetchAttendanceStatus = async () => {

@@ -53,7 +53,9 @@ const LeaveForm = ({leaves, setLeaves}) => {
 
   const { data } = useContext(AuthContext);
   const [open, setOpen] = useState(false);
-
+  const token = localStorage.getItem("token");
+  const teacherData = JSON.parse(localStorage.getItem("teacherData"));
+  const campusId = teacherData?.campusId;
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -64,19 +66,21 @@ const LeaveForm = ({leaves, setLeaves}) => {
 
   async function onSubmit(formData) {
     const body = {
-      dateFrom: dateString(formData.date.from),
-      dateTo: dateString(formData.date.to),
-      noOfDays: daysBetween(formData.date.from, formData.date.to),
-      reason: formData.reason,
-      teacherId: data.id,
+      from: dateString(formData.date.from),
+      to: dateString(formData.date.to),
+      reason: formData.reason
     };
 
     
 
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/api/v1/leave/apply-leave`,
-        body
+        `${import.meta.env.VITE_BASE_URL}/api/v1/leave/campus/${campusId}/employees`,
+        body,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
       );
       console.log(response.data.success);
       console.log(response.data);
