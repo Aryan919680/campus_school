@@ -81,16 +81,21 @@ const AttendancePage = () => {
         function extractDate(timestamp) {
             return timestamp.split("T")[0];
         }
-        
         const deleteAttendance = async (recordId) => {
             try {
-                await axios.delete(API_ENDPOINTS.DELETE_ATTENDANCE(recordId));
-                setAttendanceRecords(prevRecords => prevRecords.filter(record => record.id !== recordId));
+                await axios.delete(API_ENDPOINTS.MARK_ATTENDANCE, {
+                    headers: { Authorization: `Bearer ${token}` },
+                    data: { attendanceIds: [recordId] }
+                });
+             fetchAttendanceRecords();
             } catch (error) {
                 console.error("Error deleting attendance record:", error);
             }
         };
-    
+      const onClose = () =>{
+        setActiveTab('attendance');
+        fetchAttendanceRecords();
+      }
         
     return (
         <div className="container mx-auto p-4">
@@ -110,53 +115,17 @@ const AttendancePage = () => {
                     Leave Request
                 </button>
             </div>
-            {activeTab === "mark attendance" && <Attendance onClose={() => setActiveTab('attendance')}/>}
+            {activeTab === "mark attendance" && <Attendance onClose={onClose}/>}
             {activeTab === "attendance" &&(
                 <div>
-                    	<input
+             
+                    <h2 className="text-xl font-semibold mb-4">Attendance Records</h2>
+                    <input
 				type="date"
 				value={selectedDate.format("YYYY-MM-DD")}
 				onChange={(e) => handleDateChange(e.target.value)}
 				className="border p-2 rounded"
 			/>
-                    <h2 className="text-xl font-semibold mb-4">Attendance Records</h2>
-                    {/* <table className="min-w-full bg-white border border-gray-300">
-                        <thead>
-                            <tr className="bg-gray-200">
-                                <th className="border p-2">Employee Name</th>
-                                <th className="border p-2">Date</th>
-                                <th className="border p-2">Status</th>
-                                <th className="border p-2">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {attendanceRecords.map(record => (
-                                <tr key={record.attendanceId} className="border ">
-                                    <td className="border p-2">{record.employee.name}</td>
-                                    <td className="border p-2">{extractDate(record.created_at)}</td>
-                                    <td className="border p-3">
-                                        <select
-                                            value={record.status}
-                                            onChange={(e) => updateAttendance(record.attendanceId, e.target.value)}
-                                            className="border rounded"
-                                        >
-                                            <option value="ABSENT">ABSENT</option>
-                                            <option value="PRESENT">PRESENT</option>
-                                            <option value="LATE">LATE</option>
-                                        </select>
-                                    </td>
-                                    <td className="border p-2">
-                                        <button
-                                            className="bg-red-500 text-white px-3 py-1 rounded"
-                                            onClick={() => deleteAttendance(record.attendanceId)}
-                                        >
-                                            Delete
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table> */}
                     <ListTable
                         ListName={"Employee Name"}
                         ListRole={"Date"}
