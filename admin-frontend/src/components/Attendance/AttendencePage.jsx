@@ -10,6 +10,7 @@ const AttendancePage = () => {
     const [leaveRequests, setLeaveRequests] = useState([]);
     const [attendanceRecords, setAttendanceRecords] = useState([]);
     const [selectedDate, setSelectedDate] = useState(moment());
+    const [teachers,setTeachers] = useState([]);
 
     const userData = JSON.parse(localStorage.getItem("userData"));
     const parsedData = userData;
@@ -20,9 +21,29 @@ const AttendancePage = () => {
 
     useEffect(() => {
         if (activeTab === "leave") {
-            fetchLeaveRequests();
+            fetchTeachers();
         }
     }, [activeTab]);
+    
+    // Fetch leave requests only after teachers are updated
+    useEffect(() => {
+        if (activeTab === "leave" && teachers.length > 0) {
+            fetchLeaveRequests();
+        }
+    }, [teachers, activeTab]);
+
+		const fetchTeachers = async () => {
+			try {
+				
+				const response = await axios.get(`${API_ENDPOINTS.FETCH_ALL_TEACHERS}`,{
+					Authorization: `Bearer ${token}`,
+				});
+				setTeachers(response.data.data);
+			} catch (error) {
+				console.log("Failed to fetch teachers. Please try again.");
+			} 
+		};
+
 
     const fetchAttendanceRecords = async () => {
         try {
@@ -58,22 +79,44 @@ const AttendancePage = () => {
     const fetchLeaveRequests = async () => {
         try {
             const response = await axios.get(API_ENDPOINTS.GET_LEAVE_REQUESTS);
-            setLeaveRequests(response.data.data);
+            const leaveData = response.data.data;
+    
+            // Ensure teachers data is available
+            console.log(teachers)
+            if (teachers.length > 0) {
+                const updatedLeaveRequests = leaveData.map(request => {
+                    const matchingTeacher = teachers.find(teacher => teacher.employeeId === request.employeeId);
+                    return {
+                        ...request,
+                        employeeName: matchingTeacher ? matchingTeacher.name : "Unknown",
+                    };
+                });
+    
+                setLeaveRequests(updatedLeaveRequests);
+                console.log(updatedLeaveRequests)
+            } else {
+                setLeaveRequests(leaveData);
+            }
         } catch (error) {
             console.error("Error fetching leave requests:", error);
         }
     };
-
-    const handleLeaveAction = async (requestId, status) => {
+    
+    const handleLeaveAction = async (leaveId, status) => {
         try {
-            await axios.put(API_ENDPOINTS.UPDATE_LEAVE_REQUEST(requestId), { status });
+            await axios.put(API_ENDPOINTS.GET_LEAVE_REQUESTS, { leaveId, status }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+    
+            // Update the UI
             setLeaveRequests(prevRequests => prevRequests.map(request =>
-                request.id === requestId ? { ...request, status } : request
+                request.leaveId === leaveId ? { ...request, status } : request
             ));
         } catch (error) {
             console.error("Error updating leave request:", error);
         }
     };
+    
 
         const handleDateChange = (date) => {
             setSelectedDate(moment(date));
@@ -126,75 +169,74 @@ const AttendancePage = () => {
 				onChange={(e) => handleDateChange(e.target.value)}
 				className="border p-2 rounded"
 			/>
-                    <ListTable
-                        ListName={"Employee Name"}
-                        ListRole={"Date"}
-                        ListDepartment={"Status"}
-                        ListAction={"Actions"}
-                        showDataList={attendanceRecords.map(record => (
-                            <CommonTable
-                                key={record.attendanceId}
-                                name={record.employee.name}
-                                role={moment(record.created_at).format("YYYY-MM-DD")}
-                                id={
-                                    <select
-                                        value={record.status}
-                                        onChange={(e) => updateAttendance(record.attendanceId, e.target.value)}
-                                        className="border  rounded"
-                                    >
-                                        <option value="ABSENT">ABSENT</option>
-                                        <option value="PRESENT">PRESENT</option>
-                                        <option value="LATE">LATE</option>
-                                    </select>
-                                }
-                                dangerAction={"Delete"}
-                                onDelete={() => deleteAttendance(record.attendanceId)}
-                            />
-                        ))}
-                        />
+                   <ListTable 
+    ListName={"Employee Name"}
+    ListRole={"Date"}
+    ListDepartment={"Status"}
+    ListAction={"Actions"}
+    showDataList={attendanceRecords.map(record => (
+        <CommonTable 
+            key={record.attendanceId}
+            name={record.employee.name}
+            role={moment(record.created_at).format("YYYY-MM-DD")}
+            id={
+                <select
+                    value={record.status}
+                    onChange={(e) => updateAttendance(record.attendanceId, e.target.value)}
+                    className="border rounded"
+                >
+                    <option value="ABSENT">ABSENT</option>
+                    <option value="PRESENT">PRESENT</option>
+                    <option value="LATE">LATE</option>
+                </select>
+            }
+            actions={[
+                {
+                    type: "button",
+                    label: "Delete",
+                    onClick: () => deleteAttendance(record.attendanceId)
+                }
+            ]}
+        />
+    ))}
+/>
+
                 </div>
             ) }
             
             {activeTab === "leave" && (
-                <div>
-                    <h2 className="text-xl font-semibold mb-4">Leave Requests</h2>
-                    <table className="min-w-full bg-white border border-gray-300">
-                        <thead>
-                            <tr className="bg-gray-200">
-                                <th className="border p-2">Employee Name</th>
-                                <th className="border p-2">Date</th>
-                                <th className="border p-2">Reason</th>
-                                <th className="border p-2">Status</th>
-                                <th className="border p-2">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {leaveRequests.map(request => (
-                                <tr key={request.id} className="border">
-                                    <td className="border p-2">{request.employeeName}</td>
-                                    <td className="border p-2">{request.date}</td>
-                                    <td className="border p-2">{request.reason}</td>
-                                    <td className="border p-2">{request.status}</td>
-                                    <td className="border p-2">
-                                        <button
-                                            className="bg-green-500 text-white px-3 py-1 rounded mr-2"
-                                            onClick={() => handleLeaveAction(request.id, "Approved")}
-                                        >
-                                             Approve
-                                        </button>
-                                        <button
-                                            className="bg-red-500 text-white px-3 py-1 rounded"
-                                            onClick={() => handleLeaveAction(request.id, "Denied")}
-                                        >
-                                            Deny
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            )}
+    <div>
+        <h2 className="text-xl font-semibold mb-4">Leave Requests</h2>
+        <ListTable 
+    ListName={"Employee Name"}
+    ListRole={"Date Range"}
+    ListDepartment={"Reason"}
+    ListAction={"Actions"}
+    showDataList={leaveRequests.map(request => (
+        <CommonTable 
+            key={request.leaveId}
+            name={request.employeeName}
+            role={`${moment(request.from).format("YYYY-MM-DD")} - ${moment(request.to).format("YYYY-MM-DD")}`}
+            id={request.reason}
+            actions={[
+                {
+                    type: "dropdown",
+                    value: request.status,
+                    onChange: (status) => handleLeaveAction(request.leaveId, status),
+                    options: [
+                        { value: "PENDING", label: "Pending" },
+                        { value: "APPROVED", label: "Approve" },
+                        { value: "REJECTED", label: "Deny" }
+                    ]
+                }
+            ]}
+        />
+    ))}
+/>
+
+    </div>
+)}
+
         </div>
     );
 };

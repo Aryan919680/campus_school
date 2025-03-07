@@ -225,7 +225,12 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 					title="Students"
 					isSidebarExpanded={isSidebarExpanded}
 				/>
-
+<NavItems
+					to="/Attendance"
+					icon="fluent:task-list-square-add-24-filled"
+					title="Attendance"
+					isSidebarExpanded={isSidebarExpanded}
+				/>
 			{/*	<NavItems
 					to="/Finance"
 					icon="material-symbols:finance-mode-rounded"
@@ -288,13 +293,13 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 					title="Attendance"
 					isSidebarExpanded={isSidebarExpanded}
 				/>
-				{/*<NavItems
+				<NavItems
 					to="/Finance"
 					icon="material-symbols:finance-mode-rounded"
 					title="Finance"
 					isSidebarExpanded={isSidebarExpanded}
 				/>
-				<NavItems
+			{/*	<NavItems
 					to="/Department"
 					icon="mingcute:department-fill"
 					title="Department"

@@ -190,48 +190,27 @@ const Employee = () => {
 						</div>
 					) : (
 						<ListTable
-							ListName={"Name"}
-							ListRole={"Role"}
-							ListDepartment={"Email"}
-							ListAction={"Actions"}
-							showDataList={teachers.map((teacher) => (
-								<CommonTable
-									key={teacher.id}
-									// profile={teacher.photo || getDefaultPhoto(teacher.gender)}
-									name={teacher.name}
-									role={teacher.role}
-									// id={
-									// 	Array.isArray(teacher.subject) && teacher.subject.length > 0
-									// 		? teacher.subject[0].department.name
-									// 		: "N/A"
-									// }
-									id={teacher.email}
-									dangerAction={"Remove"}
-									action1={"View Profile"}
-									buttonHide={"hidden"}
-									onViewProfile={() =>
-										handleViewProfile({
-											photo: teacher.photo || getDefaultPhoto(teacher.gender),
-											name: teacher.name,
-											role: teacher.role,
-											id: teacher.employeeId,
-											gender: teacher.gender,
-											dob: teacher.dob,
-											contactNumber: teacher.contactNumber,
-											departmentId: teacher.departmentId,
-											departmentName:
-												Array.isArray(teacher.subject) &&
-												teacher.subject.length > 0
-													? teacher.subject[0].department.name
-													: "N/A",
-											permanent_address: teacher.permanent_address,
-											currentAddress: teacher.currentAddress,
-										})
-									}
-									onDelete={() => handleDeleteProfile(teacher.employeeId)}
-								/>
-							))}
-						/>
+						ListName={"Name"}
+						ListRole={"Role"}
+						ListDepartment={"Email"}
+						ListAction={"Actions"}
+						showDataList={teachers.map((teacher) => (
+							<CommonTable
+								key={teacher.id}
+								name={teacher.name}
+								role={teacher.role}
+								id={teacher.email}
+								actions={[
+									{
+										type: "button",
+										label: "Remove",
+										onClick: () => handleDeleteProfile(teacher.employeeId),
+									},
+								]}
+							/>
+						))}
+					/>
+					
 					)}
 
 					{/* {selectedProfile && (

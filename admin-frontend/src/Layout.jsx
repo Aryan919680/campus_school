@@ -18,6 +18,7 @@ import Support from "./components/Support/Support";
 import Classes from "./components/Classes/Classes";
 import Departments from "./components/Departments/Department";
 import AttendancePage from "./components/Attendance/AttendencePage";
+import FeePage from "./components/Fees/FeePage";
 
 const Layout = ({ logout }) => {
 	const [userData, setUserData] = useState(() => {
@@ -78,6 +79,7 @@ const Layout = ({ logout }) => {
 						<Route path="/classes" element={<Classes />} />
 						<Route path="/employees" element={<Employees />} />
 						<Route path="/students" element={<Students />} />
+						<Route path="/attendance" element={<AttendancePage />} />
 					</Routes>
 					}
 					{
@@ -92,13 +94,13 @@ const Layout = ({ logout }) => {
 						{/* <Route path='/classes' element={<Classes />} /> */}
 					
 						<Route path="/students" element={<Students />} />
-					{/* 	<Route path="/finance/*" element={<Finance />}>
-							<Route path="summary" element={<Summary />} />
+					<Route path="/finance" element={<FeePage />} />
+			
+							{/* <Route path="summary" element={<Summary />} />
 							<Route path="transactions" element={<Transactions />} />
 							<Route path="student-fees" element={<StudentFees />} />
-							<Route path="payroll" element={<Payroll />} />
-						</Route>
-						<Route path="/event" element={<EventManagement />} />
+							<Route path="payroll" element={<Payroll />} /> */}
+						{/* 	<Route path="/event" element={<EventManagement />} />
 						<Route path="/department" element={<Department />} />
 						<Route path="/attendance" element={<Attendance />} />
 						<Route path="/support" element={<Support />} />

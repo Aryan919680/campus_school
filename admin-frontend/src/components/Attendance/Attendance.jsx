@@ -24,7 +24,7 @@ const Attendance = ({onClose}) => {
 		const fetchTeachers = async () => {
 			try {
 				setIsLoading(true);
-				const response = await axios.get(`${API_ENDPOINTS.FETCH_ALL_TEACHERS}?status="PENDING"`,{
+				const response = await axios.get(`${API_ENDPOINTS.FETCH_ALL_TEACHERS}`,{
 					Authorization: `Bearer ${token}`,
 				});
 				setTeachers(response.data.data);
