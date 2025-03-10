@@ -10,7 +10,9 @@ const CreateEmployee = ({ setFormModalOpen, onEmployeeAdded }) => {
     const [step, setStep] = useState(1);
     const [currentEmployee, setCurrentEmployee] = useState({ name: "", contactNumber: "", email: "", qualification: "", role: "", customRole: "", semesterId: "" });
     const [error, setError] = useState("");
-    
+    console.log(userData)
+    const dropdownValue = userData.data.campusType.toLowerCase() === 'school' ? ["Teacher", "Class Teacher", "Incharge/Coordinator", "Vice Principal", "Principal", "Director", "Manager"] : 
+    ["Faculty", "Guest Faculty", "Coordinator", "HOD", "Dean", "Director", "Manager"];
     const handleChange = (e) => {
         const { name, value } = e.target;
         setCurrentEmployee((prev) => ({ ...prev, [name]: value }));
@@ -88,7 +90,7 @@ const CreateEmployee = ({ setFormModalOpen, onEmployeeAdded }) => {
                                         setEmployees(updatedEmployees);
                                     }} className="block w-full p-2 border border-gray-300 rounded-md">
                                         <option value="">Select Role</option>
-                                        {["Teacher", "Class Teacher", "Incharge/Coordinator", "Vice Principal", "Principal", "Director", "Manager"].map((role) => (
+                                        {dropdownValue.map((role) => (
                                             <option key={role} value={role}>{role}</option>
                                         ))}
                                     </select>
