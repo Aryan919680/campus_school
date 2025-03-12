@@ -231,6 +231,12 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 					title="Attendance"
 					isSidebarExpanded={isSidebarExpanded}
 				/>
+				<NavItems
+					to="/Finance"
+					icon="material-symbols:finance-mode-rounded"
+					title="Finance"
+					isSidebarExpanded={isSidebarExpanded}
+				/>
 			{/*	<NavItems
 					to="/Finance"
 					icon="material-symbols:finance-mode-rounded"

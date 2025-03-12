@@ -68,6 +68,7 @@ const API_ENDPOINTS = {
   SUBMIT_COURSES: `${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${getCampusId()}/department`,
   GET_COURSES_OF_DEPARTMENT: `${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${getCampusId()}/department`,
   SUBMIT_FEES: `${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${getCampusId()}`,
+  PAYMENT_FEES :`${import.meta.env.VITE_BASE_URL}/api/v1/payment/campus/${getCampusId()}/fees`,
   // Onboarding
   CREATE_CAMPUS: `${import.meta.env.VITE_BASE_URL}/api/v1/campus/register`,
   CREATE_BRANCH: `${import.meta.env.VITE_BASE_URL}/api/v1/campus/reg/branch`,

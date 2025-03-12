@@ -33,8 +33,7 @@ const AttendancePage = () => {
     }, [teachers, activeTab]);
 
 		const fetchTeachers = async () => {
-			try {
-				
+			try {			
 				const response = await axios.get(`${API_ENDPOINTS.FETCH_ALL_TEACHERS}`,{
 					Authorization: `Bearer ${token}`,
 				});

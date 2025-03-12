@@ -1,5 +1,6 @@
 import { useState } from "react";
-
+import ViewFeePage from './ViewFeePage'
+import CollectFeePage from "./CollectFeePage";
 const FeePage = () => {
   const [activeTab, setActiveTab] = useState("default");
 
@@ -9,9 +10,9 @@ const FeePage = () => {
 
       <div className="flex gap-4 mb-4">
         <button
-          onClick={() => setActiveTab("deafult")}
+          onClick={() => setActiveTab("default")}
           className={`px-4 py-2 rounded ${
-            activeTab === "deafult"
+            activeTab === "default"
               ? "bg-linear-blue text-white"
               : "bg-gray-300"
           }`}
@@ -27,6 +28,11 @@ const FeePage = () => {
           Collect Fees
         </button>
       </div>
+      {
+        activeTab === 'default' ?      <ViewFeePage /> : 
+        <CollectFeePage />
+      }
+
     </div>
   );
 };

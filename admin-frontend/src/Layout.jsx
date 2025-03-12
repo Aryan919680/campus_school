@@ -80,6 +80,7 @@ const Layout = ({ logout }) => {
 						<Route path="/employees" element={<Employees />} />
 						<Route path="/students" element={<Students />} />
 						<Route path="/attendance" element={<AttendancePage />} />
+						<Route path="/finance" element={<FeePage />} />
 					</Routes>
 					}
 					{
