@@ -13,7 +13,6 @@ const CollectFeePage = () => {
     const [paymentMode, setPaymentMode] = useState("");
     const [chequeNumber, setChequeNumber] = useState("");
     const [dateOfPayment, setDateOfPayment] = useState("");
-    console.log(campusType)
     useEffect(() => {
         getStudents();
         getFees();
@@ -46,7 +45,7 @@ const CollectFeePage = () => {
                 const response = await axios.get(`${API_ENDPOINTS.FETCH_FEES}/fees`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-                console.log(fees)
+              
                 setFees(response.data.data);
             } catch (error) {
                 console.error("Failed to fetch fees.", error);
@@ -60,8 +59,8 @@ const CollectFeePage = () => {
         setSelectedStudent(student);
     };
 
-    const totalFee = campusType === "COLLEGE" ? fees.find(f => f.courseId === selectedStudent?.courseId)?.fees?.reduce((sum, fee) => sum + fee.amount, 0)*2 || 0 :  
-    fees.find(f => f.classId === selectedStudent?.classId)?.fees?.reduce((sum, fee) => sum + fee.amount, 0) || 0;
+    const totalFee = campusType === "COLLEGE" ? fees.find(f => f.courseId === selectedStudent?.courseId)?.fees?.reduce((sum, fee) => sum + fee.amount * (fee.type === "SEMESTER" ? 2 : 1), 0) || 0 :  
+    fees.find(f => f.classId === selectedStudent?.classId)?.fees?.reduce((sum, fee) => sum + fee.amount * (fee.type === "MONTHLY" ? 12 : 1), 0) || 0;
     
     const remainingAmount = totalFee - (paidAmount || 0);
      

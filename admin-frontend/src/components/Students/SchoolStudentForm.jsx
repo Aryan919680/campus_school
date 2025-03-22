@@ -49,6 +49,21 @@ const SchoolStudentForm = ({ onClose, onStudentAdded }) => {
         }
     }, [file]);
 
+    const downloadSampleCSV = () => {
+        const sampleData = `Full Name,Date of birth,Aadhaar ID,Contact Number,Parent/Guardian Name,Parent Contact,Email Address,Address,Class,Subclass,Admission Number, Roll Number\nJohn Doe,12-03-2000,123456789012,9876543210,Jane Doe,9876543210,john@example.com,123 Street City,1,A,123456789,121`;
+        
+        const blob = new Blob([sampleData], { type: "text/csv" });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "sample_student_data.csv";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    };
+    
+
     const handleFileUpload = async () => {
         const reader = new FileReader();
         reader.onload = async (event) => {
@@ -71,7 +86,6 @@ const SchoolStudentForm = ({ onClose, onStudentAdded }) => {
 
     async function changePayload(studentData) {
         try {
-            console.log(studentData,classes)
             const updatedStudents = await Promise.all(
                 studentData.map(async (student) => {
                   
@@ -80,7 +94,7 @@ const SchoolStudentForm = ({ onClose, onStudentAdded }) => {
                         console.warn(`Class ${student.Class} not found for ${student["Full Name"]}`);
                         return null;
                     }
-                    console.log(selectedClass)
+
                     const subclass = selectedClass.subClass.find(sub => sub.subClassName.toLowerCase() === student.Subclass.toLowerCase());
                     if (!subclass) {
                         console.warn(`Subclass ${student.Subclass} not found for ${student["Full Name"]}`);
@@ -103,7 +117,6 @@ const SchoolStudentForm = ({ onClose, onStudentAdded }) => {
                     };
                 })
             );
-            console.log(updatedStudents)
             return { students: updatedStudents.filter(student => student !== null) };
         } catch (error) {
             console.error("Error enriching student data:", error);
@@ -146,7 +159,6 @@ const SchoolStudentForm = ({ onClose, onStudentAdded }) => {
             alert("No students to save.");
             return;
         }
-     console.log(students)
         const formattedStudents = students.map(student => ({
             name: student.fullName,
             gender: student.gender || "UNKNOWN",
@@ -207,6 +219,11 @@ const SchoolStudentForm = ({ onClose, onStudentAdded }) => {
                         </div>
                         {bulkUpload ? (
                             <>
+                             <button 
+                    onClick={downloadSampleCSV} 
+                    className="mb-2 bg-gray-600 px-4 py-2 rounded-md text-white">
+                    Download Sample CSV
+                </button>
                                 <input type="file" onChange={handleFileChange} className="block w-full p-2 border border-gray-300 rounded-md text-white" />
                                 <button onClick={handleBulkUpload} className="mt-2 bg-blue-600 px-4 py-2 rounded-md text-white">Upload & Validate</button>
                             </>
