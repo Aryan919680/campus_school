@@ -96,7 +96,7 @@ const router = createBrowserRouter(
 		},
 	],
 	{
-		basename: "/employee-frontend",
+		basename: "/employee",
 	}
 );
 

@@ -90,7 +90,7 @@ const router = createBrowserRouter(
 		},
 	],
 	{
-		basename: "/student-frontend",
+		basename: "/student",
 	}
 );
 
