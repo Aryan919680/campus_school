@@ -228,10 +228,10 @@ const LogIn = ({ onSchoolOnboarding,onCollegeOnboarding }) => {
 						<span className="block sm:inline">{errorMessage}</span>
 					</div>
 				)}
-
+ 
 				<div className="text-center">
 					<p className="text-gray-600 text-sm">Don't have an account?</p>
-					<div className="flex flex-col">
+					{/* <div className="flex flex-col">
 					<button
 						onClick={onSchoolOnboarding}
 						className="mt-2 text-sky-500 hover:text-sky-700 font-semibold"
@@ -244,12 +244,12 @@ const LogIn = ({ onSchoolOnboarding,onCollegeOnboarding }) => {
 					>
 						Start College Onboarding
 					</button>
-					</div>
-				</div>
+					</div> */}
+				</div> 
 
 				<div className="mt-4 text-center">
-					<Link to="/" className="text-sm text-gray-600 hover:text-gray-800">
-						Back to Home
+					<Link to="/" className="text-sm text-sky-500 hover:text-sky-700 font-semibold">
+						Click Here To Register
 					</Link>
 				</div>
 			</div>

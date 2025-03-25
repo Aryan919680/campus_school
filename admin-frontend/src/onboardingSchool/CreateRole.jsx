@@ -61,7 +61,8 @@ const [showPassword, setShowPassword] = useState(false);
 	};
 
 	const handleNext = () => {
-		if (!isValidEmail || !isValid) return;
+		console.log("here")
+		//if (!isValidEmail || !isValid) return;
 		localStorage.setItem("adminEmail", roleData.email);
 		localStorage.setItem("adminRole", roleData.role);
 		localStorage.setItem("adminPassword", password);
@@ -87,10 +88,12 @@ const [showPassword, setShowPassword] = useState(false);
 				name: "",
 			},
 		};
+		console.log("test")
 		handleSubmit(schoolData);
 	};
 
 	const handleSubmit = async (schoolData) => {
+		console.log("here")
 		try {
 			const headers = {
 				"Content-Type": "application/json",

@@ -61,7 +61,7 @@ const CreateRole = ({ onPrevious, onSubmit }) => {
 	};
 
 	const handleSubmit = async (collegeData) => {
-		if (!isValidEmail || !isValid) return;
+	//	if (!isValidEmail || !isValid) return;
 		try {
 			const headers = {
 				"Content-Type": "application/json",
