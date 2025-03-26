@@ -24,7 +24,7 @@ const SchoolStudentForm = ({ onClose, onStudentAdded }) => {
     useEffect(() => {
         const fetchClasses = async () => {
             try {
-                const response = await axios.get(API_ENDPOINTS.FETCH_CLASS, { headers: { Authorization: `Bearer ${token}` } });
+                const response = await axios.get(API_ENDPOINTS.FETCH_CLASS(), { headers: { Authorization: `Bearer ${token}` } });
                 setClasses(response.data.data.class);
 
             } catch (error) {
@@ -145,7 +145,7 @@ const SchoolStudentForm = ({ onClose, onStudentAdded }) => {
         }
 
         try {
-            await axios.post(API_ENDPOINTS.REGISTER_STUDENTS, { students: payloadData }, { headers: { Authorization: `Bearer ${token}` } });
+            await axios.post(API_ENDPOINTS.REGISTER_STUDENTS(), { students: payloadData }, { headers: { Authorization: `Bearer ${token}` } });
             alert("File uploaded successfully!");
             onClose();
         } catch (error) {
@@ -175,7 +175,7 @@ const SchoolStudentForm = ({ onClose, onStudentAdded }) => {
         }));
     
         try {
-            await axios.post(API_ENDPOINTS.REGISTER_STUDENTS, { students: formattedStudents }, { headers: { Authorization: `Bearer ${token}` } });
+            await axios.post(API_ENDPOINTS.REGISTER_STUDENTS(), { students: formattedStudents }, { headers: { Authorization: `Bearer ${token}` } });
             onClose();
         } catch (error) {
             console.error("Error uploading file:", error);
@@ -247,7 +247,7 @@ const SchoolStudentForm = ({ onClose, onStudentAdded }) => {
                 )}
                 {step === 2 && (
                     <>
-                        <h2 className="text-lg font-bold">Step 2: Assign Class and Subclass</h2>
+                        <h2 className="text-lg font-bold text-white">Step 2: Assign Class and Subclass</h2>
                         <select name="classId" value={currentStudent.classId} onChange={handleClassChange} className="block w-full p-2 border border-gray-300 rounded-md text-black">
                             <option value="">Select Class</option>
                             {classes.map(cls => (

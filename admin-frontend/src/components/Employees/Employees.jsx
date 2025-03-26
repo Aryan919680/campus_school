@@ -88,7 +88,7 @@ const Employees = () => {
 
 	const fetchTeachers = async () => {
 		try {
-			const response = await axios.get(API_ENDPOINTS.FETCH_ALL_TEACHERS,
+			const response = await axios.get(API_ENDPOINTS.FETCH_ALL_TEACHERS(),
 					{headers: { Authorization: `Bearer ${token}` }}
 			);
 			const teachersData = response.data.data || [];

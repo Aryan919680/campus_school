@@ -36,7 +36,7 @@ const EmployeeAddForm = ({ onEmployeeAdded }) => {
 
 		const fetchDepartments = async () => {
 			try {
-				const response = await axios.get(API_ENDPOINTS.GET_DEPARTMENTS,
+				const response = await axios.get(API_ENDPOINTS.GET_DEPARTMENTS(),
 					{headers: { Authorization: `Bearer ${token}` }}
 				);
 				setDepartments(response.data.data);
@@ -161,7 +161,7 @@ const EmployeeAddForm = ({ onEmployeeAdded }) => {
 			};
 	
 			const response = await axios.post(
-				API_ENDPOINTS.REGISTER_EMPLOYEES, // Ensure correct API endpoint
+				API_ENDPOINTS.REGISTER_EMPLOYEES(), 
 				payload,
 				{
 					headers: {

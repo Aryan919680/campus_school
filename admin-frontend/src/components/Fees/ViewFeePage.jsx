@@ -25,7 +25,7 @@ export default function FeeManagement() {
   }, []);
   const fetchClasses = async () => {
     try {
-      const response = await axios.get(API_ENDPOINTS.FETCH_CLASS);
+      const response = await axios.get(API_ENDPOINTS.FETCH_CLASS());
       setClasses(response.data.data.class || []);
     } catch (error) {
       console.error("Failed to fetch classes.", error);
@@ -45,7 +45,7 @@ export default function FeeManagement() {
 
   const fetchDepartments = async () => {
     try {
-      const response = await axios.get(API_ENDPOINTS.GET_DEPARTMENTS);
+      const response = await axios.get(API_ENDPOINTS.GET_DEPARTMENTS());
       setDepartments(response.data.data || []);
     } catch (error) {
       console.error("Failed to fetch departments.", error);
@@ -54,7 +54,7 @@ export default function FeeManagement() {
 
   const fetchCourses = async (departmentId) => {
     try {
-      const response = await axios.get(`${API_ENDPOINTS.GET_COURSES_OF_DEPARTMENT}/${departmentId}`);
+      const response = await axios.get(`${API_ENDPOINTS.GET_COURSES_OF_DEPARTMENT()}/${departmentId}`);
       setCourses(response.data.data || []);
     } catch (error) {
       console.error("Failed to fetch courses.", error);
@@ -65,11 +65,11 @@ export default function FeeManagement() {
     try {
       var response = '';
       if(campusType === "COLLEGE"){
-        response = await axios.get(`${API_ENDPOINTS.PAYMENT_FEES}?courseId=${courseId}&year=2025`,{
+        response = await axios.get(`${API_ENDPOINTS.PAYMENT_FEES()}?courseId=${courseId}&year=2025`,{
           headers: { Authorization: `Bearer ${token}` },
         });
       }else{
-        response = await axios.get(`${API_ENDPOINTS.PAYMENT_FEES}?year=2025&classId=${courseId}`,{
+        response = await axios.get(`${API_ENDPOINTS.PAYMENT_FEES()}?year=2025&classId=${courseId}`,{
           headers: { Authorization: `Bearer ${token}` },
       }
     )

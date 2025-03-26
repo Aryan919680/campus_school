@@ -30,7 +30,7 @@ const CreateEmployee = ({ setFormModalOpen, onEmployeeAdded }) => {
         if(campusType === "college"){
         const fetchDepartments = async () => {
             try {
-                const response = await axios.get(API_ENDPOINTS.GET_DEPARTMENTS, { headers: { Authorization: `Bearer ${token}` } });
+                const response = await axios.get(API_ENDPOINTS.GET_DEPARTMENTS(), { headers: { Authorization: `Bearer ${token}` } });
                 setDepartments(response.data.data);
             } catch (error) {
                 console.error("Error fetching departments:", error);
@@ -47,7 +47,7 @@ const CreateEmployee = ({ setFormModalOpen, onEmployeeAdded }) => {
         if (selectedDepartment) {
             const fetchCourses = async () => {
                 try {
-                    const response = await axios.get(`${API_ENDPOINTS.GET_COURSES_OF_DEPARTMENT}/${selectedDepartment}`, { headers: { Authorization: `Bearer ${token}` } });
+                    const response = await axios.get(`${API_ENDPOINTS.GET_COURSES_OF_DEPARTMENT()}/${selectedDepartment}`, { headers: { Authorization: `Bearer ${token}` } });
                     setCourses(response.data.data);
                 } catch (error) {
                     console.error("Error fetching courses:", error);
@@ -66,7 +66,7 @@ const CreateEmployee = ({ setFormModalOpen, onEmployeeAdded }) => {
 
     useEffect(() => {
         if (campusType === "school") {
-            axios.get(`${API_ENDPOINTS.FETCH_CLASS}`, { headers: { Authorization: `Bearer ${token}` } })
+            axios.get(`${API_ENDPOINTS.FETCH_CLASS()}`, { headers: { Authorization: `Bearer ${token}` } })
                 .then((response) => {
                     setClasses(response.data.data.class); 
                 })
@@ -120,7 +120,7 @@ const CreateEmployee = ({ setFormModalOpen, onEmployeeAdded }) => {
             })),
         };
         try {
-            await axios.post(API_ENDPOINTS.REGISTER_EMPLOYEES, payload, { headers: { Authorization: `Bearer ${token}` } });
+            await axios.post(API_ENDPOINTS.REGISTER_EMPLOYEES(), payload, { headers: { Authorization: `Bearer ${token}` } });
             alert("Employees Registered Successfully");
             onEmployeeAdded();
             setFormModalOpen(false);
@@ -157,7 +157,7 @@ const CreateEmployee = ({ setFormModalOpen, onEmployeeAdded }) => {
 
                     {employees.map((emp, index) => (
                         <div key={index} className="mt-4 p-4 border border-gray-300 rounded-md">
-                            <p className="font-semibold">{emp.name}</p>
+                            <p className="font-semibold text-white">{emp.name}</p>
 
                             {campusType === "school" ? (
                                 // 🔹 School Campus: Show Class & Subclass Dropdowns
@@ -287,7 +287,7 @@ const CreateEmployee = ({ setFormModalOpen, onEmployeeAdded }) => {
 </div>
                         ))}
 
-           
+<button onClick={prevStep} className="mt-4 bg-gray-600 px-4 py-2 rounded-md text-white mr-2">Back</button>
                     <button onClick={() => setStep(3)} className="mt-4 bg-green-600 px-4 py-2 rounded-md text-white">
                         Next
                     </button>
@@ -350,7 +350,6 @@ const CreateEmployee = ({ setFormModalOpen, onEmployeeAdded }) => {
                                 <p>Role Assigned: {emp.role || emp.customRole}</p>
                                 <p>Contact Number: {emp.contactNumber}</p>
                                 <p>Email Address: {emp.email}</p>
-                                <p>Semested: {emp.semesterId}</p>
                             </div>
                         ))}
                         <button onClick={handleSubmit} className="mt-4 bg-green-600 px-4 py-2 rounded-md text-white">Confirm & Save</button>

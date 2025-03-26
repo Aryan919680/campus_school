@@ -15,7 +15,7 @@ const CheckFees = ({ classId, setIsClassFees }) => {
     const fetchFees = async () => {
       try {
         const response = await axios.get(
-          `${API_ENDPOINTS.FETCH_FEES}/fees?classId=${classId}`,
+          `${API_ENDPOINTS.FETCH_FEES()}/fees?classId=${classId}`,
           {
             headers: {
               "Content-Type": "application/json",

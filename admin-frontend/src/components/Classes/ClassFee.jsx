@@ -22,7 +22,7 @@ const ClassFee = ({ setShowFees,classSections,onClose }) => {
  useEffect(() => {
     const fetchClassOptions = async () => {
         try {
-            const response = await axios.get(API_ENDPOINTS.FETCH_CLASS, {
+            const response = await axios.get(API_ENDPOINTS.FETCH_CLASS(), {
                 headers: { 
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`

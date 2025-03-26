@@ -20,7 +20,7 @@ const SchoolStudentList = () => {
   useEffect(() => {
     const fetchClasses = async () => {
       try {
-        const response = await fetch(API_ENDPOINTS.FETCH_CLASS, {
+        const response = await fetch(API_ENDPOINTS.FETCH_CLASS(), {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await response.json();
@@ -49,7 +49,7 @@ const SchoolStudentList = () => {
       setIsLoading(true);
       try {
         const response = await fetch(
-          `${API_ENDPOINTS.GET_STUDENTS_DATA}?classId=${selectedClass}&subClassId=${selectedSubClass}`,
+          `${API_ENDPOINTS.GET_STUDENTS_DATA()}?classId=${selectedClass}&subClassId=${selectedSubClass}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const data = await response.json();

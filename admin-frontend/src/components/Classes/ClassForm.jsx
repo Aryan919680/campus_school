@@ -121,7 +121,7 @@ const ClassForm = ({ onClose, errorMessage,refreshClasses }) => {
 
         setLoading(true);
         try {
-            const response = await axios.post(API_ENDPOINTS.CREATE_CLASS, payload, {
+            const response = await axios.post(API_ENDPOINTS.CREATE_CLASS(), payload, {
                 headers: { 
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`

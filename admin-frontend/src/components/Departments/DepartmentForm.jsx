@@ -19,7 +19,7 @@ const DepartmentForm = ({ onClose, refreshDepartments,showCoursePage }) => {
 
     const fetchDepartments = async () => {
         try {
-            const response = await axios.get(API_ENDPOINTS.GET_DEPARTMENTS, {
+            const response = await axios.get(API_ENDPOINTS.GET_DEPARTMENTS(), {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setDepartments(response.data.data);
@@ -43,7 +43,7 @@ const DepartmentForm = ({ onClose, refreshDepartments,showCoursePage }) => {
         const newDepartment = { name: departmentInput.trim(), code: codeInput.trim() };
 
         try {
-            await axios.post(API_ENDPOINTS.CREATE_DEPARTMENT, { departments: [newDepartment] }, {
+            await axios.post(API_ENDPOINTS.CREATE_DEPARTMENT(), { departments: [newDepartment] }, {
                 headers: { 
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`
@@ -63,7 +63,7 @@ const DepartmentForm = ({ onClose, refreshDepartments,showCoursePage }) => {
     const deleteDepartment = async (departmentId) => {
         console.log(departmentId)
         try {
-            await axios.delete(API_ENDPOINTS.DELETE_DEPARTMENT, {
+            await axios.delete(API_ENDPOINTS.DELETE_DEPARTMENT(), {
                 headers: { Authorization: `Bearer ${token}` },
                 data: { departmentIds: [departmentId] }
             });

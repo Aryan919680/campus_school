@@ -41,7 +41,7 @@ const Employee = () => {
 
 	const fetchTeachers = async () => {
 		try {
-			const response = await fetch(API_ENDPOINTS.FETCH_ALL_TEACHERS ,
+			const response = await fetch(API_ENDPOINTS.FETCH_ALL_TEACHERS() ,
 				{headers: { Authorization: `Bearer ${token}` }}
 			);
 			if (!response.ok) throw new Error("Network response was not ok");
@@ -66,7 +66,7 @@ const Employee = () => {
 
 	const handleDeleteProfile = async (id) => {
 		try {
-			const response = await fetch(`${API_ENDPOINTS.DELETE_EMPLOYEE}/${id}`, {
+			const response = await fetch(`${API_ENDPOINTS.DELETE_EMPLOYEE()}/${id}`, {
 				method: "DELETE",
 				headers: { Authorization: `Bearer ${token}` }
 			});
@@ -191,14 +191,14 @@ const Employee = () => {
 					) : (
 						<ListTable
 						ListName={"Name"}
-						ListRole={"Role"}
+						ListRole={"Contact"}
 						ListDepartment={"Email"}
 						ListAction={"Actions"}
 						showDataList={teachers.map((teacher) => (
 							<CommonTable
 								key={teacher.id}
 								name={teacher.name}
-								role={teacher.role}
+								role={teacher.additional_details.contactNumber}
 								id={teacher.email}
 								actions={[
 									{

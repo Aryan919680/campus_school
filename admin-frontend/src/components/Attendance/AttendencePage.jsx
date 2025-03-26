@@ -34,7 +34,7 @@ const AttendancePage = () => {
 
 		const fetchTeachers = async () => {
 			try {			
-				const response = await axios.get(`${API_ENDPOINTS.FETCH_ALL_TEACHERS}`,{
+				const response = await axios.get(`${API_ENDPOINTS.FETCH_ALL_TEACHERS()}`,{
 					Authorization: `Bearer ${token}`,
 				});
 				setTeachers(response.data.data);
@@ -46,7 +46,7 @@ const AttendancePage = () => {
 
     const fetchAttendanceRecords = async () => {
         try {
-            const response = await axios.get(`${API_ENDPOINTS.GET_ATTENDANCE}?date=${selectedDate.format("YYYY-MM-DD")}`,
+            const response = await axios.get(`${API_ENDPOINTS.GET_ATTENDANCE()}?date=${selectedDate.format("YYYY-MM-DD")}`,
         {
             
                 Authorization: `Bearer ${token}`,
@@ -60,7 +60,7 @@ const AttendancePage = () => {
 
     const updateAttendance = async (recordId, status) => {
         try {
-            await axios.put(API_ENDPOINTS.MARK_ATTENDANCE, { 
+            await axios.put(API_ENDPOINTS.MARK_ATTENDANCE(), { 
                 attendanceId: recordId,
                 status 
             },
@@ -77,7 +77,7 @@ const AttendancePage = () => {
     };
     const fetchLeaveRequests = async () => {
         try {
-            const response = await axios.get(API_ENDPOINTS.GET_LEAVE_REQUESTS);
+            const response = await axios.get(API_ENDPOINTS.GET_LEAVE_REQUESTS());
             const leaveData = response.data.data;
     
             // Ensure teachers data is available
@@ -103,7 +103,7 @@ const AttendancePage = () => {
     
     const handleLeaveAction = async (leaveId, status) => {
         try {
-            await axios.put(API_ENDPOINTS.GET_LEAVE_REQUESTS, { leaveId, status }, {
+            await axios.put(API_ENDPOINTS.GET_LEAVE_REQUESTS(), { leaveId, status }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
     
@@ -125,7 +125,7 @@ const AttendancePage = () => {
         }
         const deleteAttendance = async (recordId) => {
             try {
-                await axios.delete(API_ENDPOINTS.MARK_ATTENDANCE, {
+                await axios.delete(API_ENDPOINTS.MARK_ATTENDANCE(), {
                     headers: { Authorization: `Bearer ${token}` },
                     data: { attendanceIds: [recordId] }
                 });

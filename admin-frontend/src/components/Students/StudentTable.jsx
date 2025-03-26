@@ -29,7 +29,7 @@ const StudentTable = ({ students, onViewProfile, onDeleteProfile }) => {
 						key={student.id || index} // Use index as a fallback key if 'id' is undefined
 					
 						name={student.name}
-						rollNo={student.rollNo}
+						rollNo={student.additional_details.rollNumber}
 						department={student.email ? student.email : "N/A"}
 						dangerAction={"Remove"}
 						//action1={"View Profile"}

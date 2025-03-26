@@ -21,7 +21,7 @@ const CollectFeePage = () => {
     const getStudents = async () => {
         
         try {
-            const response = await axios.get(API_ENDPOINTS.GET_STUDENTS_DATA, {
+            const response = await axios.get(API_ENDPOINTS.GET_STUDENTS_DATA(), {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setStudents(response.data.data);
@@ -33,7 +33,7 @@ const CollectFeePage = () => {
     const getFees = async () => {
         if(campusType === "COLLEGE"){
             try {
-                const response = await axios.get(`${API_ENDPOINTS.SUBMIT_FEES}/fees`, {
+                const response = await axios.get(`${API_ENDPOINTS.SUBMIT_FEES()}/fees`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setFees(response.data.data);
@@ -42,7 +42,7 @@ const CollectFeePage = () => {
             }
         }else{
             try {
-                const response = await axios.get(`${API_ENDPOINTS.FETCH_FEES}/fees`, {
+                const response = await axios.get(`${API_ENDPOINTS.FETCH_FEES()}/fees`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
               
@@ -75,7 +75,7 @@ const CollectFeePage = () => {
         };
 
         try {
-            const response = await axios.post(`${API_ENDPOINTS.PAYMENT_FEES}`, payload, {
+            const response = await axios.post(`${API_ENDPOINTS.PAYMENT_FEES()}`, payload, {
                 headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
             });
             alert("Payment submitted successfully");
@@ -93,7 +93,9 @@ const CollectFeePage = () => {
             <select onChange={handleStudentChange} className="w-full p-2 border rounded mb-4">
                 <option value="">-- Select Student --</option>
                 {students.map(student => (
-                    <option key={student.studentId} value={student.studentId}>{student.name}</option>
+                //   campusType === "COLLEGE" ?  <option key={student.studentId} value={student.studentId}>{student.name} ({student.departmentName}, {student.courseName}, {student})</option>
+                //   : <option key={student.studentId} value={student.studentId}>{student.name} ({student.className, student.subClassName})</option>
+                <option key={student.studentId} value={student.studentId}>{student.name} ({student.departmentName}, {student.courseName}, {student.semesterName})</option>
                 ))}
             </select>
             

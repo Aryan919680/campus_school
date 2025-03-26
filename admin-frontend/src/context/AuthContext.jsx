@@ -37,12 +37,10 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    console.log("here")
     // Axios interceptor for handling token expiration
     const responseInterceptor = axios.interceptors.response.use(
       (response) => response,
       (error) => {
-        console.log("here 2",error)
         if (error.response.data.message.toLowerCase() === "jwt expired" && error.response.status === 400) {
           
           console.error("JWT expired. Logging out...");

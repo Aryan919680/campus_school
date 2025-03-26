@@ -21,7 +21,7 @@ const Classes = () => {
 
   const fetchClassOptions = useCallback(async () => {
     try {
-      const response = await axios.get(API_ENDPOINTS.FETCH_CLASS, {
+      const response = await axios.get(API_ENDPOINTS.FETCH_CLASS(), {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -71,7 +71,7 @@ const Classes = () => {
   
     try {
       const response = await axios.delete(
-        `${API_ENDPOINTS.DELETE_CLASS}/${classId}`,
+        `${API_ENDPOINTS.DELETE_CLASS()}/${classId}`,
         {
           headers: {
             "Content-Type": "application/json",

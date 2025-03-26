@@ -39,7 +39,7 @@ const SubjectsModal = ({ isOpen, onClose, departmentId, departmentName }) => {
 
 	const fetchTeachers = useCallback(() => {
 		axios
-			.get(API_ENDPOINTS.FETCH_ALL_TEACHERS)
+			.get(API_ENDPOINTS.FETCH_ALL_TEACHERS())
 			.then((response) => {
 				setTeachers(response.data.data || []);
 			})

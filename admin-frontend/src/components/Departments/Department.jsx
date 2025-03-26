@@ -20,7 +20,7 @@ const Departments = () => {
 
   const fetchDepartmentOptions = useCallback(async () => {
     try {
-      const response = await axios.get(API_ENDPOINTS.GET_DEPARTMENTS, {
+      const response = await axios.get(API_ENDPOINTS.GET_DEPARTMENTS(), {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -58,7 +58,7 @@ const Departments = () => {
 
   const handleDelete = async (departmentId) => {
     try {
-      await axios.delete(API_ENDPOINTS.DELETE_DEPARTMENT, {
+      await axios.delete(API_ENDPOINTS.DELETE_DEPARTMENT(), {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -93,7 +93,7 @@ const Departments = () => {
   const showCourseData = async(departmentId)=>{
    setShowDepartment(false);
    try {
-    const response = await axios.get(`${API_ENDPOINTS.GET_COURSES_OF_DEPARTMENT}/${departmentId}`, {
+    const response = await axios.get(`${API_ENDPOINTS.GET_COURSES_OF_DEPARTMENT()}/${departmentId}`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,

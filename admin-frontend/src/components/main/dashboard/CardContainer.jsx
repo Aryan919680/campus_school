@@ -26,7 +26,7 @@ const CardContainer = ({ onDueFeesClick, onPendingRequestClick }) => {
 
 	const fetchValidEmployees = async () => {
 		try {
-			const response = await axios.get(API_ENDPOINTS.FETCH_ALL_TEACHERS);
+			const response = await axios.get(API_ENDPOINTS.FETCH_ALL_TEACHERS());
 			const validEmployees = response.data.data.filter(
 				(employee) => employee.status !== "deleted"
 			);

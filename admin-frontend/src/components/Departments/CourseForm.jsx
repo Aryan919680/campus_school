@@ -25,7 +25,7 @@ const CourseForm = ({ closeCoursePage, openFeesPage }) => {
 
     const fetchDepartments = async () => {
         try {
-            const response = await axios.get(API_ENDPOINTS.GET_DEPARTMENTS, {
+            const response = await axios.get(API_ENDPOINTS.GET_DEPARTMENTS(), {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setDepartments(response.data.data);
@@ -49,7 +49,7 @@ const CourseForm = ({ closeCoursePage, openFeesPage }) => {
             semesters: Array.from({ length: parseInt(semestersInput.trim()) }, (_, i) => ({ name: `Sem ${i + 1}` }))
         };
         try {
-            const response = await axios.post(`${API_ENDPOINTS.SUBMIT_COURSES}/${selectedDepartment}/register`, { courses: [...courses, newCourse] }, {
+            const response = await axios.post(`${API_ENDPOINTS.SUBMIT_COURSES()}/${selectedDepartment}/register`, { courses: [...courses, newCourse] }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             console.log(response.data.data);

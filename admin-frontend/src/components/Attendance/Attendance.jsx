@@ -24,7 +24,7 @@ const Attendance = ({onClose}) => {
 		const fetchTeachers = async () => {
 			try {
 				setIsLoading(true);
-				const response = await axios.get(`${API_ENDPOINTS.FETCH_ALL_TEACHERS}`,{
+				const response = await axios.get(`${API_ENDPOINTS.FETCH_ALL_TEACHERS()}`,{
 					Authorization: `Bearer ${token}`,
 				});
 				setTeachers(response.data.data);
@@ -62,7 +62,7 @@ const Attendance = ({onClose}) => {
 		};
 
 		try {
-			const apiUrl = API_ENDPOINTS.MARK_ATTENDANCE;
+			const apiUrl = API_ENDPOINTS.MARK_ATTENDANCE();
 			await axios.post(apiUrl, attendanceData,{
 				
 					Authorization: `Bearer ${token}`,

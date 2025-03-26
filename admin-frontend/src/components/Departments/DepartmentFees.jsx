@@ -32,7 +32,7 @@ const DepartmentFees = ({  closeFeesPage, closeAllPages }) => {
 
     const submitFees = async () => {
         try {
-            await axios.post(`${API_ENDPOINTS.SUBMIT_FEES}/${courseId}/fees`, { fees }, {
+            await axios.post(`${API_ENDPOINTS.SUBMIT_FEES()}/${courseId}/fees`, { fees }, {
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }
             });
             alert("Fees submitted successfully!");

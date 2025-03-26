@@ -32,7 +32,7 @@ const StudentForm = ({ isOpen, onClose, onStudentAdd }) => {
 	useEffect(() => {
 		const fetchDepartments = async () => {
 			try {
-				const response = await axios.get(API_ENDPOINTS.GET_DEPARTMENTS,
+				const response = await axios.get(API_ENDPOINTS.GET_DEPARTMENTS(),
 					{headers: { Authorization: `Bearer ${token}` }}
 				);
 				if (Array.isArray(response.data.data)) {
@@ -154,7 +154,7 @@ const StudentForm = ({ isOpen, onClose, onStudentAdd }) => {
 		};
 	
 		try {
-			const response = await fetch(API_ENDPOINTS.REGISTER_STUDENTS, {
+			const response = await fetch(API_ENDPOINTS.REGISTER_STUDENTS(), {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",

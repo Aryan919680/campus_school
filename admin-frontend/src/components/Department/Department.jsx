@@ -43,7 +43,7 @@ export default function FeeManagement() {
 
   const fetchStudents = async (courseId) => {
     try {
-      const response = await axios.get(`${API_ENDPOINTS.PAYMENT_FEES}?courseId=${courseId}`);
+      const response = await axios.get(`${API_ENDPOINTS.PAYMENT_FEES()}?courseId=${courseId}`);
       const data = response.data.data || [];
       const processedStudents = data.map((s) => ({
         name: s.studentName,

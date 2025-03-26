@@ -19,7 +19,7 @@ const CollegeStudentList = () => {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await fetch(API_ENDPOINTS.GET_DEPARTMENTS, {
+        const response = await fetch(API_ENDPOINTS.GET_DEPARTMENTS(), {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await response.json();
@@ -36,7 +36,7 @@ const CollegeStudentList = () => {
     const fetchCourses = async () => {
       try {
         const response = await fetch(
-          `${API_ENDPOINTS.GET_COURSES_OF_DEPARTMENT}/${selectedDepartment}`,
+          `${API_ENDPOINTS.GET_COURSES_OF_DEPARTMENT()}/${selectedDepartment}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const data = await response.json();
@@ -53,7 +53,7 @@ const CollegeStudentList = () => {
     const fetchStudents = async () => {
       try {
         const response = await fetch(
-          `${API_ENDPOINTS.GET_STUDENTS_DATA}?semesterId=${selectedSemester}&courseId=${selectedCourse}`,
+          `${API_ENDPOINTS.GET_STUDENTS_DATA()}?semesterId=${selectedSemester}&courseId=${selectedCourse}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const data = await response.json();

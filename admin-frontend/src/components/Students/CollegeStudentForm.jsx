@@ -24,7 +24,7 @@ const CollegeStudentForm = ({ onClose, onStudentAdded }) => {
     useEffect(() => {
         const fetchDepartments = async () => {
             try {
-                const response = await axios.get(API_ENDPOINTS.GET_DEPARTMENTS, { headers: { Authorization: `Bearer ${token}` } });
+                const response = await axios.get(API_ENDPOINTS.GET_DEPARTMENTS(), { headers: { Authorization: `Bearer ${token}` } });
                 setDepartments(response.data.data);
             } catch (error) {
                 console.error("Error fetching departments:", error);
@@ -78,7 +78,7 @@ const CollegeStudentForm = ({ onClose, onStudentAdded }) => {
                     }
 
                     const coursesResponse = await axios.get(
-                        `${API_ENDPOINTS.GET_COURSES_OF_DEPARTMENT}/${department.departmentId}`, 
+                        `${API_ENDPOINTS.GET_COURSES_OF_DEPARTMENT()}/${department.departmentId}`, 
                         { headers: { Authorization: `Bearer ${token}` } }
                     );
                     const coursesData = coursesResponse.data.data;
@@ -137,7 +137,7 @@ const CollegeStudentForm = ({ onClose, onStudentAdded }) => {
         }
 
         try {
-            await axios.post(API_ENDPOINTS.REGISTER_STUDENTS, { students: payloadData }, { headers: { Authorization: `Bearer ${token}` } });
+            await axios.post(API_ENDPOINTS.REGISTER_STUDENTS(), { students: payloadData }, { headers: { Authorization: `Bearer ${token}` } });
             alert("File uploaded successfully!");
             onClose();
         } catch (error) {
@@ -236,7 +236,7 @@ const CollegeStudentForm = ({ onClose, onStudentAdded }) => {
         }));
     
         try {
-            await axios.post(API_ENDPOINTS.REGISTER_STUDENTS, { students: formattedStudents }, { headers: { Authorization: `Bearer ${token}` } });
+            await axios.post(API_ENDPOINTS.REGISTER_STUDENTS(), { students: formattedStudents }, { headers: { Authorization: `Bearer ${token}` } });
            // alert("File uploaded successfully!");
             onClose();// Close the modal on success
         } catch (error) {
