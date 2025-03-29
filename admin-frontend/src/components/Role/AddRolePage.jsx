@@ -12,7 +12,7 @@ const AddRolePage = ({ setFormModalOpen, employeeId }) => {
         name: "",
         role: "",
         classId: "",
-        subclassId: "",
+        subClassId: "",
         departmentId: "",
         courseId: "",
         semester: "",
@@ -38,10 +38,15 @@ const AddRolePage = ({ setFormModalOpen, employeeId }) => {
         // Fetch class and subclass for school
         const fetchSchoolData = async () => {
             try {
-                const classRes = await axios.get(API_ENDPOINTS.GET_CLASSES(), {
+                const classRes = await axios.get(API_ENDPOINTS.FETCH_CLASS(), {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-                setClasses(classRes.data.data);
+                setClasses(classRes.data.data.class);
+                const classData = classRes.data.data.class;
+                const allSubclasses = classData.flatMap(cls => cls.subClass || []);
+                console.log("here",allSubclasses)
+        setSubclasses(allSubclasses);
+        console.log(subclasses)
             } catch (error) {
                 console.error("Error fetching classes:", error);
             }
@@ -65,16 +70,16 @@ const AddRolePage = ({ setFormModalOpen, employeeId }) => {
     }, [employeeId, token, campusType]);
 
     // Fetch subclasses on class change for school
-    const fetchSubclasses = async (classId) => {
-        try {
-            const subclassRes = await axios.get(API_ENDPOINTS.GET_SUBCLASSES(classId), {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            setSubclasses(subclassRes.data.data);
-        } catch (error) {
-            console.error("Error fetching subclasses:", error);
-        }
-    };
+    // const fetchSubclasses = async (classId) => {
+    //     try {
+    //         const subclassRes = await axios.get(API_ENDPOINTS.GET_SUBCLASSES(classId), {
+    //             headers: { Authorization: `Bearer ${token}` },
+    //         });
+    //         setSubclasses(subclassRes.data.data);
+    //     } catch (error) {
+    //         console.error("Error fetching subclasses:", error);
+    //     }
+    // };
 
     // Fetch courses on department change for college
     const fetchCourses = async (departmentId) => {
@@ -91,7 +96,6 @@ const AddRolePage = ({ setFormModalOpen, employeeId }) => {
 
     useEffect(() => {
         if (employee.courseId && courses.length > 0) {
-            console.log("here")
             const selectedCourseData = courses.find(
                 (course) => course.courseId === employee.courseId
             );
@@ -107,16 +111,27 @@ const AddRolePage = ({ setFormModalOpen, employeeId }) => {
     }, [employee.courseId, courses]);
     
     const handleChange = (name, value) => {
-        setEmployee({ ...employee, [name]: value });
-
-        // Dynamic fetching based on change
+        setEmployee(prev => ({ ...prev, [name]: value }));
+    
         if (name === "classId" && campusType === "school") {
-            fetchSubclasses(value);
+            const selectedClass = classes.find(cls => cls.classId === value);
+    
+            if (selectedClass) {
+                console.log("Selected Class:", selectedClass); // Debugging log
+                console.log("Subclasses for Selected Class:", selectedClass.subClass); // Debugging log
+                
+                setSubclasses(selectedClass.subClass || []);
+            } else {
+                setSubclasses([]); // Reset if no class is found
+            }
         }
+    
         if (name === "departmentId" && campusType === "college") {
             fetchCourses(value);
         }
     };
+    
+    
     const handleSubmit = async () => {
         if (!employee.role) {
             setError("Please select a valid role.");
@@ -128,8 +143,12 @@ const AddRolePage = ({ setFormModalOpen, employeeId }) => {
             employeeId: employeeId,
             role: employee.role.toUpperCase(),
             ...(campusType === "school" && {
-                classId: employee.classId || null,
-                subclassId: employee.subclassId || null,
+                // classId: employee.classId || null,
+                subClasses : employee.subClassId && Array.isArray(employee.subClassId)
+                ? employee.subClassId
+                : employee.subClassId
+                ? [employee.subClassId]
+                : [],
             }),
             ...(campusType === "college" && {
                 departmentId:
@@ -198,21 +217,21 @@ const AddRolePage = ({ setFormModalOpen, employeeId }) => {
                                 <option value="">Select Class</option>
                                 {classes.map((cls) => (
                                     <option key={cls.classId} value={cls.classId}>
-                                        {cls.name}
+                                        {cls.className}
                                     </option>
                                 ))}
                             </select>
 
                             <select
-                                name="subclassId"
-                                value={employee.subclassId}
-                                onChange={(e) => handleChange("subclassId", e.target.value)}
+                                name="subClassId"
+                                value={employee.subClassId}
+                                onChange={(e) => handleChange("subClassId", e.target.value)}
                                 className="mt-2 block w-full p-2 border border-gray-300 rounded-md bg-gray-700 text-white"
                             >
                                 <option value="">Select Subclass</option>
                                 {subclasses.map((sub) => (
-                                    <option key={sub.subclassId} value={sub.subclassId}>
-                                        {sub.name}
+                                    <option key={sub.subClassId} value={sub.subClassId}>
+                                        {sub.subClassName}
                                     </option>
                                 ))}
                             </select>
