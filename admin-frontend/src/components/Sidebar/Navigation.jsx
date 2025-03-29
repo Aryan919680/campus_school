@@ -219,6 +219,12 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 					title="Employees"
 					isSidebarExpanded={isSidebarExpanded}
 				/>
+					<NavItems
+					to="/Role"
+						icon="material-symbols:event"
+					title="Finance"
+					isSidebarExpanded={isSidebarExpanded}
+				/>
 				<NavItems
 					to="/Students"
 					icon="solar:square-academic-cap-bold"
@@ -286,7 +292,12 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 					title="Employees"
 					isSidebarExpanded={isSidebarExpanded}
 				/>
-
+	<NavItems
+					to="/Role"
+				icon="material-symbols:event"
+					title="Finance"
+					isSidebarExpanded={isSidebarExpanded}
+				/>
 				 <NavItems
 					to="/Students"
 					icon="solar:square-academic-cap-bold"

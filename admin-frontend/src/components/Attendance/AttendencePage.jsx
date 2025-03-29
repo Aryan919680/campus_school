@@ -15,6 +15,7 @@ const AttendancePage = () => {
     const userData = JSON.parse(localStorage.getItem("userData"));
     const parsedData = userData;
     const token = parsedData.token;
+    console.log("token",token)
     useEffect(() => {
         fetchAttendanceRecords();
     }, [selectedDate]);
@@ -35,7 +36,10 @@ const AttendancePage = () => {
 		const fetchTeachers = async () => {
 			try {			
 				const response = await axios.get(`${API_ENDPOINTS.FETCH_ALL_TEACHERS()}`,{
-					Authorization: `Bearer ${token}`,
+                    headers: {
+                       
+                        Authorization: `Bearer ${token}`,
+                      },
 				});
 				setTeachers(response.data.data);
 			} catch (error) {
@@ -48,8 +52,10 @@ const AttendancePage = () => {
         try {
             const response = await axios.get(`${API_ENDPOINTS.GET_ATTENDANCE()}?date=${selectedDate.format("YYYY-MM-DD")}`,
         {
-            
+            headers: {
+                       
                 Authorization: `Bearer ${token}`,
+              },
             
         });
             setAttendanceRecords(response.data.data);
@@ -65,7 +71,10 @@ const AttendancePage = () => {
                 status 
             },
             {
-                Authorization: `Bearer ${token}`,
+                headers: {
+                       
+                    Authorization: `Bearer ${token}`,
+                  },
         }
         );
             setAttendanceRecords(prevRecords => prevRecords.map(record =>
@@ -77,7 +86,12 @@ const AttendancePage = () => {
     };
     const fetchLeaveRequests = async () => {
         try {
-            const response = await axios.get(API_ENDPOINTS.GET_LEAVE_REQUESTS());
+            const response = await axios.get(API_ENDPOINTS.GET_LEAVE_REQUESTS(),{
+                headers: {
+                       
+                    Authorization: `Bearer ${token}`,
+                  },
+            });
             const leaveData = response.data.data;
     
             // Ensure teachers data is available
@@ -168,6 +182,8 @@ const AttendancePage = () => {
 				onChange={(e) => handleDateChange(e.target.value)}
 				className="border p-2 rounded"
 			/>
+
+            
                    <ListTable 
     ListName={"Employee Name"}
     ListRole={"Date"}

@@ -8,6 +8,7 @@ const AllStudents = ({
 	department,
 	onViewProfile,
 	onDelete,
+	updateProfile,
 	action1,
 	dangerAction,
 	responsiveWidth,
@@ -54,7 +55,12 @@ const AllStudents = ({
 				>
 					Remove
 				</button> 
-				
+				<button
+					onClick={updateProfile}
+					className={`border rounded-md px-4 py-2 text-sm/none text-gray-600 hover:bg-gray-50 hover:text-gray-700 ${buttonHide}`}
+				>
+					Update
+				</button> 
 			</td>
 		</tr>
 	);

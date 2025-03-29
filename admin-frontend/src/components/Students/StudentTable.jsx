@@ -2,7 +2,7 @@ import React from "react";
 import ListTable from "../List/ListTable";
 import AllStudents from "./AllStudents";
 
-const StudentTable = ({ students, onViewProfile, onDeleteProfile }) => {
+const StudentTable = ({ students, onViewProfile, onDeleteProfile,onUpdateProfile }) => {
 	const getDefaultPhoto = (gender) => {
 		if (gender === "Male") {
 			return "https://res.cloudinary.com/duyau9qkl/image/upload/v1717910208/images/w7y88n61dxedxzewwzpn.png";
@@ -32,36 +32,11 @@ const StudentTable = ({ students, onViewProfile, onDeleteProfile }) => {
 						rollNo={student.additional_details.rollNumber}
 						department={student.email ? student.email : "N/A"}
 						dangerAction={"Remove"}
-						//action1={"View Profile"}
-						// buttonHide={"hidden"}
-						// onViewProfile={() =>
-						// 	onViewProfile(
-						// 		{
-									
-						// 			name: student.name,
-						// 			year: student.year,
-						// 			rollNo: student.rollNo,
-						// 			email: student.email,
-						// 			gender: student.gender,
-						// 			dob: student.dob,
-						// 			contactNumber: student.contactNumber,
-						// 			department: student.department
-						// 				? student.department.name
-						// 				: "N/A",
-						// 			permanent_address: student.permanent_address,
-						// 			currentAddress: student.currentAddress,
-						// 			fatherName: student.fatherName,
-						// 			motherName: student.motherName,
-						// 			fatherContactNumber: student.fatherContactNumber,
-						// 			paymentStatus:
-						// 				student.payment && student.payment.length > 0
-						// 					? student.payment[0].status
-						// 					: "N/A",
-						// 		},
-						// 		student.id
-						// 	)
-						// }
+				
+				
+					    
 						onDelete={() => onDeleteProfile(student.studentId)}
+						updateProfile ={() => onUpdateProfile(student)}
 						gender={student.gender}
 					/>
 				);

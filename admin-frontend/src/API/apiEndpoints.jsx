@@ -41,6 +41,8 @@ FETCH_ALL_TEACHERS: () => `${import.meta.env.VITE_BASE_URL
     `${import.meta.env.VITE_BASE_URL
     }/api/v1/student/campus/${getCampusId()}/${eventId}`,
 
+    Register_Role : () => `${import.meta.env.VITE_BASE_URL}/api/v1/role/campus/${getCampusId()}/register`,
+    Update_Student : () => `${import.meta.env.VITE_BASE_URL}/api/v1/student/campus/${getCampusId()}`,
   // Onboarding
   // CREATE_CAMPUS: `${import.meta.env.VITE_BASE_URL}/api/v1/campus/register`,
   // CREATE_BRANCH: `${import.meta.env.VITE_BASE_URL}/api/v1/campus/reg/branch`,

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import ViewFeePage from './ViewFeePage'
 import CollectFeePage from "./CollectFeePage";
+import CompliancePage from "./CompliancePage";
+import AssistPage from "./AssistPage";
 const FeePage = () => {
   const [activeTab, setActiveTab] = useState("default");
 
@@ -20,17 +22,38 @@ const FeePage = () => {
           View Fee Records
         </button>
         <button
-          onClick={() => setActiveTab("leave")}
+          onClick={() => setActiveTab("collect")}
           className={`px-4 py-2 rounded ${
             activeTab === "leave" ? "bg-linear-blue text-white" : "bg-gray-300"
           }`}
         >
           Collect Fees
         </button>
+        <button onClick={ () =>{setActiveTab("compliance")}}
+  className={`px-4 py-2 rounded ${
+    activeTab === "leave" ? "bg-linear-blue text-white" : "bg-gray-300"
+  }`} >
+    Compliance
+  </button>
+  <button onClick={ () =>{setActiveTab("goal")}}
+  className={`px-4 py-2 rounded ${
+    activeTab === "leave" ? "bg-linear-blue text-white" : "bg-gray-300"
+  }`} >
+    AI FI. Assist
+  </button>
       </div>
       {
-        activeTab === 'default' ?      <ViewFeePage /> : 
-        <CollectFeePage />
+        activeTab === 'default'  &&   <ViewFeePage /> 
+       
+      }
+      {
+          activeTab === 'collect'  && <CollectFeePage />
+      }
+      {
+            activeTab === 'compliance'  && <CompliancePage />
+      }
+      {
+  activeTab === 'goal'  && <AssistPage />
       }
 
     </div>

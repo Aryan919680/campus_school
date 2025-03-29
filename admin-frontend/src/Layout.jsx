@@ -19,7 +19,7 @@ import Classes from "./components/Classes/Classes";
 import Departments from "./components/Departments/Department";
 import AttendancePage from "./components/Attendance/AttendencePage";
 import FeePage from "./components/Fees/FeePage";
-
+import EmployeePage from "./components/Role/EmployeePage";
 const Layout = ({ logout }) => {
 	const [userData, setUserData] = useState(() => {
 		const storedUserData = localStorage.getItem("userData");
@@ -81,6 +81,7 @@ const Layout = ({ logout }) => {
 						<Route path="/students" element={<Students />} />
 						<Route path="/attendance" element={<AttendancePage />} />
 						<Route path="/finance" element={<FeePage />} />
+						<Route path='/role' element={<EmployeePage />} />
 					</Routes>
 					}
 					{
@@ -90,6 +91,7 @@ const Layout = ({ logout }) => {
 							<Route path="/department" element={<Departments />} />
 							<Route path="/employees" element={<Employees />} />
 							<Route path="/attendance" element={<AttendancePage />} />
+							<Route path='/role' element={<EmployeePage />} />
 						{/* <Route path="/" element={<Dashboard />} />
 						
 						{/* <Route path='/classes' element={<Classes />} /> */}

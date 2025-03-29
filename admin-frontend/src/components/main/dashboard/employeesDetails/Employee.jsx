@@ -9,6 +9,7 @@ import API_ENDPOINTS from "../../../../API/apiEndpoints";
 import axios from "axios";
 import { ContentSkeleton } from "../../../Skeleton/ContentSkeleton";
 import CreateEmployee from '../../../Employees/CreateEmployee'
+import UpdateEmployee from "../../../Employees/UpdateEmployee";
 const Employee = () => {
 	const [teachers, setTeachers] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
@@ -17,6 +18,7 @@ const Employee = () => {
 	const [selectedProfile, setSelectedProfile] = useState(null);
 	const [isEditing, setIsEditing] = useState(false);
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+	const [editData,setEditData] = useState([]);
 	const dropdownRef = useRef(null);
     const userData = JSON.parse(localStorage.getItem("userData"));
     const token = userData?.token;
@@ -97,33 +99,6 @@ const Employee = () => {
 			: defaultMalePhoto;
 	};
 
-	const handleEditProfile = () => {
-		setIsEditing(true);
-	};
-
-	// const handleSaveProfile = async () => {
-	// 	try {
-	// 		const response = await fetch(
-	// 			API_ENDPOINTS.UPDATE_TEACHERS(selectedProfile.id),
-	// 			{
-	// 				method: "PUT",
-	// 				headers: {
-	// 					"Content-Type": "application/json",
-	// 				},
-	// 				body: JSON.stringify(selectedProfile),
-	// 			}
-	// 		);
-	// 		if (!response.ok) {
-	// 			const errorData = await response.json();
-	// 			throw new Error(`Network response was not ok: ${errorData.message}`);
-	// 		}
-	// 		fetchTeachers();
-	// 		setModalOpen(false);
-	// 		setIsEditing(false);
-	// 	} catch (error) {
-	// 		console.error("Error updating teacher:", error);
-	// 	}
-	// };
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -133,32 +108,11 @@ const Employee = () => {
 		}));
 	};
 
-	// const handlePhotoChange = async (e) => {
-	// 	const file = e.target.files[0];
-	// 	if (file) {
-	// 		const formData = new FormData();
-	// 		formData.append("file", file);
-	// 		formData.append(
-	// 			"upload_preset",
-	// 			import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
-	// 		);
-
-	// 		try {
-	// 			const response = await axios.post(
-	// 				`https://api.cloudinary.com/v1_1/${
-	// 					import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
-	// 				}/image/upload`,
-	// 				formData
-	// 			);
-	// 			setSelectedProfile((prevProfile) => ({
-	// 				...prevProfile,
-	// 				photo: response.data.secure_url,
-	// 			}));
-	// 		} catch (error) {
-	// 			console.error("Error uploading photo:", error);
-	// 		}
-	// 	}
-	// };
+	const handleUpdateProfile = (teacher) =>{
+		console.log(teacher)
+          setIsEditing(true);
+		  setEditData(teacher);
+	}
 
 	return (
 		<>
@@ -206,6 +160,13 @@ const Employee = () => {
 										label: "Remove",
 										onClick: () => handleDeleteProfile(teacher.employeeId),
 									},
+									
+										{
+											type: "button",
+											label: "Update",
+											onClick: () => handleUpdateProfile(teacher),
+										},
+									
 								]}
 							/>
 						))}
@@ -213,115 +174,7 @@ const Employee = () => {
 					
 					)}
 
-					{/* {selectedProfile && (
-						<Modal
-							modalOpen={modalOpen}
-							setModalOpen={setModalOpen}
-							responsiveWidth={"md:w-fit"}
-						>
-							<div className="flex justify-center items-center gap-4 flex-wrap">
-								<div className="mx-2">
-									<img
-										src={
-											selectedProfile.photo ||
-											getDefaultPhoto(selectedProfile.gender)
-										}
-										alt={selectedProfile.name}
-										className="w-32 h-32 mx-auto rounded-full"
-									/>
-									<h3 className="text-xl font-semibold my-4 capitalize">
-										{selectedProfile.name}
-									</h3>
-								</div>
-								<div className="mx-2">
-									{isEditing ? (
-										<>
-											<div className="my-2">
-												<label
-													className="block text-gray-700 text-sm font-bold mb-2"
-													htmlFor="name"
-												>
-													Name:
-												</label>
-												<input
-													type="text"
-													name="name"
-													value={selectedProfile.name}
-													onChange={handleChange}
-													className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-												/>
-											</div>
-											<div className="my-2">
-												<label
-													className="block text-gray-700 text-sm font-bold mb-2"
-													htmlFor="role"
-												>
-													Role:
-												</label>
-												<input
-													type="text"
-													name="role"
-													value={selectedProfile.role}
-													onChange={handleChange}
-													className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-												/>
-											</div>
-										
-								
-											<button
-												onClick={handleSaveProfile}
-												className="bg-emerald-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-											>
-												Save
-											</button>
-										</>
-									) : (
-										<>
-											<ModalDetails
-												modalTitle={"Department: "}
-												modalDesc={`${selectedProfile.departmentName} (${selectedProfile.departmentId})`}
-											/>
-											<ModalDetails
-												modalTitle={"ID : "}
-												modalDesc={selectedProfile.id}
-											/>
-											<ModalDetails
-												modalTitle={"Gender : "}
-												modalDesc={selectedProfile.gender}
-											/>
-											<ModalDetails
-												modalTitle={"Role : "}
-												modalDesc={selectedProfile.role}
-											/>
-											<ModalDetails
-												modalTitle={"Date of Birth : "}
-												modalDesc={selectedProfile.dob}
-											/>
-											<ModalDetails
-												modalTitle={"Contact Number : "}
-												modalDesc={selectedProfile.contactNumber}
-											/>
-											<ModalDetails
-												modalTitle={"Permanent Address : "}
-												modalDesc={selectedProfile.permanent_address}
-											/>
-											<ModalDetails
-												modalTitle={"Current Address : "}
-												modalDesc={selectedProfile.currentAddress}
-											/>
-											<button
-												onClick={handleEditProfile}
-												className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4"
-											>
-												Edit
-											</button>
-										</>
-									)}
-								</div>
-							</div>
-						</Modal>
-					)} */}
-
+					
 					<Modal
 						modalOpen={formModalOpen}
 						setModalOpen={setFormModalOpen}
@@ -330,9 +183,15 @@ const Employee = () => {
 						{formModalOpen && 
 						<CreateEmployee setFormModalOpen={setFormModalOpen} onEmployeeAdded={handleEmployeeAdded}/>
 }
-						{/* <EmployeeAddForm onEmployeeAdded={handleEmployeeAdded} /> */}
+
+				{/* <EmployeeAddForm onEmployeeAdded={handleEmployeeAdded} /> */}
 					</Modal>
+					{
+	isEditing && <UpdateEmployee setIsEditing={setIsEditing} editData={editData} onEmployeeAdded={handleEmployeeAdded}/>
+}
+		
 				</div>
+				
 			)}
 		</>
 	);

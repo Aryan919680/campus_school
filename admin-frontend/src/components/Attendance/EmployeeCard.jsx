@@ -23,14 +23,20 @@ const EmployeeCard = ({
 		}
 	}, [employee, selectedDate]);
 
-	useEffect(() => {
-		setSelectedOption(attendance);
-	}, [attendance]);
+	// useEffect(() => {
+	// 	setSelectedOption(attendance);
+	// }, [attendance]);
 
+
+	useEffect(() => {
+		setSelectedOption(attendance || "Absent"); // Default to Absent if no record
+	}, [attendance]);
+	
 	const handleRadioChange = (value) => {
 		setSelectedOption(value);
 		onAttendanceChange(employee.employeeId, value);
 	};
+	
 
 	const fetchAttendanceStatus = async () => {
 		try {
@@ -106,14 +112,14 @@ const EmployeeCard = ({
 									type="radio"
 									name={`attendance-${employee.employeeId}`}
 									className="hidden"
-									value="Absent"
-									checked={selectedOption === "Absent"}
-									onChange={() => handleRadioChange("Absent")}
+									value="ABSENT"
+									checked={selectedOption === "ABSENT"}
+									onChange={() => handleRadioChange("ABSENT")}
 								/>
 								<label
 									htmlFor={`absent-radio-${employee.employeeId}`}
 									className={`flex items-center justify-center w-8 h-8 border-2 rounded-full text-red-500 font-bold cursor-pointer ${
-										selectedOption === "Absent"
+										selectedOption === "ABSENT"
 											? "bg-red-500 border-red-500 text-white"
 											: "bg-white border-gray-300 text-gray-800"
 									}`}
@@ -127,14 +133,14 @@ const EmployeeCard = ({
 									type="radio"
 									name={`attendance-${employee.employeeId}`}
 									className="hidden"
-									value="Present"
-									checked={selectedOption === "Present"}
-									onChange={() => handleRadioChange("Present")}
+									value="PRESENT"
+									checked={selectedOption === "PRESENT"}
+									onChange={() => handleRadioChange("PRESENT")}
 								/>
 								<label
 									htmlFor={`present-radio-${employee.employeeId}`}
 									className={`flex items-center justify-center w-8 h-8 border-2 rounded-full text-green-500 font-bold cursor-pointer ${
-										selectedOption === "Present"
+										selectedOption === "PRESENT"
 											? "bg-green-500 border-green-500 text-white"
 											: "bg-white border-gray-300 text-gray-800"
 									}`}

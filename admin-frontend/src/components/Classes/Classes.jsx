@@ -5,16 +5,18 @@ import API_ENDPOINTS from "../../API/apiEndpoints";
 import ListTable from "../List/ListTable";
 import EditClass from "./EditClass";
 import CheckFees from "./CheckFees";
+import UpdateClass from "./UpdateClass";
 
 const Classes = () => {
   const [openForm, setOpenForm] = useState(false);
   const [formValues, setFormValues] = useState({ name: "", code: "" });
   const [errorMessage, setErrorMessage] = useState("");
   const [classes, setClasses] = useState([]);
-  const[isEdit,setIsEdit] = useState(false);
+  const [isEdit,setIsEdit] = useState(false);
   const [selectedClassForEdit, setSelectedClassForEdit] = useState([]); 
   const [isClassFees,setIsClassFees] = useState(false);
   const [selectedClassId, setSelectedClassId] = useState(null);
+  const [classData,setClassData] = useState([]);
   const userData = JSON.parse(localStorage.getItem("userData"));
   const parsedData = userData;
   const token = parsedData.token;
@@ -95,7 +97,11 @@ const Classes = () => {
     setIsClassFees(true);
     // You can replace this with actual logic to fetch and display fee details
   };
-  
+  const handleUpdate = (data) =>{
+    console.log(data)
+    setIsEdit(true);
+    setClassData(data);
+  }
   const showDataList = useMemo(() => {
     return classes.map((classData) => (
       <tr key={classData.classId}>
@@ -111,6 +117,12 @@ const Classes = () => {
             className={`border rounded-md px-4 py-2 text-sm/none text-gray-600 hover:bg-gray-50 hover:text-gray-700`}
           >
             Delete Class
+          </button>
+          <button
+            onClick={() => handleUpdate(classData)}
+            className={`border rounded-md px-4 py-2 text-sm/none text-gray-600 hover:bg-gray-50 hover:text-gray-700`}
+          >
+            Update Class
           </button>
         
 
@@ -162,7 +174,7 @@ const Classes = () => {
         ListAction="Actions"
         showDataList={showDataList} // Pass the memoized rows to ListTable
       />
-      {
+      {/* {
         isEdit && (
             <EditClass
             selectedClassForEdit={selectedClassForEdit}
@@ -171,10 +183,10 @@ const Classes = () => {
           errorMessage={errorMessage}
           isEdit={true} />
         )
-      }
+      } */}
       
 {/* {isClassFees && (<CheckFees setIsClassFees={setIsClassFees} classId={selectedClassId} />)} */}
-      
+      {isEdit && <UpdateClass setUpdateClass={setIsEdit} updateClassValue={classData} />}
     </div>
   );
 };

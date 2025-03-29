@@ -3,7 +3,7 @@ import API_ENDPOINTS from "../../API/apiEndpoints";
 import StudentTable from "./StudentTable";
 import ListTableBtn from "../List/ListTableBtn";
 import CollegeStudentForm from "./CollegeStudentForm";
-
+import UpdateStudent from "./UpdateStudent";
 const CollegeStudentList = () => {
   const [students, setStudents] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -14,6 +14,8 @@ const CollegeStudentList = () => {
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const [selectedCourse, setSelectedCourse] = useState("");
   const [selectedSemester, setSelectedSemester] = useState("");
+  const [isEdit,setIsEdit] = useState(false);
+  const [editData,setEditData] = useState();
   const userData = JSON.parse(localStorage.getItem("userData"));
   const token = userData?.token;
   useEffect(() => {
@@ -88,6 +90,11 @@ const CollegeStudentList = () => {
   const handleStudentAdd = (newStudent) => {
     setStudents((prevState) => [...prevState, newStudent]);
   };
+
+  const onUpdateProfile =  (student) =>{
+    setEditData(student);
+    setIsEdit(true);
+  }
 
   return (
     <>
@@ -167,10 +174,14 @@ const CollegeStudentList = () => {
           <StudentTable
             students={students}
             onDeleteProfile={handleDeleteProfile}
+            onUpdateProfile = {onUpdateProfile}
           />
        
         </div>
       )}
+      {
+        isEdit && <UpdateStudent studentData={editData} setIsEditing={setIsEdit}/>
+      }
     </>
   );
 };

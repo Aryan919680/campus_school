@@ -4,7 +4,7 @@ import API_ENDPOINTS from "../../API/apiEndpoints";
 import StudentTable from "./StudentTable";
 import ListTableBtn from "../List/ListTableBtn";
 import SchoolStudentForm from "./SchoolStudentForm";
-
+import UpdateStudent from "./UpdateStudent";
 const SchoolStudentList = () => {
   const [students, setStudents] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -13,7 +13,8 @@ const SchoolStudentList = () => {
   const [subClasses, setSubClasses] = useState([]);
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedSubClass, setSelectedSubClass] = useState("");
-
+  const [isEdit,setIsEdit] = useState(false);
+  const [editData,setEditData] = useState();
   const userData = JSON.parse(localStorage.getItem("userData"));
   const token = userData?.token;
 
@@ -86,6 +87,11 @@ const SchoolStudentList = () => {
     setStudents((prevState) => [...prevState, newStudent]);
   };
 
+  const onUpdateProfile =  (student) =>{
+    setEditData(student);
+    setIsEdit(true);
+  }
+
   return (
     <>
       {isLoading ? (
@@ -140,10 +146,13 @@ const SchoolStudentList = () => {
             />
           )}
   </div>
-          <StudentTable students={students} onDeleteProfile={handleDeleteProfile} />
+          <StudentTable students={students} onDeleteProfile={handleDeleteProfile}     onUpdateProfile = {onUpdateProfile}/>
         </div>
         
       )}
+       {
+              isEdit && <UpdateStudent studentData={editData} setIsEditing={setIsEdit}/>
+            }
     </>
   );
 };

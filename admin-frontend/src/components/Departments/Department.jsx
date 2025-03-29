@@ -5,6 +5,8 @@ import API_ENDPOINTS from "../../API/apiEndpoints";
 import CourseForm from "./CourseForm.jsx";
 import ListTable from '../List/ListTable.jsx';
 import DepartmentFees from './DepartmentFees.jsx';
+import CommonTable from "../List/CommonTable.jsx";
+import UpdateCoursePage from "./UpdateCoursePage.jsx";
 const Departments = () => {
   const [openForm, setOpenForm] = useState(false);
   const [formValues, setFormValues] = useState({ name: "", code: "" });
@@ -17,6 +19,10 @@ const Departments = () => {
   const [selectedCourses, setSelectedCourses] = useState([]);
   const userData = JSON.parse(localStorage.getItem("userData"));
   const token = userData?.token;
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [updateFormValues, setUpdateFormValues] = useState({ name: "", code: "" });
+  const [updateCourse,setUpdateCourse] = useState(false);
+  const [updateCourseValue,setUpdateCourseValue] = useState([]);
 
   const fetchDepartmentOptions = useCallback(async () => {
     try {
@@ -99,12 +105,60 @@ const Departments = () => {
         Authorization: `Bearer ${token}`,
       },
     });
-   console.log(response.data.data)
    setSelectedCourses(response.data.data)
   } catch (error) {
     console.error("Error fetching department options:", error.response?.data || error.message);
     alert("Failed to fetch department data. Please try again.");
   }
+  }
+  const handleUpdate = (department) => {
+    setUpdateFormValues({
+      departmentId: department.departmentId,
+      name: department.name,
+      code: department.code,
+    });
+    setShowUpdateModal(true);
+  };
+
+  const handleUpdateSubmit = async (e) => {
+    e.preventDefault();
+    console.log(updateFormValues)
+    try {
+      await axios.put(`${API_ENDPOINTS.SUBMIT_COURSES()}/${updateFormValues.departmentId}`, updateFormValues, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      alert("Department updated successfully!");
+      setShowUpdateModal(false);
+      fetchDepartmentOptions();
+    } catch (error) {
+      console.error("Error updating department:", error.response?.data || error.message);
+      alert("Failed to update department. Please try again.");
+    }
+  };
+
+  const handleDeleteCourse = async (courseId,departmentId) =>{
+     console.log(courseId,departmentId)
+     try {
+      await axios.delete(`${API_ENDPOINTS.SUBMIT_COURSES()}/${departmentId}/course`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        data: { courseIds: [courseId] },
+      });
+      alert("Course deleted successfully!");
+      setShowDepartment(true);
+    } catch (error) {
+      console.error("Error deleting department:", error.response?.data || error.message);
+      alert("Failed to delete department. Please try again.");
+    }
+  }
+  const handleUpdateCourseModal = (course) =>{
+      setUpdateCourse(true);
+      setUpdateCourseValue(course);
   }
   return (
     <div className="bg-white p-8 rounded-md w-full">
@@ -154,36 +208,82 @@ const Departments = () => {
         >
           Get Courses
         </button>
+        <button
+                  onClick={() => handleUpdate(department)}
+                  className="bg-yellow-500 text-white py-2 px-4 rounded"
+                >
+                  Update
+                </button>
       </div>
     </div>
   ))}
 </div>
-: <div><ListTable
+: <div>
+  <ListTable
 ListName="Course Name"
 ListRole="Specialization"
 ListDepartment ="Number of Semesters"
 ListAction="Actions"
 
 showDataList={selectedCourses.map((course) => (
-  <tr key={course.courseId}>
-    <td className="text-center">{course.courseName}</td>
-    <td className="text-center">{course.specialization}</td>
-    <td className="text-center">{course.numberOfSemesters}</td>
-    <td className="text-center">
-      <button>
-        Edit
-      </button>
-      <button>
-        Delete
-      </button>
-    </td>
-  </tr>
+
+  <CommonTable
+								key={course.courseId}
+								name={course.courseName}
+								role={course.specialization}
+								id={course.numberOfSemesters}
+								actions={[
+									{
+										type: "button",
+										label: "Remove",
+										 onClick: () => handleDeleteCourse(course.courseId,course.departmentId),
+									},
+                  {
+                    type: "button",
+										label: "Update",
+									 onClick: () => handleUpdateCourseModal(course),
+                  }
+								]}
+							/>
 ))}
 />
 <button  className="bg-linear-blue text-white py-2 px-4 rounded" onClick={()=>setShowDepartment(true)}>Show Departments</button>
+
+
 </div>
 }
-    
+{showUpdateModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
+            <h3 className="text-lg font-bold mb-4">Update Department</h3>
+            <form onSubmit={handleUpdateSubmit}>
+              <div className="mb-4">
+                <label className="block text-gray-700">Department Name</label>
+                <input
+                  type="text"
+                  value={updateFormValues.name}
+                  onChange={(e) => setUpdateFormValues({ ...updateFormValues, name: e.target.value })}
+                  className="w-full p-2 border border-gray-300 rounded"
+                  required
+                />
+              </div>
+            
+              <div className="flex justify-end gap-2">
+                <button type="button" onClick={() => setShowUpdateModal(false)} className="bg-gray-500 text-white py-2 px-4 rounded">
+                  Cancel
+                </button>
+                <button type="submit" className="bg-linear-blue text-white py-2 px-4 rounded">
+                  Update
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+{
+  updateCourse && <UpdateCoursePage setUpdateCourse={setUpdateCourse} updateCourseValue= {updateCourseValue}/>
+}
+
     </div>
   );
 };
