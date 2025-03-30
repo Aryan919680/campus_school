@@ -93,9 +93,9 @@ const CollectFeePage = () => {
             <select onChange={handleStudentChange} className="w-full p-2 border rounded mb-4">
                 <option value="">-- Select Student --</option>
                 {students.map(student => (
-                //   campusType === "COLLEGE" ?  <option key={student.studentId} value={student.studentId}>{student.name} ({student.departmentName}, {student.courseName}, {student})</option>
-                //   : <option key={student.studentId} value={student.studentId}>{student.name} ({student.className, student.subClassName})</option>
-                <option key={student.studentId} value={student.studentId}>{student.name} ({student.departmentName}, {student.courseName}, {student.semesterName})</option>
+                  campusType === "COLLEGE" ?  <option key={student.studentId} value={student.studentId}>{student.name} ({student.departmentName}, {student.courseName}, {student})</option>
+                  : <option key={student.studentId} value={student.studentId}>{student.name} ({student.className}, {student.subClassName})</option>
+             //   <option key={student.studentId} value={student.studentId}>{student.name} ({student.departmentName}, {student.courseName}, {student.semesterName})</option>
                 ))}
             </select>
             
