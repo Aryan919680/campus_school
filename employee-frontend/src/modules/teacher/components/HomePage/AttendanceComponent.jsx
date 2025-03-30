@@ -19,34 +19,54 @@ export default function AttendanceComponent({ onClose }) {
   const teacherData = JSON.parse(localStorage.getItem("teacherData"));
   const campusId = teacherData?.campusId;
 
+
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${campusId}`, {
+    fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/role/campus/${campusId}/employee`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
-      .then((data) => setDepartments(data.data || []))
-      .catch((err) => console.error("Error fetching departments:", err));
+      .then((data) => {
+        const course = data?.data?.roles[0]?.semster?.course || "";
+        const semesterName = data?.data?.roles[0]?.semster?.name || "";
+        const semesterId =  data?.data?.roles[0]?.semster?.semesterId || "";
+        setCourses([{ courseId: course, courseName: course }]);
+        setSemesters([{ semesterId: semesterId, semesterName }]);
+      })
+      .catch((err) => console.error("Error fetching courses and semesters:", err));
   }, [campusId, token]);
 
-  useEffect(() => {
-    if (!selectedDepartment) return;
-    fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${campusId}/department/${selectedDepartment}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => res.json())
-      .then((data) => setCourses(data.data || []))
-      .catch((err) => console.error("Error fetching courses:", err));
-  }, [selectedDepartment, campusId, token]);
+  // useEffect(() => {
+  //   fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${campusId}`, {
+  //     headers: { Authorization: `Bearer ${token}` },
+  //   })
+  //     .then((res) => res.json())
+  //     .then((data) => setDepartments(data.data || []))
+  //     .catch((err) => console.error("Error fetching departments:", err));
+  // }, [campusId, token]);
+
+  // useEffect(() => {
+  //   if (!selectedDepartment) return;
+  //   fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/department/campus/${campusId}/department/${selectedDepartment}`, {
+  //     headers: { Authorization: `Bearer ${token}` },
+  //   })
+  //     .then((res) => res.json())
+  //     .then((data) => setCourses(data.data || []))
+  //     .catch((err) => console.error("Error fetching courses:", err));
+  // }, [selectedDepartment, campusId, token]);
+
+  // useEffect(() => {
+  //   if (!selectedCourse) return;
+  //   const selectedCourseObj = courses.find((course) => course.courseId === selectedCourse);
+  //   setSemesters(selectedCourseObj ? selectedCourseObj.semester : []);
+  // }, [selectedCourse, courses]);
 
   useEffect(() => {
-    if (!selectedCourse) return;
-    const selectedCourseObj = courses.find((course) => course.courseId === selectedCourse);
-    setSemesters(selectedCourseObj ? selectedCourseObj.semester : []);
-  }, [selectedCourse, courses]);
+    console.log("test",selectedCourse,selectedSemester)
+    if (!selectedCourse || !selectedSemester){
+      return;
 
-  useEffect(() => {
-    if (!selectedCourse || !selectedSemester) return;
-    fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/student/campus/${campusId}?semesterId=${selectedSemester}&courseId=${selectedCourse}`, {
+    } 
+    fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/student/campus/${campusId}?semesterId=${selectedSemester}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
@@ -82,45 +102,39 @@ export default function AttendanceComponent({ onClose }) {
   return (
     <Card className="p-6 max-w-lg mx-auto shadow-lg">
       <CardContent>
-        <div className="mb-4">
-          <Label>Select Date:</Label>
+      <div className="mb-4">
+          <label className="font-medium">Select Date:</label>
           <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
         </div>
+
+   
         <div className="mb-4">
-          <Label>Select Department:</Label>
-          <Select value={selectedDepartment || ""} onValueChange={setSelectedDepartment}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select Department" />
-            </SelectTrigger>
-            <SelectContent>
-              {departments.map((dept) => (
-                <SelectItem key={dept.departmentId} value={dept.departmentId}>{dept.name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="mb-4">
-          <Label>Select Course:</Label>
-          <Select onValueChange={setSelectedCourse}>
-            <SelectTrigger className="w-full">
+          <label className="font-medium">Select Course:</label>
+          <Select onValueChange={setSelectedCourse} value={selectedCourse || ""}>
+            <SelectTrigger>
               <SelectValue placeholder="Select Course" />
             </SelectTrigger>
             <SelectContent>
               {courses.map((course) => (
-                <SelectItem key={course.courseId} value={course.courseId}>{course.courseName}</SelectItem>
+                <SelectItem key={course.courseId} value={course.courseId}>
+                  {course.courseName}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
+
         <div className="mb-4">
-          <Label>Select Semester:</Label>
-          <Select onValueChange={setSelectedSemester}>
-            <SelectTrigger className="w-full">
+          <label className="font-medium">Select Semester:</label>
+          <Select value={selectedSemester} onValueChange={setSelectedSemester} disabled={!selectedCourse}>
+            <SelectTrigger>
               <SelectValue placeholder="Select Semester" />
             </SelectTrigger>
             <SelectContent>
               {semesters.map((sem) => (
-                <SelectItem key={sem.semesterId} value={sem.semesterId}>{sem.semesterName}</SelectItem>
+                <SelectItem key={sem.semesterId} value={sem.semesterId}>
+                  {sem.semesterName}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
