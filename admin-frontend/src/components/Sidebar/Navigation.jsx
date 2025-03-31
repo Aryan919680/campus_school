@@ -222,7 +222,7 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 					<NavItems
 					to="/Role"
 						icon="material-symbols:event"
-					title="Finance"
+					title="HR functions"
 					isSidebarExpanded={isSidebarExpanded}
 				/>
 				<NavItems
@@ -295,7 +295,7 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 	<NavItems
 					to="/Role"
 				icon="material-symbols:event"
-					title="Finance"
+					title="HR functions"
 					isSidebarExpanded={isSidebarExpanded}
 				/>
 				 <NavItems
