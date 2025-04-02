@@ -25,7 +25,9 @@ export default function FeeManagement() {
   }, []);
   const fetchClasses = async () => {
     try {
-      const response = await axios.get(API_ENDPOINTS.FETCH_CLASS());
+      const response = await axios.get(API_ENDPOINTS.FETCH_CLASS(),{
+        headers: { Authorization: `Bearer ${token}` },
+    });
       setClasses(response.data.data.class || []);
     } catch (error) {
       console.error("Failed to fetch classes.", error);
@@ -45,7 +47,9 @@ export default function FeeManagement() {
 
   const fetchDepartments = async () => {
     try {
-      const response = await axios.get(API_ENDPOINTS.GET_DEPARTMENTS());
+      const response = await axios.get(API_ENDPOINTS.GET_DEPARTMENTS(),{
+        headers: { Authorization: `Bearer ${token}` },
+    });
       setDepartments(response.data.data || []);
     } catch (error) {
       console.error("Failed to fetch departments.", error);
@@ -54,7 +58,9 @@ export default function FeeManagement() {
 
   const fetchCourses = async (departmentId) => {
     try {
-      const response = await axios.get(`${API_ENDPOINTS.GET_COURSES_OF_DEPARTMENT()}/${departmentId}`);
+      const response = await axios.get(`${API_ENDPOINTS.GET_COURSES_OF_DEPARTMENT()}/${departmentId}`,{
+        headers: { Authorization: `Bearer ${token}` },
+    });
       setCourses(response.data.data || []);
     } catch (error) {
       console.error("Failed to fetch courses.", error);

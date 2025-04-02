@@ -158,18 +158,25 @@ const AttendancePage = () => {
             <h1 className="text-2xl font-bold mb-4">Employee Portal</h1>
             
             <div className="flex gap-4 mb-4">
-                <button
-                    onClick={() => setActiveTab("mark attendance")}
-                    className={`px-4 py-2 rounded ${activeTab === "mark attendance" ? "bg-linear-blue text-white" : "bg-gray-300"}`}
-                >
-                    Mark Attendance
-                </button>
-                <button
-                    onClick={() => setActiveTab("leave")}
-                    className={`px-4 py-2 rounded ${activeTab === "leave" ? "bg-linear-blue text-white" : "bg-gray-300"}`}
-                >
-                    Leave Request
-                </button>
+            <button
+    onClick={() => setActiveTab("attendance")}
+    className={`px-4 py-2 rounded ${activeTab === "attendance" ? "bg-linear-blue text-white" : "bg-gray-300"}`}
+>
+    Marked Attendance
+</button> 
+<button
+    onClick={() => setActiveTab("mark attendance")}
+    className={`px-4 py-2 rounded ${activeTab === "mark attendance" ? "bg-linear-blue text-white" : "bg-gray-300"}`}
+>
+    Mark Attendance
+</button>
+<button
+    onClick={() => setActiveTab("leave")}
+    className={`px-4 py-2 rounded ${activeTab === "leave" ? "bg-linear-blue text-white" : "bg-gray-300"}`}
+>
+    Leave Request
+</button>
+
             </div>
             {activeTab === "mark attendance" && <Attendance onClose={onClose}/>}
             {activeTab === "attendance" &&(

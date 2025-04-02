@@ -24,20 +24,20 @@ const FeePage = () => {
         <button
           onClick={() => setActiveTab("collect")}
           className={`px-4 py-2 rounded ${
-            activeTab === "leave" ? "bg-linear-blue text-white" : "bg-gray-300"
+            activeTab === "collect" ? "bg-linear-blue text-white" : "bg-gray-300"
           }`}
         >
           Collect Fees
         </button>
         <button onClick={ () =>{setActiveTab("compliance")}}
   className={`px-4 py-2 rounded ${
-    activeTab === "leave" ? "bg-linear-blue text-white" : "bg-gray-300"
+    activeTab === "compliance" ? "bg-linear-blue text-white" : "bg-gray-300"
   }`} >
     Compliance
   </button>
   <button onClick={ () =>{setActiveTab("goal")}}
   className={`px-4 py-2 rounded ${
-    activeTab === "leave" ? "bg-linear-blue text-white" : "bg-gray-300"
+    activeTab === "goal" ? "bg-linear-blue text-white" : "bg-gray-300"
   }`} >
     AI FI. Assist
   </button>
