@@ -126,6 +126,7 @@ const CollegeStudentForm = ({ onClose, onStudentAdded }) => {
     }
 
     const handleBulkUpload = async () => {
+        console.log(payloadData)
         if (!file) {
             setError("Please select a file to upload.");
             return;

@@ -84,7 +84,6 @@ const CollectFeePage = () => {
         }
     };
 
-
     return (
         <div className="p-6 bg-gray-100 w-1/2 mx-auto shadow-md rounded-lg">
             <h2 className="text-xl font-bold mb-4">Collect Fee Payment</h2>
@@ -92,11 +91,18 @@ const CollectFeePage = () => {
             <label className="block mb-2">Select Student:</label>
             <select onChange={handleStudentChange} className="w-full p-2 border rounded mb-4">
                 <option value="">-- Select Student --</option>
-                {students.map(student => (
-                  campusType === "COLLEGE" ?  <option key={student.studentId} value={student.studentId}>{student.name} ({student.departmentName}, {student.courseName}, {student})</option>
-                  : <option key={student.studentId} value={student.studentId}>{student.name} ({student.className}, {student.subClassName})</option>
-             //   <option key={student.studentId} value={student.studentId}>{student.name} ({student.departmentName}, {student.courseName}, {student.semesterName})</option>
-                ))}
+                {students && students.map(student => (
+  campusType === "COLLEGE" ? (
+    <option key={student.studentId} value={student.studentId}>
+      {student.name} ({student.departmentName}, {student.courseName})
+    </option>
+  ) : (
+    <option key={student.studentId} value={student.studentId}>
+      {student.name} ({student.className}, {student.subClassName})
+    </option>
+  )
+))}
+
             </select>
             
             {selectedStudent && (
