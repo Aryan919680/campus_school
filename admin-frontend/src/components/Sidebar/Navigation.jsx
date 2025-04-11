@@ -243,6 +243,13 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 					title="Finance"
 					isSidebarExpanded={isSidebarExpanded}
 				/>
+                <NavItems
+					to="/Timetable"
+					icon="mingcute:calendar-fill"
+					title="Timetable"
+					isSidebarExpanded={isSidebarExpanded}
+				/>
+
 			{/*	<NavItems
 					to="/Finance"
 					icon="material-symbols:finance-mode-rounded"
@@ -316,6 +323,13 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 					title="Finance"
 					isSidebarExpanded={isSidebarExpanded}
 				/>
+				     <NavItems
+					to="/Timetable"
+					icon="mingcute:calendar-fill"
+					title="Timetable"
+					isSidebarExpanded={isSidebarExpanded}
+				/>
+
 			{/*	<NavItems
 					to="/Department"
 					icon="mingcute:department-fill"

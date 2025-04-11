@@ -3,7 +3,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { Select, SelectTrigger, SelectValue, SelectContent,SelectItem } from "@/components/ui/select";
+
 
 export default function AttendanceComponent({ onClose }) {
   const [date, setDate] = useState("");
@@ -31,6 +32,7 @@ export default function AttendanceComponent({ onClose }) {
         const semesterId =  data?.data?.roles[0]?.semster?.semesterId || "";
         setCourses([{ courseId: course, courseName: course }]);
         setSemesters([{ semesterId: semesterId, semesterName }]);
+        console.log(courses,semesters)
       })
       .catch((err) => console.error("Error fetching courses and semesters:", err));
   }, [campusId, token]);
@@ -115,7 +117,7 @@ export default function AttendanceComponent({ onClose }) {
               <SelectValue placeholder="Select Course" />
             </SelectTrigger>
             <SelectContent>
-              {courses.map((course) => (
+              {courses.length > 0 &&courses.map((course) => (
                 <SelectItem key={course.courseId} value={course.courseId}>
                   {course.courseName}
                 </SelectItem>
@@ -131,7 +133,7 @@ export default function AttendanceComponent({ onClose }) {
               <SelectValue placeholder="Select Semester" />
             </SelectTrigger>
             <SelectContent>
-              {semesters.map((sem) => (
+              {semesters.length > 0 && semesters.map((sem) => (
                 <SelectItem key={sem.semesterId} value={sem.semesterId}>
                   {sem.semesterName}
                 </SelectItem>

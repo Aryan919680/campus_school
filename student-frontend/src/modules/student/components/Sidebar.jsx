@@ -8,6 +8,7 @@ import {
   CalendarClock,
   GraduationCap,
   LayoutDashboard,
+  Library,
   LibraryBig,
   LogOut,
   MessageCircleMore,
@@ -97,6 +98,11 @@ const Sidebar = ({ sidebar, boxRef }) => {
             </Link>
           </li>
           <li>
+            <Link to="/timetable" className="flex gap-4 my-6 items-center">
+            <Library /> TimeTable
+            </Link>
+          </li>
+          {/* <li>
             <Link to="/academics" className="flex gap-4 my-6 items-center">
               <GraduationCap /> Academics
             </Link>
@@ -120,7 +126,7 @@ const Sidebar = ({ sidebar, boxRef }) => {
             <Link to="/support" className="flex gap-4 my-6 items-center">
               <MessageCircleMore /> Support
             </Link>
-          </li>
+          </li> */}
         </ul>
       </div>
       <div>

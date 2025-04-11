@@ -20,6 +20,8 @@ import Departments from "./components/Departments/Department";
 import AttendancePage from "./components/Attendance/AttendencePage";
 import FeePage from "./components/Fees/FeePage";
 import EmployeePage from "./components/Role/EmployeePage";
+import Timetable from "./components/Timetable/TimeTablePage";
+import SchoolTimeTablePage from "./components/Timetable/SchoolTimeTablePage";
 const Layout = ({ logout }) => {
 	const [userData, setUserData] = useState(() => {
 		const storedUserData = localStorage.getItem("userData");
@@ -82,7 +84,8 @@ const Layout = ({ logout }) => {
 						<Route path="/attendance" element={<AttendancePage />} />
 						<Route path="/finance" element={<FeePage />} />
 						<Route path='/role' element={<EmployeePage />} />
-					</Routes>
+						<Route path="/timetable" element={<SchoolTimeTablePage /> }/>
+				     	</Routes>
 					}
 					{
 						campusType === "COLLEGE" &&
@@ -92,13 +95,9 @@ const Layout = ({ logout }) => {
 							<Route path="/employees" element={<Employees />} />
 							<Route path="/attendance" element={<AttendancePage />} />
 							<Route path='/role' element={<EmployeePage />} />
-						{/* <Route path="/" element={<Dashboard />} />
-						
-						{/* <Route path='/classes' element={<Classes />} /> */}
-					
-						<Route path="/students" element={<Students />} />
-					<Route path="/finance" element={<FeePage />} />
-			
+						    <Route path="/students" element={<Students />} />
+				        	<Route path="/finance" element={<FeePage />} />
+				        	<Route path="/timetable" element={<Timetable />} />
 							{/* <Route path="summary" element={<Summary />} />
 							<Route path="transactions" element={<Transactions />} />
 							<Route path="student-fees" element={<StudentFees />} />

@@ -101,11 +101,11 @@ const Sidebar = ({ sidebar, boxRef }) => {
             </Link>
           </li>
           <li>
-            <Link to="/class" className="flex gap-4 my-6 items-center">
-              <GraduationCap /> Class Room
+            <Link to="/timetable" className="flex gap-4 my-6 items-center">
+            <Library /> TimeTable
             </Link>
           </li>
-          <li>
+          {/* <li>
             <Link to="/marks" className="flex gap-4 my-6 items-center">
               <FileDigit /> Provide Marks
             </Link>
@@ -131,7 +131,7 @@ const Sidebar = ({ sidebar, boxRef }) => {
             <Link to="/support" className="flex gap-4 my-6 items-center">
               <Info /> Support
             </Link>
-          </li>
+          </li> */}
         </ul>
       </div>
       <div>

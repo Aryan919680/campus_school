@@ -31,38 +31,7 @@ const ClassForm = ({ onClose, errorMessage,refreshClasses }) => {
         setSectionsInput(event.target.value.toUpperCase());
     };
 
-    // Add Class with Sections
-    // const addClassWithSections = () => {
-    //     if (!classInput.trim()) return alert("Please enter a class name.");
-    //     if (!sectionsInput.match(/^([A-Z])\s*to\s*([A-Z])$/i)) return alert("Invalid section format. Use 'A to D'.");
 
-    //     const match = sectionsInput.match(/^([A-Z])\s*to\s*([A-Z])$/i);
-    //     const start = match[1].charCodeAt(0);
-    //     const end = match[2].charCodeAt(0);
-
-    //     if (start > end) return alert("Invalid section range.");
-
-    //     const newSections = Array.from({ length: end - start + 1 }, (_, i) =>
-    //         String.fromCharCode(start + i)
-    //     );
-
-    //     // Prevent duplicate class entries
-    //     const existingIndex = classSections.findIndex(item => item.class === classInput.trim());
-    //     let updatedClassSections = [...classSections];
-
-    //     if (existingIndex !== -1) {
-    //         updatedClassSections[existingIndex].sections = newSections;
-    //     } else {
-    //         updatedClassSections.push({ class: classInput.trim(), sections: newSections });
-    //     }
-
-    //     setClassSections(updatedClassSections);
-    //     localStorage.setItem("classSections", JSON.stringify(updatedClassSections));
-
-    //     // Reset inputs
-    //     setClassInput("");
-    //     setSectionsInput("");
-    // };
     const addClassWithSections = () => {
         if (!classInput.trim()) return alert("Please enter a class name.");
     

@@ -12,6 +12,7 @@ import TimeTable from "./modules/teacher/pages/TimeTable";
 import SupportPage from "./modules/teacher/pages/SupportPage";
 import Marks from "./modules/teacher/pages/ProvideMarks";
 import Lessonplan from "./modules/teacher/pages/Lessonplan";
+import NewTimeTable from "./modules/teacher/pages/NewTimeTable";
 const teacherData = localStorage.getItem("teacherData");
 const router = createBrowserRouter(
 	
@@ -69,10 +70,10 @@ const router = createBrowserRouter(
 					),
 				},
 				{
-					path: "/timeTable",
+					path: "/timetable",
 					element: (
 						<ProtectedRoute>
-							<TimeTable />
+							<NewTimeTable />
 						</ProtectedRoute>
 					),
 				},

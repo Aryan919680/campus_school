@@ -38,6 +38,7 @@ const HomePage = () => {
         const semesterId =  data?.data?.roles[0]?.semster?.semesterId || "";
         setCourses([{ courseId: course, courseName: course }]);
         setSemesters([{ semesterId: semesterId, semesterName }]);
+        console.log(courses,semesters)
       })
       .catch((err) => console.error("Error fetching courses and semesters:", err));
   }, [campusId, token]);
@@ -174,7 +175,7 @@ const handleSemesterChange = (semesterId) => {
               <SelectValue placeholder="Select Course" />
             </SelectTrigger>
             <SelectContent>
-              {courses.map((course) => (
+              {courses.length > 0 && courses.map((course) => (
                 <SelectItem key={course.courseId} value={course.courseId}>
                   {course.courseName}
                 </SelectItem>
@@ -190,7 +191,7 @@ const handleSemesterChange = (semesterId) => {
               <SelectValue placeholder="Select Semester" />
             </SelectTrigger>
             <SelectContent>
-              {semesters.map((sem) => (
+              {semesters.length > 0 && semesters.map((sem) => (
                 <SelectItem key={sem.semesterId} value={sem.semesterId}>
                   {sem.semesterName}
                 </SelectItem>

@@ -11,6 +11,7 @@ import Login from "./modules/loginSignup/Login";
 import Signup from "./modules/loginSignup/Signup";
 import SupportPage from "./modules/student/pages/Support";
 import ProtectedRoute from "./auth/ProtectedRoute/ProtectedRoute";
+import TimeTablePage from "./modules/student/components/timeTable/TimeTablePage";
 
 const router = createBrowserRouter(
 	[
@@ -43,6 +44,14 @@ const router = createBrowserRouter(
 					element: (
 						<ProtectedRoute>
 							<Library />
+						</ProtectedRoute>
+					),
+				},
+				{
+					path: "/timetable",
+					element: (
+						<ProtectedRoute>
+							<TimeTablePage />
 						</ProtectedRoute>
 					),
 				},
