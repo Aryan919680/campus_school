@@ -4,7 +4,7 @@ export default function NewTimeTable() {
   const teacherData = JSON.parse(localStorage.getItem("teacherData"));
   const campusId = teacherData?.campusId;
   const token = localStorage.getItem("token");
-
+  const campusType = teacherData.campusType;
   const [employeeId, setEmployeeId] = useState('');
   const [timeTable, setTimeTable] = useState([]);
 
@@ -59,8 +59,13 @@ export default function NewTimeTable() {
               <th className="border px-4 py-2">Period</th>
               <th className="border px-4 py-2">From</th>
               <th className="border px-4 py-2">To</th>
-              <th className="border px-4 py-2">Subject ID</th>
-              <th className="border px-4 py-2">Semester ID</th>
+              <th className="border px-4 py-2">Subject Name</th>
+              {
+campusType === "SCHOOL" ? <th className="border px-4 py-2">Class </th> :  <th className="border px-4 py-2">Course</th>
+             } 
+             {
+campusType === "SCHOOL" ? <th className="border px-4 py-2">Sub Class </th> :  <th className="border px-4 py-2">Semester</th>
+             } 
             </tr>
           </thead>
           <tbody>
@@ -70,8 +75,13 @@ export default function NewTimeTable() {
                 <td className="border px-4 py-2">{item.name}</td>
                 <td className="border px-4 py-2">{item.from}:00</td>
                 <td className="border px-4 py-2">{item.to}:00</td>
-                <td className="border px-4 py-2">{item.subjectId}</td>
-                <td className="border px-4 py-2">{item.semesterId}</td>
+                <td className="border px-4 py-2">{item.subject.name}</td>
+                {
+campusType === "SCHOOL" ? <td className="border px-4 py-2">{item.class.className}</td> : <td className="border px-4 py-2">{item.course.courseName}</td>
+             } 
+                {
+campusType === "SCHOOL" ? <td className="border px-4 py-2">{item.subClass.subClassName}</td> : <td className="border px-4 py-2">{item.semester.semesterName}</td>
+             } 
               </tr>
             ))}
           </tbody>

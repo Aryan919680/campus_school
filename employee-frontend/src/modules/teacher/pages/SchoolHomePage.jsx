@@ -34,21 +34,32 @@ const SchoolHomePage = ({ handleShowAttendance }) => {
   // ✅ Fetch courses and semesters to populate class and subclass
   useEffect(() => {
     if (!campusId || !token) return;
-
+  
     fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/role/campus/${campusId}/employee`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
       .then((data) => {
-        const course = data?.data?.roles[0]?.subClass?.class || "";
-        const semesterName = data?.data?.roles[0]?.subClass?.name || "";
-        const subClassId = data?.data?.roles[0]?.subClass?.subClassId || "";
-
-        setClasses([{ classId: course, className: course }]);
-        setSubSections([{ subClassId: subClassId, subClassName: semesterName }]);
+        const roles = data?.data?.roles;
+        if (Array.isArray(roles) && roles.length > 0) {
+          const course = roles[0]?.subClass?.class || "";
+          const semesterName = roles[0]?.subClass?.name || "";
+          const subClassId = roles[0]?.subClass?.subClassId || "";
+  
+          setClasses([{ classId: course, className: course }]);
+          setSubSections([{ subClassId: subClassId, subClassName: semesterName }]);
+        } else {
+          setClasses([]);
+          setSubSections([]);
+        }
       })
-      .catch((err) => console.error("Error fetching courses and semesters:", err));
+      .catch((err) => {
+        console.error("Error fetching courses and semesters:", err);
+        setClasses([]);
+        setSubSections([]);
+      });
   }, [campusId, token]);
+  
 
   // ✅ Fetch attendance based on date and selected sub-section
   useEffect(() => {
@@ -180,7 +191,7 @@ const SchoolHomePage = ({ handleShowAttendance }) => {
       {showLeavePage && <LeaveRequestPage />}
 
       {/* ✅ Default Page */}
-      {showDefaultPage && (
+      {showDefaultPage  && (
         <div className="border p-4 rounded-lg shadow-lg">
           <div className="mb-4">
             <label className="font-medium">Select Date:</label>
@@ -208,16 +219,12 @@ const SchoolHomePage = ({ handleShowAttendance }) => {
                   <SelectValue placeholder="Select Class" />
                 </SelectTrigger>
                 <SelectContent>
-                  {classes.length > 0 ? (
+                  {classes.length > 0 && (
                     classes.map((cls) => (
                       <SelectItem key={cls.classId} value={cls.classId}>
                         {cls.className}
                       </SelectItem>
                     ))
-                  ) : (
-                    <SelectItem value="" disabled>
-                      No classes available
-                    </SelectItem>
                   )}
                 </SelectContent>
               </Select>
@@ -235,16 +242,12 @@ const SchoolHomePage = ({ handleShowAttendance }) => {
                   <SelectValue placeholder="Select Sub-Section" />
                 </SelectTrigger>
                 <SelectContent>
-                  {subSections.length > 0 ? (
+                  {subSections.length > 0 && (
                     subSections.map((subSec) => (
                       <SelectItem key={subSec.subClassId} value={subSec.subClassId}>
                         {subSec.subClassName}
                       </SelectItem>
                     ))
-                  ) : (
-                    <SelectItem value="" disabled>
-                      No sub-sections available
-                    </SelectItem>
                   )}
                 </SelectContent>
               </Select>

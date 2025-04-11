@@ -33,16 +33,22 @@ const HomePage = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        const course = data?.data?.roles[0]?.semster?.course || "";
-        const semesterName = data?.data?.roles[0]?.semster?.name || "";
-        const semesterId =  data?.data?.roles[0]?.semster?.semesterId || "";
-        setCourses([{ courseId: course, courseName: course }]);
-        setSemesters([{ semesterId: semesterId, semesterName }]);
-        console.log(courses,semesters)
+        const roles = data?.data?.roles;
+        if (Array.isArray(roles) && roles.length > 0) {
+          
+  
+          const course = roles[0]?.semster?.course || "";
+          const semesterName = roles[0].semster?.name || "";
+          const semesterId =  roles[0]?.semster?.semesterId || "";
+          setCourses([{ courseId: course, courseName: course }]);
+          setSemesters([{ semesterId: semesterId, semesterName }]);
+        } else {
+          setCourses([]);
+          setSemesters([]);
+        }
       })
       .catch((err) => console.error("Error fetching courses and semesters:", err));
   }, [campusId, token]);
-
   // Fetch attendance based on selected date and semester
   useEffect(() => {
     if (!date || !selectedSemester) return;

@@ -132,7 +132,7 @@ const SchoolTimeTablePage = () => {
         </div>
       )}
 
-       {openForm && <SchoolAddSubjects />
+       {openForm && <SchoolAddSubjects setOpenForm={setOpenForm}/>
 
        }
 {timeTable.length > 0 && (

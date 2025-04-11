@@ -14,7 +14,7 @@ const timeSlots = [
 
 const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-const CreateTimetable = ({ subjectData }) => {
+const CreateTimetable = ({ subjectData, onClose }) => {
     const userData = JSON.parse(localStorage.getItem("userData"));
     const token = userData?.token;
     const campusType = userData?.data.campusType ;
@@ -68,14 +68,14 @@ console.log(subjectData)
 
         const subject = subjects.find(s => s.subjectId === subjectId);
         const slot = timeSlots.find(s => s.label === timeSlot);
-
+        console.log("test",subject)
         setTimetable(prev => [...prev, {
             subjectId,
             from: slot.from,
             to: slot.to,
             day: days.indexOf(day) + 1,
             name: `Period ${prev.length + 1}`,
-            subjectName: subject.subjectName,
+            subjectName: subject.name,
             timeSlot: timeSlot
         }]);
 
@@ -115,6 +115,7 @@ console.log(subjectData)
                 headers: { Authorization: `Bearer ${token}` }
             });
             alert("Timetable saved successfully!");
+            onClose();
         } catch (error) {
             console.error("Error saving timetable:", error);
             alert("Error saving timetable.");
@@ -149,7 +150,7 @@ console.log(subjectData)
 
                 <button
                     onClick={handleAssign}
-                    className="mt-4 bg-blue-500 hover:bg-blue-600 text-white w-full py-2 rounded-md"
+                    className="mt-4 bg-variant-blue hover:bg-blue-600 text-white w-full py-2 rounded-md"
                 >
                     Assign to Timetable
                 </button>
@@ -166,7 +167,7 @@ console.log(subjectData)
                                         <th className="p-2 border">Day</th>
                                         <th className="p-2 border">Time Slot</th>
                                         <th className="p-2 border">Subject</th>
-                                        <th className="p-2 border">Teacher</th>
+                                     
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -175,7 +176,7 @@ console.log(subjectData)
                                             <td className="p-2 border">{days[entry.day - 1]}</td>
                                             <td className="p-2 border">{entry.timeSlot}</td>
                                             <td className="p-2 border">{entry.subjectName}</td>
-                                            <td className="p-2 border">{entry.teacherName}</td>
+                                           
                                         </tr>
                                     ))}
                                 </tbody>

@@ -158,7 +158,7 @@ const TimeTablePage = () => {
         </div>
       )}
 
-       {openForm && <AddSubjects />
+       {openForm && <AddSubjects setOpenForm={setOpenForm} openForm={openForm}/>
 
        }
 {timeTable.length > 0 && (

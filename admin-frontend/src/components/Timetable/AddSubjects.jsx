@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import API_ENDPOINTS from "../../API/apiEndpoints";
 import AssignTeacher from "./AssignTeacher";
-const AddSubjects = ({ onClose }) => {
+const AddSubjects = ({ setOpenForm,openForm }) => {
     const userData = JSON.parse(localStorage.getItem("userData"));
     const token = userData?.token;
 
@@ -20,7 +20,6 @@ const AddSubjects = ({ onClose }) => {
         subjectCode: ""
     });
     const [isSemesterLocked, setIsSemesterLocked] = useState(false);
-    const [defaultPage,setDefaultPage] = useState(true);
     const [showAssignSubjectPage, setShowAssignSubjectPage] = useState(false);
     useEffect(() => {
         const fetchDepartments = async () => {
@@ -180,22 +179,32 @@ const AddSubjects = ({ onClose }) => {
         }));
     
         try {
-            await axios.post(API_ENDPOINTS.CREATE_SUBJECT(), { subjects: formattedSubjects }, {
+           const response =  await axios.post(API_ENDPOINTS.CREATE_SUBJECT(), { subjects: formattedSubjects }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            setShowAssignSubjectPage(true);
-            setDefaultPage(false);
+        
+
+
+                setShowAssignSubjectPage(true);
+                
+            
+           
+           
         } catch (error) {
             console.error("Error creating subjects:", error);
             alert("Failed to create subjects. Please try again.");
         }
     };
+    useEffect(() => {
+        console.log("Updated states:", showAssignSubjectPage, openForm);
+    }, [showAssignSubjectPage, openForm]);
+    
     
 
     return (
         <>
         {
-            defaultPage && 
+            !showAssignSubjectPage &&
             <div className="fixed inset-0 z-50 flex justify-center items-center h-full w-full bg-black bg-opacity-80 backdrop-blur-sm">
             <div className="bg-gray-800 p-6 rounded-xl w-3/12 text-white space-y-4">
                 <h2 className="text-xl font-semibold">Step 1: Add Subject</h2>
@@ -290,12 +299,12 @@ const AddSubjects = ({ onClose }) => {
     Next
 </button>
 
-                    <button
+                    {/* <button
                         onClick={onClose}
                         className="bg-red-500 hover:bg-blue-600 text-white w-full py-2 rounded-md"
                     >
                         Cancel
-                    </button>
+                    </button> */}
                 </div>
 
                 <div className="mt-4">
@@ -317,8 +326,9 @@ const AddSubjects = ({ onClose }) => {
             </div>
         </div>
         }
+
           {
-            showAssignSubjectPage &&   <AssignTeacher subjectData={subjectData} setShowAssignSubjectPage={setShowAssignSubjectPage}/>
+            showAssignSubjectPage ? <AssignTeacher subjectData={subjectData} setShowAssignSubjectPage={setShowAssignSubjectPage} setOpenForm={setOpenForm}/> : "hi"
           }
       </>
     );

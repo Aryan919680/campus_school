@@ -4,7 +4,7 @@ import API_ENDPOINTS from "../../API/apiEndpoints";
 import CreateTimetable from "./CreateTimetable";
 
 
-export default function AssignTeacher({ subjectData, setShowAssignSubjectPage }){
+export default function AssignTeacher({ subjectData, setShowAssignSubjectPage,setOpenForm }){
       const userData = JSON.parse(localStorage.getItem("userData"));
         const token = userData?.token;
         const campusType = userData?.data.campusType ;
@@ -52,12 +52,22 @@ export default function AssignTeacher({ subjectData, setShowAssignSubjectPage })
             return;
         }
 
-        const payload = {
-            employeeId,
-            role: "TEACHER",
-            subClasses: [campusType.toLowerCase() ==="college"? subjectData.courseId: subjectData.subClassId], // assuming courseId is the subClass
-            subjectId
-        };
+        if(campusType.toLowerCase() ==="college"){
+            var payload = {
+                employeeId,
+                role: "TEACHER",
+                semesters: [subjectData.semesterId], // assuming courseId is the subClass
+                subjectId
+            };
+        }else{
+            var payload = {
+                employeeId,
+                role: "TEACHER",
+                subClasses: [subjectData.subClassId], // assuming courseId is the subClass
+                subjectId
+            };
+        }
+      
 
         try {
             await axios.post(API_ENDPOINTS.Register_Role(), payload, {
@@ -74,6 +84,12 @@ export default function AssignTeacher({ subjectData, setShowAssignSubjectPage })
         setShowTimetablePage(true);
     // setShowAssignSubjectPage(false);
     };
+
+    const onClose = () =>{
+        setShowAssignSubjectPage(false);
+        setShowTimetablePage(false);
+        setOpenForm(false);
+    }
     return (
 <>
 {
@@ -114,7 +130,7 @@ export default function AssignTeacher({ subjectData, setShowAssignSubjectPage })
 }
 
         {
-            showTimetablePage && (<CreateTimetable subjectData ={subjectData} />)
+            showTimetablePage && (<CreateTimetable subjectData ={subjectData} onClose={onClose}/>)
         }
         </>
     )
