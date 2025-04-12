@@ -10,15 +10,18 @@ const TimeTablePage = () => {
   console.log("test",parsedData)
   const token = localStorage.getItem("token");
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  const semesterId = parsedData.semester.semesterId;
+  const campusType = parsedData.campusType;
+  const semesterId = campusType === "COLLEGE" ? parsedData.semester.semesterId : parsedData.subclass.subClassId;
   const campusId = parsedData.campusId;
+  console.log(semesterId)
   useEffect(() => {
     if (!semesterId || !selectedDay) return;
     const fetchTimetable = async () => {
       try {
         const dayIndex = days.indexOf(selectedDay) + 1; // Convert to 1-based index
         const response = await fetch(
-          `${import.meta.env.VITE_BASE_URL}/api/v1/timeTable/campus/${campusId}/?semesterId=${semesterId}&day=${dayIndex}`,
+          campusType === "COLLEGE" ? `${import.meta.env.VITE_BASE_URL}/api/v1/timeTable/campus/${campusId}/?semesterId=${semesterId}&day=${dayIndex}` :
+          `${import.meta.env.VITE_BASE_URL}/api/v1/timeTable/campus/${campusId}/?subClassId=${semesterId}&day=${dayIndex}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const data = await response.json();
