@@ -22,7 +22,7 @@ const LeaveRequest = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://webiosis-backend-asg-1-265896457.ap-south-1.elb.amazonaws.com/api/v1/leave/campus/${campusId}/students`,
+        `${import.meta.env.VITE_BASE_URL}/api/v1/leave/campus/${campusId}/students`,
         {
           method: "POST",
           headers: {

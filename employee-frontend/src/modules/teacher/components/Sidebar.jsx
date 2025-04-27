@@ -1,6 +1,7 @@
 import { AuthContext } from "@/auth/context/AuthContext";
 import {
   BadgeIndianRupee,
+  CalendarCheck,
   CalendarClock,
   FileDigit,
   GraduationCap,
@@ -103,6 +104,11 @@ const Sidebar = ({ sidebar, boxRef }) => {
           <li>
             <Link to="/timetable" className="flex gap-4 my-6 items-center">
             <Library /> TimeTable
+            </Link>
+          </li>
+          <li>
+            <Link to="/notice" className="flex gap-4 my-6 items-center">
+            <CalendarCheck /> Notice
             </Link>
           </li>
           {/* <li>

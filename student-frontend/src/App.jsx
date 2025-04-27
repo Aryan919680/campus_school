@@ -12,6 +12,7 @@ import Signup from "./modules/loginSignup/Signup";
 import SupportPage from "./modules/student/pages/Support";
 import ProtectedRoute from "./auth/ProtectedRoute/ProtectedRoute";
 import TimeTablePage from "./modules/student/components/timeTable/TimeTablePage";
+import NoticePage from "./modules/student/components/notice/NoticePage";
 
 const router = createBrowserRouter(
 	[
@@ -84,6 +85,14 @@ const router = createBrowserRouter(
 					element: (
 						<ProtectedRoute>
 							<FeesPayment />
+						</ProtectedRoute>
+					),
+				},
+				{
+					path: "/notice",
+					element: (
+						<ProtectedRoute>
+							<NoticePage />
 						</ProtectedRoute>
 					),
 				},

@@ -13,6 +13,7 @@ import SupportPage from "./modules/teacher/pages/SupportPage";
 import Marks from "./modules/teacher/pages/ProvideMarks";
 import Lessonplan from "./modules/teacher/pages/Lessonplan";
 import NewTimeTable from "./modules/teacher/pages/NewTimeTable";
+import NoticePage from "./modules/teacher/components/notice/NoticePage";
 const teacherData = localStorage.getItem("teacherData");
 const router = createBrowserRouter(
 	
@@ -58,6 +59,14 @@ const router = createBrowserRouter(
 					element: (
 						<ProtectedRoute>
 							<LeavePage />
+						</ProtectedRoute>
+					),
+				},
+				{
+					path: "/notice",
+					element: (
+						<ProtectedRoute>
+							<NoticePage />
 						</ProtectedRoute>
 					),
 				},

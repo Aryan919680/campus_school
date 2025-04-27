@@ -249,7 +249,12 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 					title="Timetable"
 					isSidebarExpanded={isSidebarExpanded}
 				/>
-
+	<NavItems
+					to="/Notice"
+					icon="material-symbols:event"
+					title="Event Management"
+					isSidebarExpanded={isSidebarExpanded}
+				/>
 			{/*	<NavItems
 					to="/Finance"
 					icon="material-symbols:finance-mode-rounded"
@@ -327,6 +332,12 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 					to="/Timetable"
 					icon="mingcute:calendar-fill"
 					title="Timetable"
+					isSidebarExpanded={isSidebarExpanded}
+				/>
+				<NavItems
+					to="/Notice"
+					icon="material-symbols:event"
+					title="Event Management"
 					isSidebarExpanded={isSidebarExpanded}
 				/>
 

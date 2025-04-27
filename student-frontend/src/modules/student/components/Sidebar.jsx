@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   BadgeIndianRupee,
   CalendarClock,
+  CalendarCheck,
   GraduationCap,
   LayoutDashboard,
   Library,
@@ -100,6 +101,11 @@ const Sidebar = ({ sidebar, boxRef }) => {
           <li>
             <Link to="/timetable" className="flex gap-4 my-6 items-center">
             <Library /> TimeTable
+            </Link>
+          </li>
+          <li>
+            <Link to="/notice" className="flex gap-4 my-6 items-center">
+            <CalendarCheck /> Notice
             </Link>
           </li>
           {/* <li>

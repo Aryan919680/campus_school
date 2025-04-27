@@ -52,6 +52,9 @@ FETCH_ALL_TEACHERS: () => `${import.meta.env.VITE_BASE_URL
     GET_SUBJECTS :  () => `${import.meta.env.VITE_BASE_URL}/api/v1/subject/campus/${getCampusId()}/`,
     CREATE_TIMETABLE: () => `${import.meta.env.VITE_BASE_URL}/api/v1/timeTable/campus/${getCampusId()}/register`,
     GET_TIMETABLE: () => `${import.meta.env.VITE_BASE_URL}/api/v1/timeTable/campus/${getCampusId()}`,
+
+    CREATE_NOTICE: () => `${import.meta.env.VITE_BASE_URL}/api/v1/notice/campus/${getCampusId()}`,
+    GET_NOTICES: () => `${import.meta.env.VITE_BASE_URL}/api/v1/notice/campus/${getCampusId()}/admin`,
   // Onboarding
   // CREATE_CAMPUS: `${import.meta.env.VITE_BASE_URL}/api/v1/campus/register`,
   // CREATE_BRANCH: `${import.meta.env.VITE_BASE_URL}/api/v1/campus/reg/branch`,
