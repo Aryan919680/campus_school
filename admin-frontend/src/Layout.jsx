@@ -87,6 +87,7 @@ const Layout = ({ logout }) => {
 						<Route path='/role' element={<EmployeePage />} />
 						<Route path="/timetable" element={<SchoolTimeTablePage /> }/>
 						<Route path="/notice" element={<NoticePage /> }/>
+						<Route path="/support" element={<Support />} />
 				     	</Routes>
 					}
 					{
@@ -101,6 +102,7 @@ const Layout = ({ logout }) => {
 				        	<Route path="/finance" element={<FeePage />} />
 				        	<Route path="/timetable" element={<Timetable />} />
 							<Route path="/notice" element={<NoticePage /> }/>
+							<Route path="/support" element={<Support />} />
 							{/* <Route path="summary" element={<Summary />} />
 							<Route path="transactions" element={<Transactions />} />
 							<Route path="student-fees" element={<StudentFees />} />

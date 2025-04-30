@@ -3,12 +3,6 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import API_ENDPOINTS from "../../API/apiEndpoints";
 
-// Define the function to get user ID from localStorage
-const getUserIdFromLocalStorage = () => {
-	const userData = JSON.parse(localStorage.getItem("userData"));
-	return userData && userData.id ? userData.id : null;
-};
-
 const Support = () => {
 	const [formData, setFormData] = useState({
 		name: "",
@@ -20,31 +14,6 @@ const Support = () => {
 	const [responseMessage, setResponseMessage] = useState("");
 	const [complaintNo, setComplaintNo] = useState("");
 
-	const userId = getUserIdFromLocalStorage();
-
-	// Fetch user details and autofill form
-	useEffect(() => {
-		if (userId) {
-			const fetchUserDetails = async () => {
-				try {
-					const response = await axios.get(
-						API_ENDPOINTS.FETCH_ADMIN_BY_ID(userId)
-					);
-					const { name, email } = response.data.data; // Adjusting based on the actual API response structure
-					setFormData({
-						...formData,
-						name: name || "",
-						email: email || "",
-						phone: "", // If your API doesn't provide phone, leave it as an empty string or adjust based on your needs
-					});
-				} catch (error) {
-					console.error("Error fetching user details:", error);
-				}
-			};
-			fetchUserDetails();
-		}
-	}, [userId]);
-
 	const handleChange = (e) => {
 		const { name, value } = e.target;
 		setFormData({
@@ -55,31 +24,31 @@ const Support = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-
+	
 		const queryData = {
-			name: formData.name,
-			email: formData.email,
-			contactNo: formData.phone,
-			query: `${formData.option}: ${formData.message}`,
+			title: formData.option,
+			description: formData.message,
+			snapshot: {
+				name: formData.name,
+				email: formData.email,
+				contactNo: formData.phone,
+			},
+			portal: "ADMIN", // If this is fixed
 		};
-
-		console.log("Submitting query data:", queryData); // Log the payload for debugging
-
+	
+		console.log("Submitting query data:", queryData);
+	
 		try {
-			const response = await axios.post(
-				API_ENDPOINTS.CREATE_SUPPORT,
-				queryData
-			);
+			const response = await axios.post(API_ENDPOINTS.CREATE_SUPPORT(), queryData);
 			console.log("API Response:", response.data);
+			alert("Request sended")
+			setFormData([]);
 			setResponseMessage(response.data.message);
 			setComplaintNo(response.data.queryData?.complaintNo || "N/A");
 		} catch (error) {
 			console.error("Error sending query:", error);
 			if (error.response) {
-				console.error(
-					"Server responded with a status code:",
-					error.response.status
-				);
+				console.error("Server responded with a status code:", error.response.status);
 				console.error("Response data:", error.response.data);
 			} else if (error.request) {
 				console.error("No response received:", error.request);
@@ -89,7 +58,7 @@ const Support = () => {
 			setResponseMessage("An error occurred. Please try again later.");
 		}
 	};
-
+	
 	return (
 		<section className="bg-gray-100">
 			<div className="mx-auto max-w-screen-xl px-4 py-4 sm:px-6 lg:px-8">

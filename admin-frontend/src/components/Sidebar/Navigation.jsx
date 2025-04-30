@@ -255,6 +255,12 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 					title="Event Management"
 					isSidebarExpanded={isSidebarExpanded}
 				/>
+				<NavItems
+					to="/Support"
+					icon="material-symbols:support-agent-rounded"
+					title="Support"
+					isSidebarExpanded={isSidebarExpanded}
+				/>
 			{/*	<NavItems
 					to="/Finance"
 					icon="material-symbols:finance-mode-rounded"
@@ -338,6 +344,12 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 					to="/Notice"
 					icon="material-symbols:event"
 					title="Event Management"
+					isSidebarExpanded={isSidebarExpanded}
+				/>
+				<NavItems
+					to="/Support"
+					icon="material-symbols:support-agent-rounded"
+					title="Support"
 					isSidebarExpanded={isSidebarExpanded}
 				/>
 

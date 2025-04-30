@@ -29,8 +29,9 @@ const AdminProfileModal = ({ isOpen, onClose, adminData, onSave }) => {
 	const fetchAdminDetails = async () => {
 		const userId = getUserIdFromLocalStorage();
 		try {
-			const response = await axios.get(API_ENDPOINTS.FETCH_ADMIN_BY_ID(userId));
+			const response = await axios.get(API_ENDPOINTS.ADMIN_PROFILE());
 			setState((prevState) => ({ ...prevState, editedProfile: response.data }));
+			console.log(state)
 		} catch (error) {
 			console.error("Error fetching admin details:", error);
 		}
@@ -129,11 +130,11 @@ const AdminProfileModal = ({ isOpen, onClose, adminData, onSave }) => {
 				<div className="mx-4">
 					<img
 						src={state.editedProfile.photo || defaultPhoto}
-						alt={state.editedProfile.name}
+						alt={state.editedProfile.data.name}
 						className="w-32 h-32 mx-auto rounded-full"
 					/>
 					<h3 className="text-xl font-semibold my-4">
-						{state.editedProfile.name}
+						{state.editedProfile.data.name}
 					</h3>
 					{state.isEditing && (
 						<div className="my-2">
@@ -173,7 +174,7 @@ const AdminProfileModal = ({ isOpen, onClose, adminData, onSave }) => {
 								<input
 									type="text"
 									name="name"
-									value={state.editedProfile.name || ""}
+									value={state.editedProfile.data.name || ""}
 									onChange={handleChange}
 									className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 								/>
@@ -188,7 +189,7 @@ const AdminProfileModal = ({ isOpen, onClose, adminData, onSave }) => {
 								<input
 									type="text"
 									name="role"
-									value={state.editedProfile.role || ""}
+									value={state.editedProfile.data.role || ""}
 									onChange={handleChange}
 									className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 								/>
@@ -203,7 +204,7 @@ const AdminProfileModal = ({ isOpen, onClose, adminData, onSave }) => {
 								<input
 									type="email"
 									name="email"
-									value={state.editedProfile.email || ""}
+									value={state.editedProfile.data.email || ""}
 									onChange={handleChange}
 									className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 								/>
@@ -219,24 +220,24 @@ const AdminProfileModal = ({ isOpen, onClose, adminData, onSave }) => {
 						<>
 							<ModalDetails
 								modalTitle={"Name : "}
-								modalDesc={state.editedProfile.name}
+								modalDesc={state.editedProfile.data.name}
 							/>
-							<ModalDetails
+							{/* <ModalDetails
 								modalTitle={"Role : "}
-								modalDesc={state.editedProfile.role}
-							/>
+								modalDesc={state.editedProfile.data.role}
+							/> */}
 							<ModalDetails
 								modalTitle={"Email : "}
-								modalDesc={state.editedProfile.email}
+								modalDesc={state.editedProfile.data.email}
 							/>
-							<button
+							{/* <button
 								onClick={() =>
 									setState((prevState) => ({ ...prevState, isEditing: true }))
 								}
 								className="bg-linear-blue hover:bg-linear-blue text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
 							>
 								Edit
-							</button>
+							</button> */}
 						</>
 					)}
 				</div>

@@ -10,6 +10,7 @@ const API_ENDPOINTS = {
   CREATE_BRANCH: `${import.meta.env.VITE_BASE_URL}/api/v1/campus/reg/branch`,
   CREATE_ROLE: `${import.meta.env.VITE_BASE_URL}/api/v1/admin/reg`,
   ADMIN_LOGIN: `${import.meta.env.VITE_BASE_URL}/api/v1/admin/login`,
+  ADMIN_PROFILE : ()=> `${import.meta.env.VITE_BASE_URL}/api/v1/admin/me`,
   //create class
   CREATE_CLASS: () => `${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${getCampusId()}`,
   FETCH_CLASS: () => `${import.meta.env.VITE_BASE_URL}/api/v1/class/campus/${getCampusId()}`,
@@ -55,6 +56,7 @@ FETCH_ALL_TEACHERS: () => `${import.meta.env.VITE_BASE_URL
 
     CREATE_NOTICE: () => `${import.meta.env.VITE_BASE_URL}/api/v1/notice/campus/${getCampusId()}`,
     GET_NOTICES: () => `${import.meta.env.VITE_BASE_URL}/api/v1/notice/campus/${getCampusId()}/admin`,
+    CREATE_SUPPORT :() => `${import.meta.env.VITE_BASE_URL}/api/v1/support/campus/${getCampusId()}`,
   // Onboarding
   // CREATE_CAMPUS: `${import.meta.env.VITE_BASE_URL}/api/v1/campus/register`,
   // CREATE_BRANCH: `${import.meta.env.VITE_BASE_URL}/api/v1/campus/reg/branch`,
