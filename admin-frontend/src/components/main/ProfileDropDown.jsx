@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import AdminProfileModal from "./AdminProfileModal";
-
+import axios from "axios";
+import API_ENDPOINTS from "../../API/apiEndpoints";
 const ProfileDropDown = ({ logout, userData, setUserData }) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 	const dropdownRef = useRef(null);
-
+	const [adminData, setAdminData] = useState(null);
 	const defaultPhoto =
 		"https://res.cloudinary.com/duyau9qkl/image/upload/v1717910208/images/w7y88n61dxedxzewwzpn.png";
 
@@ -18,12 +19,29 @@ const ProfileDropDown = ({ logout, userData, setUserData }) => {
 	};
 
 	useEffect(() => {
+		
 		document.addEventListener("mousedown", handleClickOutside);
 		return () => {
 			document.removeEventListener("mousedown", handleClickOutside);
 		};
 	}, []);
 
+	useEffect(() => {
+		if (isOpen) {
+			fetchAdminData();
+		}
+	}, [isOpen]);
+
+	const fetchAdminData = async () => {
+		//setLoading(true);
+		try {
+			const response = await axios.get(API_ENDPOINTS.ADMIN_PROFILE());
+			setAdminData(response.data.data);
+		} catch (err) {
+			console.error("Failed to fetch admin profile:", err);
+			setError("Something went wrong");
+		}
+	};
 	const handleProfileClick = () => {
 		setIsProfileModalOpen(true);
 		setIsOpen(false);
@@ -95,7 +113,7 @@ const ProfileDropDown = ({ logout, userData, setUserData }) => {
 				<AdminProfileModal
 					isOpen={isProfileModalOpen}
 					onClose={() => setIsProfileModalOpen(false)}
-					adminData={userData}
+					adminData={adminData}
 					onSave={handleSaveProfile}
 				/>
 			)}

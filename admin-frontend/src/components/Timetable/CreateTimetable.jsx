@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import API_ENDPOINTS from "../../API/apiEndpoints";
+import AssignTeacher from "./AssignTeacher";
 
 const timeSlots = [
     { label: "09:00 - 10:00", from: "9", to: "10" },
@@ -14,25 +15,33 @@ const timeSlots = [
 
 const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-const CreateTimetable = ({ subjectData, onClose }) => {
+const CreateTimetable = ({ subjectData, setShowAssignSubjectPage,setOpenForm }) => {
     const userData = JSON.parse(localStorage.getItem("userData"));
     const token = userData?.token;
     const campusType = userData?.data.campusType ;
     const [subjects, setSubjects] = useState([]);
     const [timetable, setTimetable] = useState([]);
-    const [formData, setFormData] = useState({
-        day: "",
-        timeSlot: "",
-        subjectId: "",
-        employeeId: ""
-    });
+   const [formData, setFormData] = useState({
+    day: "",
+    from: "",
+    to: "",
+    subjectId: "",
+    employeeId: ""
+});
 
+   const [showTimetablePage, setShowTimetablePage] = useState(false);
     useEffect(() => {
         const fetchData = async () => {
             try {
+                const idParam = campusType.toLowerCase() === "college"
+  ? `courseId=${subjectData.courseId}`
+  : `classId=${subjectData.classId}`;
+
+
+
                 const [subjectRes] = await Promise.all([
-                    axios.get(`${API_ENDPOINTS.GET_SUBJECTS()}?${campusType.toLowerCase() ==="college"? subjectData.courseId: subjectData.classId}`, {
-                        headers: { Authorization: `Bearer ${token}` }
+                   axios.get(`${API_ENDPOINTS.GET_SUBJECTS()}?${idParam}`, {
+  headers: { Authorization: `Bearer ${token}` }
                     })
                 ]);
                 setSubjects(subjectRes.data.data);
@@ -53,37 +62,37 @@ console.log(subjectData)
     };
 
     const handleAssign = () => {
-        const { day, timeSlot, subjectId } = formData;
+  const { day, from, to, subjectId } = formData;
+  console.log(day, from, to, subjectId )
 
-        if (!day || !timeSlot || !subjectId ) {
-            alert("Please fill all fields.");
-            return;
-        }
+if (!day || !from || !to || !subjectId) {
+    alert("Please fill all fields.");
+    return;
+}
 
-        const exists = timetable.some(entry => entry.day === day && entry.timeSlot === timeSlot);
-        if (exists) {
-            alert("Time slot already assigned for this day.");
-            return;
-        }
+const exists = timetable.some(entry => entry.day === day && entry.from === from && entry.to === to);
+if (exists) {
+    alert("Time slot already assigned for this day and time.");
+    return;
+}
 
-        const subject = subjects.find(s => s.subjectId === subjectId);
-        const slot = timeSlots.find(s => s.label === timeSlot);
-        console.log("test",subject)
-        setTimetable(prev => [...prev, {
-            subjectId,
-            from: slot.from,
-            to: slot.to,
-            day: days.indexOf(day) + 1,
-            name: `Period ${prev.length + 1}`,
-            subjectName: subject.name,
-            timeSlot: timeSlot
-        }]);
+const subject = subjects.find(s => s.subjectId === subjectId);
 
-        setFormData({ day: "", timeSlot: "", subjectId: "" });
+setTimetable(prev => [...prev, {
+    subjectId,
+    from,
+    to,
+    day: days.indexOf(day) + 1,
+    name: `Period ${prev.length + 1}`,
+    subjectName: subject.name,
+}]);
+
+setFormData({ day: "", from: "", to: "", subjectId: "" });
+
     };
 
     const handleSaveTimetable = async () => {
-        if(campusType.toLowerCase === "college"){
+        if(campusType.toLowerCase() === "college"){
             var payload = {
                 records: timetable.map(entry => ({
                     subjectId: entry.subjectId,
@@ -108,21 +117,33 @@ console.log(subjectData)
                 subClassId: subjectData.subClassId // assumed subClassId = semesterId
             };
         }
-       
-
+     
         try {
             await axios.post(API_ENDPOINTS.CREATE_TIMETABLE(), payload, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             alert("Timetable saved successfully!");
-            onClose();
+            // onClose();
         } catch (error) {
             console.error("Error saving timetable:", error);
             alert("Error saving timetable.");
         }
     };
 
+        const onClose = () =>{
+        setShowAssignSubjectPage(false);
+        setShowTimetablePage(false);
+        setOpenForm(false);
+    }
+
+       const handleNextPage = () => {
+        setShowTimetablePage(true);
+    };
+
+
     return (
+     <>
+ {  !showTimetablePage &&
         <div className="fixed inset-0 z-50 flex justify-center items-center h-full w-full bg-black bg-opacity-80 backdrop-blur-sm">
             <div className="bg-gray-800 p-6 rounded-xl w-7/12 mx-auto text-white">
                 <h2 className="text-xl font-bold mb-4">Step 2: Create Timetable</h2>
@@ -133,15 +154,28 @@ console.log(subjectData)
                         {days.map(day => <option key={day} value={day}>{day}</option>)}
                     </select>
 
-                    <select name="timeSlot" value={formData.timeSlot} onChange={handleChange} className="p-2 rounded-md text-black">
-                        <option value="">Select Time Slot</option>
-                        {timeSlots.map(slot => <option key={slot.label} value={slot.label}>{slot.label}</option>)}
-                    </select>
+                  <input
+    type="text"
+    name="from"
+    value={formData.from}
+    onChange={handleChange}
+    className="p-2 rounded-md text-black"
+    placeholder="Start Time"
+/>
+
+<input
+    type="text"
+    name="to"
+    value={formData.to}
+    onChange={handleChange}
+    className="p-2 rounded-md text-black"
+    placeholder="End Time"
+/>
 
                     <select name="subjectId" value={formData.subjectId} onChange={handleChange} className="p-2 rounded-md text-black">
                         <option value="">Select Subject</option>
                         {subjects.map(subj => (
-                            <option key={subj.subjectId} value={subj.subjectId}>{subj.name}</option>
+                            <option key={subj.subjectId} value={subj.subjectId}>{subj.name}{subj.subjectCode}</option>
                         ))}
                     </select>
 
@@ -174,7 +208,7 @@ console.log(subjectData)
                                     {timetable.map((entry, idx) => (
                                         <tr key={idx} className="text-center border-t border-gray-600">
                                             <td className="p-2 border">{days[entry.day - 1]}</td>
-                                            <td className="p-2 border">{entry.timeSlot}</td>
+                                            <td className="p-2 border">{entry.from} - {entry.to}</td>
                                             <td className="p-2 border">{entry.subjectName}</td>
                                            
                                         </tr>
@@ -188,11 +222,23 @@ console.log(subjectData)
                             >
                                 Save Timetable
                             </button>
+                              <button
+                    onClick={handleNextPage}
+                    className="mt-4 bg-yellow-500 hover:bg-blue-600 text-white w-full py-2 rounded-md"
+                >
+                    Next
+                </button>
                         </>
                     )}
                 </div>
             </div>
+            
         </div>
+}
+           {
+                        showTimetablePage && (<AssignTeacher subjectData ={subjectData} onClose={onClose}/>)
+                    }
+        </>
     );
 };
 

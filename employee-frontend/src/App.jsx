@@ -14,6 +14,7 @@ import Marks from "./modules/teacher/pages/ProvideMarks";
 import Lessonplan from "./modules/teacher/pages/Lessonplan";
 import NewTimeTable from "./modules/teacher/pages/NewTimeTable";
 import NoticePage from "./modules/teacher/components/notice/NoticePage";
+import ProfilePage from "./modules/teacher/components/profile/ProfilePage";
 const teacherData = localStorage.getItem("teacherData");
 const router = createBrowserRouter(
 	
@@ -91,6 +92,14 @@ const router = createBrowserRouter(
 					element: (
 						<ProtectedRoute>
 							<SupportPage />
+						</ProtectedRoute>
+					),
+				},
+				{
+					path: "/profile",
+					element: (
+						<ProtectedRoute>
+							<ProfilePage />
 						</ProtectedRoute>
 					),
 				},

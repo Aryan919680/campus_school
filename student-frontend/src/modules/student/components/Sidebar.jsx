@@ -13,6 +13,7 @@ import {
   LibraryBig,
   LogOut,
   MessageCircleMore,
+  User,
 } from "lucide-react";
 import {
   Dialog,
@@ -108,6 +109,16 @@ const Sidebar = ({ sidebar, boxRef }) => {
             <CalendarCheck /> Notice
             </Link>
           </li>
+          <li>
+            <Link to="/support" className="flex gap-4 my-6 items-center">
+              <MessageCircleMore /> Support
+            </Link>
+          </li>
+          <li>
+            <Link to="/profile" className="flex gap-4 my-6 items-center">
+              <User /> Profile
+            </Link>
+          </li>
           {/* <li>
             <Link to="/academics" className="flex gap-4 my-6 items-center">
               <GraduationCap /> Academics
@@ -128,11 +139,8 @@ const Sidebar = ({ sidebar, boxRef }) => {
               <BadgeIndianRupee /> Fee Payment
             </Link>
           </li>
-          <li>
-            <Link to="/support" className="flex gap-4 my-6 items-center">
-              <MessageCircleMore /> Support
-            </Link>
-          </li> */}
+       
+           */}
         </ul>
       </div>
       <div>

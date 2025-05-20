@@ -29,6 +29,8 @@ const API_ENDPOINTS = {
     
   MARK_ATTENDANCE : () => `${import.meta.env.VITE_BASE_URL}/api/v1/attendance/campus/${getCampusId()}/employees`,
   GET_ATTENDANCE : () =>`${import.meta.env.VITE_BASE_URL}/api/v1/attendance/campus/${getCampusId()}/employees`,
+  GET_COLLEGE_ATTENDANCE : () => `${import.meta.env.VITE_BASE_URL}/api/v1/attendance/campus/${getCampusId()}/students`,
+  MARK_COLLEGE_ATTENDANCE : () => `${import.meta.env.VITE_BASE_URL}/api/v1/attendance/campus/${getCampusId()}/students`,
   GET_LEAVE_REQUESTS : () =>`${import.meta.env.VITE_BASE_URL}/api/v1/leave/campus/${getCampusId()}/employees`,
   REGISTER_STUDENTS: () => `${import.meta.env.VITE_BASE_URL
   }/api/v1/student/campus/${getCampusId()}/register`,

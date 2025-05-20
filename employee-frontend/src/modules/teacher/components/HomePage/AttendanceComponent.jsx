@@ -63,7 +63,6 @@ export default function AttendanceComponent({ onClose }) {
   // }, [selectedCourse, courses]);
 
   useEffect(() => {
-    console.log("test",selectedCourse,selectedSemester)
     if (!selectedCourse || !selectedSemester){
       return;
 

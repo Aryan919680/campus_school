@@ -3,7 +3,8 @@ import axios from "axios";
 import API_ENDPOINTS from "../../API/apiEndpoints";
 import moment from "moment";
 import EmployeeCard from "./EmployeeCard";
-
+import ListTable from "../List/ListTable";
+import CommonTable from "../List/CommonTable";
 const Attendance = ({ onClose }) => {
 	const [teachers, setTeachers] = useState([]);
 	const [selectedDate, setSelectedDate] = useState(moment());
@@ -120,10 +121,27 @@ const Attendance = ({ onClose }) => {
 		}
 	};
 	
-	const showDialog = () => {
-		onClose();
-		setShowUpdateDialog(false);
-	};
+	 const deleteAttendance = async (recordId) => {
+            try {
+                await axios.delete(API_ENDPOINTS.MARK_ATTENDANCE(), {
+                    headers: { Authorization: `Bearer ${token}` },
+                    data: { attendanceIds: [recordId] }
+                });
+                alert("Record Deleted Successfully");
+            } catch (error) {
+                console.error("Error deleting attendance record:", error);
+            }
+        };
+
+
+	const attendanceRecords = teachers.map((teacher) => ({
+	attendanceId: teacher.employeeId, // use employeeId as temporary id
+	employee: {
+		name: teacher.name,
+	},
+	status: attendance[teacher.employeeId] || "ABSENT", // default if not marked
+	created_at: selectedDate, // or actual date from backend if available
+}));
 
 	return (
 		<div className="container mx-auto p-4">
@@ -137,48 +155,44 @@ const Attendance = ({ onClose }) => {
 			{teachers.length === 0 ? (
 				<p>No employees found for the selected date.</p>
 			) : (
-				<div>
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-						{teachers.map((teacher) => (
-							<EmployeeCard
-								key={teacher.employeeId}
-								employee={teacher}
-								attendance={attendance[teacher.employeeId] || "absent"} // Default to absent if not found
-								onAttendanceChange={handleAttendanceChange}
-								selectedDate={selectedDate}
-							/>
-						))}
-					</div>
-					<button
-						onClick={() => setShowUpdateDialog(true)}
-						className="mt-4 mb-16 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-					>
-						Mark Attendance
-					</button>
-				</div>
+				 <ListTable 
+    ListName={"Employee Name"}
+    ListRole={"Date"}
+    ListDepartment={"Status"}
+    ListAction={"Actions"}
+    showDataList={attendanceRecords.map(record => (
+        <CommonTable 
+            key={record.attendanceId}
+            name={record.employee.name}
+            role={moment(record.created_at).format("YYYY-MM-DD")}
+            id={
+                <select
+                    value={record.status}
+                    onChange={(e) => handleAttendanceChange(record.attendanceId, e.target.value)}
+                    className="border rounded"
+                >
+                    <option value="ABSENT">ABSENT</option>
+                    <option value="PRESENT">PRESENT</option>
+                    <option value="LATE">LATE</option>
+                </select>
+            }
+            actions={[
+                {
+                    type: "button",
+                    label: "Delete",
+                    onClick: () => deleteAttendance(record.attendanceId)
+                }
+            ]}
+        />
+    ))}
+/>
+
 			)}
-			{showUpdateDialog && (
-				<div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
-					<div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-						<h3 className="text-lg font-bold">Confirm Attendance</h3>
-						<p className="mt-2">Are you sure you want to mark the attendance?</p>
-						<div className="mt-3 flex justify-end space-x-2">
-							<button
-								onClick={showDialog}
-								className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400"
-							>
-								Cancel
-							</button>
-							<button
-								onClick={submitAttendance}
-								className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
-							>
-								Confirm
-							</button>
-						</div>
-					</div>
-				</div>
-			)}
+			<button onClick={submitAttendance} className="bg-linear-blue hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded">
+  Mark Attendance
+</button>
+
+	
 		</div>
 	);
 };

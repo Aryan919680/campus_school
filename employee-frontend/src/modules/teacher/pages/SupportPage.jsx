@@ -1,96 +1,87 @@
-import React, { useRef, useContext, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import React, { useContext, useState } from "react";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+} from "@/components/ui/select";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { MessageCircleQuestion } from "lucide-react";
 import { AuthContext } from "@/auth/context/AuthContext";
 
-// Updated schema with year field
 const formSchema = z.object({
   query: z
     .string({ message: "Field required" })
     .max(300, { message: "Maximum 300 characters allowed" }),
   errorpage: z.string({ required_error: "This is required" }),
   errorrole: z.string({ required_error: "This is required" }),
-  photo: z.any().optional(), // Handle file input as any type
 });
 
 const SupportPage = () => {
   const form = useForm({
     resolver: zodResolver(formSchema),
   });
-  const { data } = useContext(AuthContext);
 
-  // State for managing the first dropdown selection
+  const { data } = useContext(AuthContext);
   const [errorRole, setErrorRole] = useState("");
-  const fileInputRef = useRef(null);
+
+  const teacherData = JSON.parse(localStorage.getItem("teacherData"));
+  const campusId = teacherData?.campusId;
+  const token = localStorage.getItem("token");
 
   const onSubmit = async (supportdata) => {
     try {
-      let photoUrl = "";
-
-      if (supportdata.photo && supportdata.photo.length > 0) {
-        const formData = new FormData();
-        formData.append("file", supportdata.photo[0]);
-        formData.append("cloud_name", "dcpvd9tay");
-        formData.append("upload_preset", "pdf_preset");
-
-        const cloudResponse = await axios.post("https://api.cloudinary.com/v1_1/dcpvd9tay/auto/upload", formData);
-        photoUrl = cloudResponse.data.url;
-      }
-
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/api/v1/support/create`,
-        {
-          photo: photoUrl,
+      const payload = {
+        title: supportdata.errorpage,
+        description: supportdata.query,
+        snapshot: {
           name: data.name,
           email: data.email,
           contactNo: data.contactNumber,
-          query: supportdata.query,
-          type: 'teacher',
+          type: "teacher",
           campusName: data.campusName,
-          errorpage: supportdata.errorpage,
           errorrole: supportdata.errorrole,
+        },
+          portal: "EMPLOYEE"
+      };
+
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/v1/support/campus/${campusId}`,
+        payload,
+        {
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
-      toast.success(response.data.message, {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-
+   alert("Request Sended")
       form.reset({
         query: "",
         errorpage: "",
         errorrole: "",
       });
-
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
     } catch (error) {
-      console.error("There was an error!", error);
+      console.error("Error submitting support query:", error);
       toast.error("There was an error submitting your query. Please try again.", {
         position: "top-right",
         autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
       });
     }
   };
@@ -115,7 +106,7 @@ const SupportPage = () => {
                     <Select
                       onValueChange={(value) => {
                         field.onChange(value);
-                        setErrorRole(value); // Update the state based on the selected value
+                        setErrorRole(value);
                       }}
                       value={field.value}
                     >
@@ -134,6 +125,7 @@ const SupportPage = () => {
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="errorpage"
@@ -163,7 +155,6 @@ const SupportPage = () => {
                               <SelectItem value="timetable">Timetable</SelectItem>
                             </>
                           )}
-                          
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -172,6 +163,7 @@ const SupportPage = () => {
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="query"
@@ -185,25 +177,7 @@ const SupportPage = () => {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="photo"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Upload Photo</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      ref={fileInputRef}
-                      onChange={(e) => field.onChange(e.target.files)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
+
             <Button
               type="submit"
               className="text-white w-full md:w-auto bg-primary-foreground hover:text-primary-foreground"
@@ -213,6 +187,7 @@ const SupportPage = () => {
           </form>
         </Form>
       </div>
+
       <div className="flex items-center gap-6 w-8/12 my-6">
         <div className="line h-px w-full bg-gray-400"></div>
         <h1 className="font-semibold text-center text-sm md:text-md md:text-nowrap text-gray-800">

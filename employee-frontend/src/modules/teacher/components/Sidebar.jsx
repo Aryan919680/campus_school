@@ -13,6 +13,7 @@ import {
   MessageCircleMore,
   Settings,
   Stamp,
+  User
 } from "lucide-react";
 import { useContext, useEffect, useRef } from "react";
 import { Outlet, Link, useNavigate } from "react-router-dom";
@@ -111,6 +112,16 @@ const Sidebar = ({ sidebar, boxRef }) => {
             <CalendarCheck /> Notice
             </Link>
           </li>
+          <li>
+            <Link to="/support" className="flex gap-4 my-6 items-center">
+              <MessageCircleMore /> Support
+            </Link>
+          </li>
+          <li>
+            <Link to="/profile" className="flex gap-4 my-6 items-center">
+              <User /> Profile
+            </Link>
+            </li>
           {/* <li>
             <Link to="/marks" className="flex gap-4 my-6 items-center">
               <FileDigit /> Provide Marks

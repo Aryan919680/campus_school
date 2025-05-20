@@ -5,6 +5,10 @@ import API_ENDPOINTS from "../../API/apiEndpoints";
 import moment from "moment";
 import ListTable from "../List/ListTable";
 import CommonTable from "../List/CommonTable";
+import CollegeAttendance from "./CollegeAttendance";
+import CollegeMarkedAttendance from "./CollegeMarkedAttendance";
+import SchoolAttendance from "./SchoolAttendance";
+import SchoolMarkedAttendance from "./SchoolMarkedAttendance";
 const AttendancePage = () => {
     const [activeTab, setActiveTab] = useState("attendance");
     const [leaveRequests, setLeaveRequests] = useState([]);
@@ -15,7 +19,7 @@ const AttendancePage = () => {
     const userData = JSON.parse(localStorage.getItem("userData"));
     const parsedData = userData;
     const token = parsedData.token;
-    console.log("token",token)
+    const campusType = parsedData.data.campusType;
     useEffect(() => {
         fetchAttendanceRecords();
     }, [selectedDate]);
@@ -152,24 +156,58 @@ const AttendancePage = () => {
         setActiveTab('attendance');
         fetchAttendanceRecords();
       }
-        
+        console.log(activeTab)
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">Employee Portal</h1>
+            <h1 className="text-2xl font-bold mb-4">Admin Attendance Module</h1>
             
             <div className="flex gap-4 mb-4">
             <button
     onClick={() => setActiveTab("attendance")}
     className={`px-4 py-2 rounded ${activeTab === "attendance" ? "bg-linear-blue text-white" : "bg-gray-300"}`}
 >
-    Marked Attendance
+    Marked Employee   Attendance
 </button> 
 <button
     onClick={() => setActiveTab("mark attendance")}
     className={`px-4 py-2 rounded ${activeTab === "mark attendance" ? "bg-linear-blue text-white" : "bg-gray-300"}`}
 >
-    Mark Attendance
+    Mark Employee Attendance
 </button>
+{
+     campusType.toLowerCase() === 'college' && 
+     <>
+       <button
+    onClick={() => setActiveTab("college attendance")}
+    className={`px-4 py-2 rounded ${activeTab === "college attendance" ? "bg-linear-blue text-white" : "bg-gray-300"}`}
+>
+    Marked College Student Attendance
+</button> 
+<button
+    onClick={() => setActiveTab("mark college attendance")}
+    className={`px-4 py-2 rounded ${activeTab === "mark college attendance" ? "bg-linear-blue text-white" : "bg-gray-300"}`}
+>
+    Mark College Student Attendance
+</button>
+</>
+}
+{
+     campusType.toLowerCase() === 'school' && 
+     <>
+       <button
+    onClick={() => setActiveTab("school attendance")}
+    className={`px-4 py-2 rounded ${activeTab === "school attendance" ? "bg-linear-blue text-white" : "bg-gray-300"}`}
+>
+    Marked School Student Attendance
+</button> 
+<button
+    onClick={() => setActiveTab("mark school attendance")}
+    className={`px-4 py-2 rounded ${activeTab === "mark school attendance" ? "bg-linear-blue text-white" : "bg-gray-300"}`}
+>
+    Mark School Student Attendance
+</button>
+</>
+}
 <button
     onClick={() => setActiveTab("leave")}
     className={`px-4 py-2 rounded ${activeTab === "leave" ? "bg-linear-blue text-white" : "bg-gray-300"}`}
@@ -178,7 +216,11 @@ const AttendancePage = () => {
 </button>
 
             </div>
-            {activeTab === "mark attendance" && <Attendance onClose={onClose}/>}
+            {activeTab === "mark attendance" && <Attendance />}
+             {activeTab === "mark college attendance" && <CollegeAttendance /> }
+             {activeTab === "college attendance" && <CollegeMarkedAttendance />}
+             {activeTab === "mark school attendance" && <SchoolAttendance /> }
+             {activeTab === "school attendance" && <SchoolMarkedAttendance />}
             {activeTab === "attendance" &&(
                 <div>
              
@@ -189,6 +231,7 @@ const AttendancePage = () => {
 				onChange={(e) => handleDateChange(e.target.value)}
 				className="border p-2 rounded"
 			/>
+             
 
             
                    <ListTable 

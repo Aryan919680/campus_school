@@ -9,6 +9,8 @@ import { cn } from "@/lib/utils";
 import AttendanceComponent from "../components/HomePage/AttendanceComponent";
 import LeaveRequestPage from "../components/LeavePage/LeaveRequestPage";
 import SchoolHomePage from "./SchoolHomePage";
+import Dashboard from "../Dashboard";
+import AttendanceDashboard from "../components/HomePage/AttendanceDashboard";
 const HomePage = () => {
   const [date, setDate] = useState("");
   const [selectedCourse, setSelectedCourse] = useState("");
@@ -21,6 +23,7 @@ const HomePage = () => {
   const [showDefaultPage, setShowDefaultPage] = useState(true);
   const [showAttendancePage, setShowAttendancePage] = useState(false);
   const [showLeavePage,setShowLeavePage] = useState(false);
+  const [showManualAttendancePage,setShowManualAttendancePage] = useState(false);
   const teacherData = JSON.parse(localStorage.getItem("teacherData"));
 
   const campusId = teacherData?.campusId;
@@ -91,6 +94,13 @@ const HomePage = () => {
      setShowDefaultPage(false);
   }
 
+      const handleShowManualAttendance = () =>{
+     setShowLeavePage(false);
+     setShowAttendancePage(false);
+     setShowDefaultPage(false);
+     setShowManualAttendancePage(true);
+  }
+
     const onClose = () => {
     setShowAttendancePage(false);
     setShowDefaultPage(true);
@@ -154,12 +164,13 @@ const handleSemesterChange = (semesterId) => {
           Mark Student Attendance
         </Button>
         <Button variant="outline" className={cn("w-[280px] text-left font-normal")} onClick={handleShowLeavePage}>Leave Requests</Button>
+           <Button variant="outline" className={cn("w-[280px] text-left font-normal")} onClick={handleShowManualAttendance}>Manual Attendance</Button>
       </div>
     }
 
       {showAttendancePage && <AttendanceComponent onClose={onClose} />}
        {showLeavePage && <LeaveRequestPage />}
-
+      {showManualAttendancePage && <AttendanceDashboard />}
        
     {showDefaultPage && (
       <div>

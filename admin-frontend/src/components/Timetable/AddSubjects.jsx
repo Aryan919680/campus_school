@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import API_ENDPOINTS from "../../API/apiEndpoints";
 import AssignTeacher from "./AssignTeacher";
+import CreateTimetable from "./CreateTimetable";
 const AddSubjects = ({ setOpenForm,openForm }) => {
     const userData = JSON.parse(localStorage.getItem("userData"));
     const token = userData?.token;
-
     const [departments, setDepartments] = useState([]);
     const [courses, setCourses] = useState([]);
     const [semesters, setSemesters] = useState([]);
@@ -37,7 +37,6 @@ const AddSubjects = ({ setOpenForm,openForm }) => {
 
     const handleChange = async (e) => {
         const { name, value } = e.target;
-    
         if (name === "courseId") {
             // Fetch existing subjects when semester is selected
             try {
@@ -47,46 +46,13 @@ const AddSubjects = ({ setOpenForm,openForm }) => {
                 setFetchedSubjects(response.data.data)
             } catch (error) {
                 console.error("Error fetching subjects of semester:", error);
-           }
-           
+           }  
         }
-    
         setSubjectData((prev) => ({
             ...prev,
             [name]: value
         }));
     };
-    
-    // const fetchExistingSubjects = async (courseId) => {
-    //     if (!courseId) return;
-    
-    //     try {
-    //         const response = await axios.get(`${API_ENDPOINTS.GET_SUBJECTS()}?courseId=${courseId}`, {
-    //             headers: { Authorization: `Bearer ${token}` }
-    //         });
-    
-    //         const existingSubjects = response.data.data;
-    
-    //         // Only add subjects that aren't already in savedSubjects
-    //         const newSubjects = existingSubjects.filter(sub =>
-    //             !savedSubjects.some(s => s.subjectCode === sub.subjectCode)
-    //         ).map(sub => ({
-    //             departmentId: subjectData.departmentId,
-    //             courseId: subjectData.courseId,
-    //             semesterId: subjectData.semesterId,
-    //             subjectName: sub.name,
-    //             subjectCode: sub.subjectCode
-    //         }));
-    
-    //         if (newSubjects.length > 0) {
-    //             setSavedSubjects(prev => [...prev, ...newSubjects]);
-    //            // setIsSemesterLocked(true);
-    //         }
-    //     } catch (error) {
-    //         console.error("Error fetching existing subjects:", error);
-    //     }
-    // };
-    
 
     const handleDepartmentChange = async (e) => {
         const departmentId = e.target.value;
@@ -125,38 +91,68 @@ const AddSubjects = ({ setOpenForm,openForm }) => {
         }
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const { departmentId, courseId, semesterId, subjectName, subjectCode } = subjectData;
-        if (!departmentId || !courseId || !semesterId || !subjectName.trim() || !subjectCode.trim()) {
-            alert("Please fill in all fields.");
+   
+const handleSubmit = (e) => {
+    e.preventDefault();
+    const { departmentId, courseId, semesterId, subjectName, subjectCode } = subjectData;
+
+    if (!departmentId || !courseId || !semesterId || !subjectName.trim() || !subjectCode.trim()) {
+        alert("Please fill in all fields.");
+        return;
+    }
+
+    // Check semester consistency
+    if (savedSubjects.length > 0) {
+        const currentSemId = savedSubjects[0].semesterId;
+        if (semesterId !== currentSemId) {
+            alert("All subjects must belong to the same semester.");
             return;
         }
-    
-        // Check semester consistency
-        if (savedSubjects.length > 0) {
-            const currentSemId = savedSubjects[0].semesterId;
-            if (semesterId !== currentSemId) {
-                alert("All subjects must belong to the same semester.");
-                return;
-            }
-        }
-    
-        const newSubject = {
-            ...subjectData,
-        };
-    
-        setSavedSubjects(prev => [...prev, newSubject]);
-        setIsSemesterLocked(true);
-    
-        // Reset subject name only
-        setSubjectData(prev => ({
-            ...prev,
-            subjectName: ""
-        }));
-    };
-    
+    }
 
+    const trimmedName = subjectName.trim().toLowerCase();
+    const trimmedCode = subjectCode.trim().toLowerCase();
+
+    // ✅ Check for duplicates in fetched subjects (from DB)
+    const duplicateInFetched = fetchedSubjects.some(
+        subj =>
+            subj.subjectCode.toLowerCase() === trimmedCode &&
+            subj.name.toLowerCase() === trimmedName
+    );
+
+    if (duplicateInFetched) {
+        alert("Subject with this name or code already exists.");
+        return;
+    }
+
+    // ✅ Check for duplicates in savedSubjects (already added in UI)
+    const duplicateInSaved = savedSubjects.some(
+        subj =>
+            subj.subjectCode.toLowerCase() === trimmedCode &&
+            subj.subjectName.toLowerCase() === trimmedName
+    );
+
+    if (duplicateInSaved) {
+        alert("This subject is already added.");
+        return;
+    }
+
+    const newSubject = {
+        ...subjectData,
+    };
+
+    setSavedSubjects(prev => [...prev, newSubject]);
+    setIsSemesterLocked(true);
+
+    // Clear only subject name for convenience
+    setSubjectData(prev => ({
+        ...prev,
+        subjectName: "",
+        subjectCode: ""
+    }));
+};
+
+   
     const handleClearSubjects = () => {
         setSavedSubjects([]);
         setIsSemesterLocked(false);
@@ -175,29 +171,19 @@ const AddSubjects = ({ setOpenForm,openForm }) => {
         const formattedSubjects = savedSubjects.map(subj => ({
             name: subj.subjectName,
             code: subj.subjectCode,
-            courseId: subj.courseId // Replace if you have a different classId source
+            courseId: subj.courseId 
         }));
     
         try {
            const response =  await axios.post(API_ENDPOINTS.CREATE_SUBJECT(), { subjects: formattedSubjects }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-        
-
-
-                setShowAssignSubjectPage(true);
-                
-            
-           
-           
+                setShowAssignSubjectPage(true);          
         } catch (error) {
             console.error("Error creating subjects:", error);
             alert("Failed to create subjects. Please try again.");
         }
     };
-    useEffect(() => {
-        console.log("Updated states:", showAssignSubjectPage, openForm);
-    }, [showAssignSubjectPage, openForm]);
     
     
 
@@ -276,7 +262,7 @@ const AddSubjects = ({ setOpenForm,openForm }) => {
                         onClick={handleSubmit}
                         className="bg-linear-blue hover:bg-blue-600 text-white w-full py-2 rounded-md"
                     >
-                        Save Subject
+                        Add Subject
                     </button>
                   
                     {savedSubjects.length > 0 && (
@@ -296,7 +282,7 @@ const AddSubjects = ({ setOpenForm,openForm }) => {
         savedSubjects.length === 0 && fetchedSubjects.length === 0 ? "bg-gray-500 cursor-not-allowed" : "bg-yellow-500 hover:bg-yellow-600"
     } text-white w-full py-2 rounded-md`}
 >
-    Next
+    Next Page
 </button>
 
                     {/* <button
@@ -307,15 +293,12 @@ const AddSubjects = ({ setOpenForm,openForm }) => {
                     </button> */}
                 </div>
 
-                <div className="mt-4">
+<div className="mt-4">
     <h3 className="text-lg font-medium">Saved Subjects:</h3>
-    {savedSubjects.length === 0 && fetchedSubjects.length === 0 ? (
+    {savedSubjects.length === 0 ? (
         <p className="text-sm text-gray-300">No subjects added yet.</p>
     ) : (
         <ul className="list-disc list-inside text-sm mt-2 space-y-1">
-            {fetchedSubjects.map((subj, index) => (
-                <li key={`fetched-${index}`}>{subj.name} <span className="text-xs text-green-400">(existing)</span></li>
-            ))}
             {savedSubjects.map((subj, index) => (
                 <li key={`new-${index}`}>{subj.subjectName || subj.name} <span className="text-xs text-yellow-300">(new)</span></li>
             ))}
@@ -323,12 +306,23 @@ const AddSubjects = ({ setOpenForm,openForm }) => {
     )}
 </div>
 
+
             </div>
         </div>
         }
 
-          {
+          {/* {
             showAssignSubjectPage ? <AssignTeacher subjectData={subjectData} setShowAssignSubjectPage={setShowAssignSubjectPage} setOpenForm={setOpenForm}/> : "hi"
+
+          } */}
+
+
+           {
+            showAssignSubjectPage && 
+            <CreateTimetable subjectData={subjectData} setShowAssignSubjectPage={setShowAssignSubjectPage} setOpenForm={setOpenForm} />
+            
+       
+            
           }
       </>
     );
