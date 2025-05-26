@@ -85,6 +85,43 @@ const fetchAttendanceRecords = async () => {
         }
     };
 
+    const updateAttendance = async (recordId, status) => {
+      try {
+          await axios.put(API_ENDPOINTS.MARK_COLLEGE_ATTENDANCE(), { 
+              attendanceId: recordId,
+              status 
+          },
+          {
+              headers: {
+                     
+                  Authorization: `Bearer ${token}`,
+                },
+      }
+      );
+          setAttendanceRecords(prevRecords => prevRecords.map(record =>
+              record.attendanceId === recordId ? { ...record, status } : record
+          ));
+          alert("Record Updated Successfully");
+      } catch (error) {
+          console.error("Error updating attendance record:", error);
+      }
+  };
+
+  const handleDateChange = (date) => {
+              setSelectedDate(moment(date));
+          };
+
+          const deleteAttendance = async (recordId) => {
+            try {
+                await axios.delete(API_ENDPOINTS.MARK_COLLEGE_ATTENDANCE(), {
+                    headers: { Authorization: `Bearer ${token}` },
+                    data: { attendanceIds: [recordId] }
+                });
+             fetchAttendanceRecords();
+            } catch (error) {
+                console.error("Error deleting attendance record:", error);
+            }
+        };
     return(
 <div className="container mx-auto p-4">
 			<h1 className="text-2xl font-bold mb-4">Mark College Student Attendance</h1>
@@ -152,12 +189,12 @@ const fetchAttendanceRecords = async () => {
     showDataList={attendanceRecords.map(record => (
         <CommonTable 
             key={record.attendanceId}
-            name={record.employee.name}
+            name={record.student.name}
             role={moment(record.created_at).format("YYYY-MM-DD")}
             id={
                 <select
                     value={record.status}
-                    onChange={(e) => handleAttendanceChange(record.attendanceId, e.target.value)}
+                    onChange={(e) => updateAttendance(record.attendanceId, e.target.value)}
                     className="border rounded"
                 >
                     <option value="ABSENT">ABSENT</option>
@@ -177,9 +214,7 @@ const fetchAttendanceRecords = async () => {
 />
 
 			)}
-			{/* <button onClick={submitAttendance} className="bg-linear-blue hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded">
-  Mark Attendance
-</button> */}
+			
 
 	
 		</div>

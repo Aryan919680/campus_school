@@ -117,38 +117,38 @@ const SchoolAttendance = () => {
 	// 	}));
 	// };
 
-	// const submitAttendance = async () => {
-	// 	// Filter only updated attendance
-	// 	const updatedAttendance = Object.keys(attendance)
-	// 		.filter((employeeId) => attendance[employeeId] !== initialAttendance[employeeId])
-	// 		.map((employeeId) => ({
-	// 			id: employeeId,
-	// 			status: attendance[employeeId].toUpperCase(),
-	// 		}));
+	const submitAttendance = async () => {
+		// Filter only updated attendance
+		const updatedAttendance = Object.keys(attendance)
+			.filter((studentId) => attendance[studentId] !== initialAttendance[studentId])
+			.map((studentId) => ({
+				id: studentId,  
+				status: attendance[studentId].toUpperCase(),
+			}));
 	
-	// 	if (updatedAttendance.length === 0) {
-	// 		alert("No changes to update.");
-	// 		setShowUpdateDialog(false);
-	// 		return;
-	// 	}
+		if (updatedAttendance.length === 0) {
+			alert("No changes to update.");
+			setShowUpdateDialog(false);
+			return;
+		}
 	
-	// 	try {
-	// 		const apiUrl = API_ENDPOINTS.MARK_ATTENDANCE();
-	// 		await axios.post(
-	// 			apiUrl,
-	// 			{ attendance: updatedAttendance },
-	// 			{
-	// 				headers: {
-	// 					Authorization: `Bearer ${token}`,
-	// 				},
-	// 			}
-	// 		);
-	// 		alert("Attendance marked successfully!");
-	// 	} catch (error) {
-	// 		console.error("Error marking attendance:", error);
-	// 		alert("Error marking attendance. Please try again.");
-	// 	} 
-	// };
+		try {
+			const apiUrl = API_ENDPOINTS.MARK_COLLEGE_ATTENDANCE();
+			await axios.post(
+				apiUrl,
+				{ attendance: updatedAttendance },
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			);
+			alert("Attendance marked successfully!");
+		} catch (error) {
+			console.error("Error marking attendance:", error);
+			alert("Error marking attendance. Please try again.");
+		} 
+	};
 	
 // 	 const deleteAttendance = async (recordId) => {
 //             try {
@@ -254,9 +254,9 @@ const SchoolAttendance = () => {
 />
 
 			)}
-			{/* <button onClick={submitAttendance} className="bg-linear-blue hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded">
+			<button onClick={submitAttendance} className="bg-linear-blue hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded">
   Mark Attendance
-</button> */}
+</button>
 
 	
 		</div>
