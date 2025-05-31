@@ -119,6 +119,11 @@ const Sidebar = ({ sidebar, boxRef }) => {
               <User /> Profile
             </Link>
           </li>
+           <li>
+            <Link to="/exams" className="flex gap-4 my-6 items-center">
+              <User /> Exams
+            </Link>
+          </li>
           {/* <li>
             <Link to="/academics" className="flex gap-4 my-6 items-center">
               <GraduationCap /> Academics

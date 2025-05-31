@@ -153,7 +153,7 @@ const CollegeStudentForm = ({ onClose, onStudentAdded }) => {
         if (!departmentId) return;
 
         try {
-            const response = await axios.get(`${API_ENDPOINTS.GET_COURSES_OF_DEPARTMENT}/${departmentId}`, {
+            const response = await axios.get(`${API_ENDPOINTS.GET_COURSES_OF_DEPARTMENT()}/${departmentId}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setCourses(response.data.data);

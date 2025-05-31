@@ -59,6 +59,7 @@ FETCH_ALL_TEACHERS: () => `${import.meta.env.VITE_BASE_URL
     CREATE_NOTICE: () => `${import.meta.env.VITE_BASE_URL}/api/v1/notice/campus/${getCampusId()}`,
     GET_NOTICES: () => `${import.meta.env.VITE_BASE_URL}/api/v1/notice/campus/${getCampusId()}/admin`,
     CREATE_SUPPORT :() => `${import.meta.env.VITE_BASE_URL}/api/v1/support/campus/${getCampusId()}`,
+    CREATE_EXAM : () => `${import.meta.env.VITE_BASE_URL}/api/v1/exam/campus/${getCampusId()}`,
   // Onboarding
   // CREATE_CAMPUS: `${import.meta.env.VITE_BASE_URL}/api/v1/campus/register`,
   // CREATE_BRANCH: `${import.meta.env.VITE_BASE_URL}/api/v1/campus/reg/branch`,

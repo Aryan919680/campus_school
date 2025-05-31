@@ -23,6 +23,7 @@ import EmployeePage from "./components/Role/EmployeePage";
 import Timetable from "./components/Timetable/TimeTablePage";
 import SchoolTimeTablePage from "./components/Timetable/SchoolTimeTablePage";
 import NoticePage from "./components/Notice/NoticePage";
+import ExamPage from "./components/Exams/ExamPage";
 const Layout = ({ logout }) => {
 	const [userData, setUserData] = useState(() => {
 		const storedUserData = localStorage.getItem("userData");
@@ -88,6 +89,7 @@ const Layout = ({ logout }) => {
 						<Route path="/timetable" element={<SchoolTimeTablePage /> }/>
 						<Route path="/notice" element={<NoticePage /> }/>
 						<Route path="/support" element={<Support />} />
+						<Route path="/exams" element={<ExamPage />} />
 				     	</Routes>
 					}
 					{
@@ -103,6 +105,7 @@ const Layout = ({ logout }) => {
 				        	<Route path="/timetable" element={<Timetable />} />
 							<Route path="/notice" element={<NoticePage /> }/>
 							<Route path="/support" element={<Support />} />
+							<Route path="/exams" element={<ExamPage />} />
 							{/* <Route path="summary" element={<Summary />} />
 							<Route path="transactions" element={<Transactions />} />
 							<Route path="student-fees" element={<StudentFees />} />

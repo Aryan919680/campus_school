@@ -189,7 +189,7 @@ const fetchAttendanceRecords = async () => {
     showDataList={attendanceRecords.map(record => (
         <CommonTable 
             key={record.attendanceId}
-            name={record.student.name}
+            name={record.student.name ? record.student.name : ""}
             role={moment(record.created_at).format("YYYY-MM-DD")}
             id={
                 <select

@@ -172,7 +172,7 @@ const CollegeAttendance = () => {
 	const attendanceRecords = students.map((student) => ({
 	attendanceId: student.studentId, // use employeeId as temporary id
 	employee: {
-		name: student.name,
+		name: student.name ? student.name : "",
 	},
 	status: attendance[student.studentId] || "ABSENT", // default if not marked
 	created_at: selectedDate, // or actual date from backend if available

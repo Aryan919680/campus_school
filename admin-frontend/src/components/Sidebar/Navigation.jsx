@@ -8,7 +8,7 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 	const [schoolName, setSchoolName] = useState("");
 	const [campusLogo, setCampusLogo] = useState("");
 	const [campusId, setCampusId] = useState(null);
-	const [campusType,setCampusType] = useState();
+	const [campusType, setCampusType] = useState();
 	const [campusDetails, setCampusDetails] = useState({
 		id: null,
 		name: "",
@@ -24,7 +24,7 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 			const userData = JSON.parse(storedUserData);
 			setSchoolName(userData.schoolName);
 			setCampusId(userData.data.campusId);
-            setCampusType(userData.data.campusType)
+			setCampusType(userData.data.campusType)
 			// Fetch campus details by campusId
 			if (userData.campusId) {
 				fetchCampusDetails(userData.campusId);
@@ -83,8 +83,7 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 
 		try {
 			const response = await axios.post(
-				`https://api.cloudinary.com/v1_1/${
-					import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
+				`https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
 				}/image/upload`,
 				formData
 			);
@@ -135,11 +134,10 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 
 	return (
 		<aside
-			className={`fixed top-0 left-0 h-full text-gray-300 bg-linear-black transition-transform duration-200 ease-in-out overflow-hidden z-50 ${
-				isSidebarExpanded
+			className={`fixed top-0 left-0 h-full text-gray-300 bg-linear-black transition-transform duration-200 ease-in-out overflow-hidden z-50 ${isSidebarExpanded
 					? "translate-x-0"
 					: "-translate-x-full sm:translate-x-0"
-			} ${isSidebarExpanded ? "w-64" : "w-20"} w-20`}
+				} ${isSidebarExpanded ? "w-64" : "w-20"} w-20`}
 		>
 			<div className="border-b border-gray-700 px-2 py-4 font-medium bg-[#F5F6F8]">
 				<div className="flex items-center justify-end px-3 text-white hover:bg-sky-600 hover:bg-opacity-25 rounded-lg transition-colors duration-150 ease-in-out focus:outline-none focus:shadow-outline">
@@ -161,9 +159,8 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 					<div onClick={handleLogoClick} style={{ cursor: "pointer" }}>
 						{campusLogo ? (
 							<div
-								className={` w-fit h-fit flex items-center justify-center rounded-3xl ${
-									isSidebarExpanded ? "p-2" : "p-0 "
-								}`}
+								className={` w-fit h-fit flex items-center justify-center rounded-3xl ${isSidebarExpanded ? "p-2" : "p-0 "
+									}`}
 							>
 								<img
 									src={campusLogo}
@@ -190,9 +187,8 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 						onChange={handleFileChange}
 					/>
 					<div
-						className={`ml-2 duration-100 ease-in-out flex flex-col items-center text-black ${
-							isSidebarExpanded ? "my-2" : "hidden"
-						}`}
+						className={`ml-2 duration-100 ease-in-out flex flex-col items-center text-black ${isSidebarExpanded ? "my-2" : "hidden"
+							}`}
 					>
 						{schoolName}
 					</div>
@@ -200,68 +196,76 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 			</div>
 			{
 				campusType === "SCHOOL" && <nav className="p-4 space-y-2 font-medium h-full flex flex-col mt-4">
-				{/* <NavItems
+					{/* <NavItems
 					to="/"
 					icon="ic:round-dashboard"
 					title="Dashboard"
 					isSidebarExpanded={isSidebarExpanded}
 				/> */}
-				<NavItems
-					to="/Classes"
-					icon="mingcute:department-fill"
-					title="Classes"
-					isSidebarExpanded={isSidebarExpanded}
-				/>
-				
-				 <NavItems
-					to="/Employees"
-					icon="clarity:employee-group-solid"
-					title="Employees"
-					isSidebarExpanded={isSidebarExpanded}
-				/>
 					<NavItems
-					to="/Role"
+						to="/Classes"
+						icon="mingcute:department-fill"
+						title="Classes"
+						isSidebarExpanded={isSidebarExpanded}
+					/>
+
+					<NavItems
+						to="/Employees"
+						icon="clarity:employee-group-solid"
+						title="Employees"
+						isSidebarExpanded={isSidebarExpanded}
+					/>
+					<NavItems
+						to="/Role"
 						icon="material-symbols:event"
-					title="HR functions"
-					isSidebarExpanded={isSidebarExpanded}
-				/>
-				<NavItems
-					to="/Students"
-					icon="solar:square-academic-cap-bold"
-					title="Students"
-					isSidebarExpanded={isSidebarExpanded}
-				/>
-<NavItems
-					to="/Attendance"
-					icon="fluent:task-list-square-add-24-filled"
-					title="Attendance"
-					isSidebarExpanded={isSidebarExpanded}
-				/>
-				<NavItems
-					to="/Finance"
-					icon="material-symbols:finance-mode-rounded"
-					title="Finance"
-					isSidebarExpanded={isSidebarExpanded}
-				/>
-                <NavItems
-					to="/Timetable"
-					icon="mingcute:calendar-fill"
-					title="Timetable"
-					isSidebarExpanded={isSidebarExpanded}
-				/>
-	<NavItems
-					to="/Notice"
-					icon="material-symbols:event"
-					title="Event Management"
-					isSidebarExpanded={isSidebarExpanded}
-				/>
-				<NavItems
-					to="/Support"
-					icon="material-symbols:support-agent-rounded"
-					title="Support"
-					isSidebarExpanded={isSidebarExpanded}
-				/>
-			{/*	<NavItems
+						title="HR functions"
+						isSidebarExpanded={isSidebarExpanded}
+					/>
+					<NavItems
+						to="/Students"
+						icon="solar:square-academic-cap-bold"
+						title="Students"
+						isSidebarExpanded={isSidebarExpanded}
+					/>
+					<NavItems
+						to="/Attendance"
+						icon="fluent:task-list-square-add-24-filled"
+						title="Attendance"
+						isSidebarExpanded={isSidebarExpanded}
+					/>
+					<NavItems
+						to="/Finance"
+						icon="material-symbols:finance-mode-rounded"
+						title="Finance"
+						isSidebarExpanded={isSidebarExpanded}
+					/>
+					<NavItems
+						to="/Timetable"
+						icon="mingcute:calendar-fill"
+						title="Timetable"
+						isSidebarExpanded={isSidebarExpanded}
+					/>
+					<NavItems
+						to="/Notice"
+						icon="material-symbols:event"
+						title="Event Management"
+						isSidebarExpanded={isSidebarExpanded}
+					/>
+					<NavItems
+						to="/Exams"
+						icon="material-symbols:quiz"
+						title="Exams"
+						isSidebarExpanded={isSidebarExpanded}
+					/>
+
+					<NavItems
+						to="/Support"
+						icon="material-symbols:support-agent-rounded"
+						title="Support"
+						isSidebarExpanded={isSidebarExpanded}
+					/>
+
+					{/*	<NavItems
 					to="/Finance"
 					icon="material-symbols:finance-mode-rounded"
 					title="Finance"
@@ -286,74 +290,82 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 					title="Support"
 					isSidebarExpanded={isSidebarExpanded}
 				/> */}
-			</nav>
+				</nav>
 			}
-		{	
-		campusType === "COLLEGE" &&
-			<nav className="p-4 space-y-2 font-medium h-full flex flex-col mt-4">
-				{/* <NavItems
+			{
+				campusType === "COLLEGE" &&
+				<nav className="p-4 space-y-2 font-medium h-full flex flex-col mt-4">
+					{/* <NavItems
 					to="/"
 					icon="ic:round-dashboard"
 					title="Dashboard"
 					isSidebarExpanded={isSidebarExpanded}
 				/> */}
-				<NavItems
-					to="/Department"
-					icon="mingcute:department-fill"
-					title="Department"
-					isSidebarExpanded={isSidebarExpanded}
-				/>
-				
-				<NavItems
-					to="/Employees"
-					icon="clarity:employee-group-solid"
-					title="Employees"
-					isSidebarExpanded={isSidebarExpanded}
-				/>
-	<NavItems
-					to="/Role"
-				icon="material-symbols:event"
-					title="HR functions"
-					isSidebarExpanded={isSidebarExpanded}
-				/>
-				 <NavItems
-					to="/Students"
-					icon="solar:square-academic-cap-bold"
-					title="Students"
-					isSidebarExpanded={isSidebarExpanded}
-				/>
-	<NavItems
-					to="/Attendance"
-					icon="fluent:task-list-square-add-24-filled"
-					title="Attendance"
-					isSidebarExpanded={isSidebarExpanded}
-				/>
-				<NavItems
-					to="/Finance"
-					icon="material-symbols:finance-mode-rounded"
-					title="Finance"
-					isSidebarExpanded={isSidebarExpanded}
-				/>
-				     <NavItems
-					to="/Timetable"
-					icon="mingcute:calendar-fill"
-					title="Timetable"
-					isSidebarExpanded={isSidebarExpanded}
-				/>
-				<NavItems
-					to="/Notice"
-					icon="material-symbols:event"
-					title="Event Management"
-					isSidebarExpanded={isSidebarExpanded}
-				/>
-				<NavItems
-					to="/Support"
-					icon="material-symbols:support-agent-rounded"
-					title="Support"
-					isSidebarExpanded={isSidebarExpanded}
-				/>
+					<NavItems
+						to="/Department"
+						icon="mingcute:department-fill"
+						title="Department"
+						isSidebarExpanded={isSidebarExpanded}
+					/>
 
-			{/*	<NavItems
+					<NavItems
+						to="/Employees"
+						icon="clarity:employee-group-solid"
+						title="Employees"
+						isSidebarExpanded={isSidebarExpanded}
+					/>
+					<NavItems
+						to="/Role"
+						icon="material-symbols:event"
+						title="HR functions"
+						isSidebarExpanded={isSidebarExpanded}
+					/>
+					<NavItems
+						to="/Students"
+						icon="solar:square-academic-cap-bold"
+						title="Students"
+						isSidebarExpanded={isSidebarExpanded}
+					/>
+					<NavItems
+						to="/Attendance"
+						icon="fluent:task-list-square-add-24-filled"
+						title="Attendance"
+						isSidebarExpanded={isSidebarExpanded}
+					/>
+					<NavItems
+						to="/Finance"
+						icon="material-symbols:finance-mode-rounded"
+						title="Finance"
+						isSidebarExpanded={isSidebarExpanded}
+					/>
+					<NavItems
+						to="/Timetable"
+						icon="mingcute:calendar-fill"
+						title="Timetable"
+						isSidebarExpanded={isSidebarExpanded}
+					/>
+					<NavItems
+						to="/Notice"
+						icon="material-symbols:event"
+						title="Event Management"
+						isSidebarExpanded={isSidebarExpanded}
+					/>
+					<NavItems
+						to="/Exams"
+						icon="material-symbols:quiz"
+						title="Exams"
+						isSidebarExpanded={isSidebarExpanded}
+					/>
+
+					<NavItems
+						to="/Support"
+						icon="material-symbols:support-agent-rounded"
+						title="Support"
+						isSidebarExpanded={isSidebarExpanded}
+					/>
+
+
+					{/*	<NavItems
 					to="/Department"
 					icon="mingcute:department-fill"
 					title="Department"
@@ -377,7 +389,7 @@ const Navigation = ({ isSidebarExpanded, toggleSidebar }) => {
 					title="Support"
 					isSidebarExpanded={isSidebarExpanded}
 				/> */}
-			</nav>}
+				</nav>}
 		</aside>
 	);
 };
