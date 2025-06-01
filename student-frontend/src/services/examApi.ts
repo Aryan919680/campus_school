@@ -21,8 +21,15 @@ export const examApi = {
   // Start a new exam and get questions
   startExam: async (examId: string) => {
     console.log(examId)
-    // const response = await axios.post(`${API_URL}/start-exam`);
-    // return response.data;
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/exam/campus/${campusId}/start/${examId}`, null,
+       {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+    );
+    console.log(response)
+   // return response.data.data;
   },
 
   getQuestions: async (examId: string) => {
