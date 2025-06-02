@@ -20,7 +20,6 @@ export const examApi = {
 
   // Start a new exam and get questions
   startExam: async (examId: string) => {
-    console.log(examId)
     const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/exam/campus/${campusId}/start/${examId}`, null,
        {
             headers: {
@@ -28,12 +27,10 @@ export const examApi = {
             },
           }
     );
-    console.log(response)
-   // return response.data.data;
+   return response.data.data;
   },
 
   getQuestions: async (examId: string) => {
-    console.log(examId)
     const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/exam/campus/${campusId}/questions/${examId}`,
         {
             headers: {
@@ -41,26 +38,38 @@ export const examApi = {
             },
           }
     );
-    console.log(response.data)
     return response.data.data;
   },
   
   // Submit exam answers
-  submitExam: async (sessionId: string, answers: Record<number, number | null>): Promise<SubmitExamResponse> => {
-    // Filter out null answers
-    const validAnswers: Record<number, number> = {};
-    Object.entries(answers).forEach(([questionId, answer]) => {
-      if (answer !== null) {
-        validAnswers[parseInt(questionId)] = answer;
-      }
-    });
-    
-    const response = await axios.post(`${API_URL}/submit-exam`, { 
-      sessionId, 
-      answers: validAnswers 
-    });
-    return response.data;
-  },
+ submitExam: async (
+  sessionId: string,
+  answers: Record<string, string | null> ,
+  examId: string
+): Promise<SubmitExamResponse> => {
+  const validAnswers = Object.entries(answers)
+    .filter(([_, answer]) => answer !== null)
+    .map(([questionId, answer]) => ({
+      questionId,
+      answerSelected: answer as string,
+    }));
+
+  const payload = {
+    sessionId,
+    answers: validAnswers,
+  };
+
+  const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/exam/campus/${campusId}/end/${examId}`, 
+    payload,
+      {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+  );
+  return response.data.data;
+},
+
   
   // Get exam results (for demonstration purposes)
   getResults: async (sessionId: string) => {

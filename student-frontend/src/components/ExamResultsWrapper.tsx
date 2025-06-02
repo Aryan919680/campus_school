@@ -33,7 +33,7 @@ export const ExamResultsWrapper = () => {
       <ExamResultsOriginal 
         questions={questions} 
         answers={answers} 
-        score={examResults.score}
+        score={examResults.score.score}
         onRestart={handleRestart}
       />
       

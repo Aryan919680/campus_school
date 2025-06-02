@@ -14,6 +14,7 @@ import {
   LogOut,
   MessageCircleMore,
   User,
+  ClipboardList
 } from "lucide-react";
 import {
   Dialog,
@@ -121,7 +122,7 @@ const Sidebar = ({ sidebar, boxRef }) => {
           </li>
            <li>
             <Link to="/exams" className="flex gap-4 my-6 items-center">
-              <User /> Exams
+               <ClipboardList /> Exams
             </Link>
           </li>
           {/* <li>

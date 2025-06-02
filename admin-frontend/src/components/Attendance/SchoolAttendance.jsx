@@ -146,7 +146,7 @@ const SchoolAttendance = () => {
 			alert("Attendance marked successfully!");
 		} catch (error) {
 			console.error("Error marking attendance:", error);
-			alert("Error marking attendance. Please try again.");
+			alert(error.response.data.message);
 		} 
 	};
 	
@@ -225,7 +225,7 @@ const SchoolAttendance = () => {
     ListName={"Student Name"}
     ListRole={"Date"}
     ListDepartment={"Status"}
-    ListAction={"Actions"}
+
     showDataList={attendanceRecords.map(record => (
         <CommonTable 
             key={record.attendanceId}
@@ -242,13 +242,7 @@ const SchoolAttendance = () => {
                     <option value="LATE">LATE</option>
                 </select>
             }
-            actions={[
-                {
-                    type: "button",
-                    label: "Delete",
-                    onClick: () => deleteAttendance(record.attendanceId)
-                }
-            ]}
+         
         />
     ))}
 />

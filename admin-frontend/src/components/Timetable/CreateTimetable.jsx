@@ -28,6 +28,9 @@ const CreateTimetable = ({ subjectData, setShowAssignSubjectPage,setOpenForm }) 
     subjectId: "",
     employeeId: ""
 });
+const [isEditing, setIsEditing] = useState(false);
+const [editIndex, setEditIndex] = useState(null);
+
 
    const [showTimetablePage, setShowTimetablePage] = useState(false);
     useEffect(() => {
@@ -61,35 +64,45 @@ console.log(subjectData)
         }));
     };
 
-    const handleAssign = () => {
-  const { day, from, to, subjectId } = formData;
-  console.log(day, from, to, subjectId )
+  const handleAssign = () => {
+    const { day, from, to, subjectId } = formData;
 
-if (!day || !from || !to || !subjectId) {
-    alert("Please fill all fields.");
-    return;
-}
+    if (!day || !from || !to || !subjectId) {
+        alert("Please fill all fields.");
+        return;
+    }
 
-const exists = timetable.some(entry => entry.day === day && entry.from === from && entry.to === to);
-if (exists) {
-    alert("Time slot already assigned for this day and time.");
-    return;
-}
-
-const subject = subjects.find(s => s.subjectId === subjectId);
-
-setTimetable(prev => [...prev, {
-    subjectId,
-    from,
-    to,
-    day: days.indexOf(day) + 1,
-    name: `Period ${prev.length + 1}`,
-    subjectName: subject.name,
-}]);
-
-setFormData({ day: "", from: "", to: "", subjectId: "" });
-
+    const subject = subjects.find(s => s.subjectId === subjectId);
+    const newEntry = {
+        subjectId,
+        from,
+        to,
+        day: days.indexOf(day) + 1,
+        name: `Period ${timetable.length + 1}`,
+        subjectName: subject.name,
     };
+
+    if (isEditing && editIndex !== null) {
+        const updated = [...timetable];
+        updated[editIndex] = newEntry;
+        setTimetable(updated);
+        setIsEditing(false);
+        setEditIndex(null);
+    } else {
+        const exists = timetable.some(entry =>
+            entry.day === newEntry.day && entry.from === newEntry.from && entry.to === newEntry.to
+        );
+        if (exists) {
+            alert("Time slot already assigned for this day and time.");
+            return;
+        }
+
+        setTimetable(prev => [...prev, newEntry]);
+    }
+
+    setFormData({ day: "", from: "", to: "", subjectId: "" });
+};
+
 
     const handleSaveTimetable = async () => {
         if(campusType.toLowerCase() === "college"){
@@ -184,10 +197,23 @@ setFormData({ day: "", from: "", to: "", subjectId: "" });
 
                 <button
                     onClick={handleAssign}
-                    className="mt-4 bg-variant-blue hover:bg-blue-600 text-white w-full py-2 rounded-md"
+                    className="mt-4 bg-linear-blue hover:bg-blue-600 text-white w-full py-2 rounded-md"
                 >
                     Assign to Timetable
                 </button>
+                {isEditing && (
+    <button
+        onClick={() => {
+            setIsEditing(false);
+            setEditIndex(null);
+            setFormData({ day: "", from: "", to: "", subjectId: "" });
+        }}
+        className="mt-2 bg-red-500 hover:bg-red-600 text-white w-full py-2 rounded-md"
+    >
+        Cancel Edit
+    </button>
+)}
+
 
                 <div className="mt-6">
                     <h3 className="text-lg font-semibold">Assigned Timetable:</h3>
@@ -204,16 +230,33 @@ setFormData({ day: "", from: "", to: "", subjectId: "" });
                                      
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    {timetable.map((entry, idx) => (
-                                        <tr key={idx} className="text-center border-t border-gray-600">
-                                            <td className="p-2 border">{days[entry.day - 1]}</td>
-                                            <td className="p-2 border">{entry.from} - {entry.to}</td>
-                                            <td className="p-2 border">{entry.subjectName}</td>
-                                           
-                                        </tr>
-                                    ))}
-                                </tbody>
+                               <tbody>
+    {timetable.map((entry, idx) => (
+        <tr key={idx} className="text-center border-t border-gray-600">
+            <td className="p-2 border">{days[entry.day - 1]}</td>
+            <td className="p-2 border">{entry.from} - {entry.to}</td>
+            <td className="p-2 border">{entry.subjectName}</td>
+            <td className="p-2 border">
+                <button
+                    onClick={() => {
+                        setFormData({
+                            day: days[entry.day - 1],
+                            from: entry.from,
+                            to: entry.to,
+                            subjectId: entry.subjectId,
+                        });
+                        setIsEditing(true);
+                        setEditIndex(idx);
+                    }}
+                    className="bg-yellow-500 px-2 py-1 rounded text-sm hover:bg-yellow-600"
+                >
+                    Edit
+                </button>
+            </td>
+        </tr>
+    ))}
+</tbody>
+
                             </table>
 
                             <button

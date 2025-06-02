@@ -3,24 +3,30 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, XCircle } from "lucide-react";
 
+interface Option {
+  id: string;
+  option: string;
+}
+
 interface Question {
-  id: number;
+  id: string; // was number
   question: string;
-  options: string[];
-  correctAnswer: number;
+  options: Option[];
+  correctAnswer: string; // was number
 }
 
 interface ExamResultsProps {
   questions: Question[];
-  answers: Record<number, number | null>;
+  answers: Record<string, string | null>; // was number
   score: number;
   onRestart: () => void;
 }
 
+
 export function ExamResults({ questions, answers, score, onRestart }: ExamResultsProps) {
   const percentage = Math.round((score / questions.length) * 100);
   const isPassed = percentage >= 60;
-  
+
   return (
     <div className="w-full max-w-3xl space-y-6">
       <Card>
@@ -83,51 +89,60 @@ export function ExamResults({ questions, answers, score, onRestart }: ExamResult
           <CardTitle className="text-xl">Question Review</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {questions.map((question, index) => {
-            const userAnswer = answers[question.id];
-            const isCorrect = userAnswer === question.correctAnswer;
-            
-            return (
-              <div key={question.id} className="border-b pb-4 last:border-b-0 last:pb-0">
-                <div className="flex justify-between">
-                  <h3 className="font-medium">Question {index + 1}</h3>
-                  {userAnswer !== null ? (
-                    isCorrect ? (
-                      <span className="text-green-600 flex items-center gap-1">
-                        <CheckCircle className="h-4 w-4" /> Correct
-                      </span>
-                    ) : (
-                      <span className="text-red-600 flex items-center gap-1">
-                        <XCircle className="h-4 w-4" /> Incorrect
-                      </span>
-                    )
-                  ) : (
-                    <span className="text-gray-400">Not answered</span>
-                  )}
-                </div>
-                <p className="mt-1">{question.question}</p>
-                <div className="mt-2 space-y-1">
-                  {question.options.map((option, optIndex) => (
-                    <div 
-                      key={optIndex}
-                      className={`px-3 py-2 text-sm rounded-md ${
-                        optIndex === question.correctAnswer 
-                          ? 'bg-green-100 text-green-800' 
-                          : optIndex === userAnswer
-                            ? 'bg-red-100 text-red-800'
-                            : 'bg-gray-50'
-                      }`}
-                    >
-                      {option}
-                      {optIndex === question.correctAnswer && (
-                        <span className="ml-2 text-green-600 text-xs">(Correct answer)</span>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
+      {questions.map((question, index) => {
+  const userAnswer = answers[question.id];
+  const isCorrect = userAnswer === question.correctAnswer;
+
+  return (
+    <div key={question.id} className="border-b pb-4 last:border-b-0 last:pb-0">
+      <div className="flex justify-between">
+        <h3 className="font-medium">Question {index + 1}</h3>
+        {userAnswer !== null ? (
+          isCorrect ? (
+            <span className="text-green-600 flex items-center gap-1">
+              <CheckCircle className="h-4 w-4" /> Correct
+            </span>
+          ) : (
+            <span className="text-red-600 flex items-center gap-1">
+              <XCircle className="h-4 w-4" /> Incorrect
+            </span>
+          )
+        ) : (
+          <span className="text-gray-400">Not answered</span>
+        )}
+      </div>
+
+      <p className="mt-1">{question.question}</p>
+
+      <div className="mt-2 space-y-1">
+        {question.options.map((option) => {
+          const isCorrectOption = option.id === question.correctAnswer;
+          const isUserAnswer = option.id === userAnswer;
+
+          return (
+            <div 
+              key={option.id}
+              className={`px-3 py-2 text-sm rounded-md ${
+                isCorrectOption
+                  ? 'bg-green-100 text-green-800'
+                  : isUserAnswer
+                    ? 'bg-red-100 text-red-800'
+                    : 'bg-gray-50'
+              }`}
+            >
+              {option.option}
+              {isCorrectOption && (
+                <span className="ml-2 text-green-600 text-xs">(Correct answer)</span>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+})}
+
+
         </CardContent>
       </Card>
     </div>

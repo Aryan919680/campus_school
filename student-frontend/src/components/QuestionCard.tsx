@@ -16,7 +16,7 @@ interface Question {
 interface QuestionCardProps {
   question: Question;
   currentAnswer: number | null;
-  onAnswerSelect: (index: number) => void;
+  onAnswerSelect: (optionId: string) => void;
   onNext: () => void;
   onPrev: () => void;
   questionNumber: number;
@@ -49,15 +49,18 @@ export function QuestionCard({
         <CardTitle className="text-xl mt-2">{question.question}</CardTitle>
       </CardHeader>
       <CardContent>
-        <RadioGroup value={currentAnswer?.toString()} onValueChange={(value) => onAnswerSelect(parseInt(value))}>
-          {question.options.map((option, index) => (
-            <div key={index} className="flex items-center space-x-2 mb-3 p-2 rounded-lg hover:bg-gray-50">
-              <RadioGroupItem value={index.toString()} id={`option-${index}`} />
-              <Label htmlFor={`option-${index}`} className="flex-grow cursor-pointer py-1">
-                {option}
-              </Label>
-            </div>
-          ))}
+<RadioGroup
+  value={currentAnswer ?? ""}
+  onValueChange={(value) => onAnswerSelect(value)}
+>
+         {question.options.map((option, index) => (
+  <div key={index} className="flex items-center space-x-2 mb-3 p-2 rounded-lg hover:bg-gray-50">
+    <RadioGroupItem value={option.id} id={`option-${index}`} />
+    <Label htmlFor={`option-${index}`} className="flex-grow cursor-pointer py-1">
+      {option.option}
+    </Label>
+  </div>
+))}
         </RadioGroup>
       </CardContent>
       <CardFooter className="flex justify-between">

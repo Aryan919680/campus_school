@@ -73,8 +73,8 @@ campusType === "SCHOOL" ? <th className="border px-4 py-2">Sub Class </th> :  <t
               <tr key={item.id} className="hover:bg-gray-100">
                 <td className="border px-4 py-2">{getDayName(item.dayNumber)}</td>
                 <td className="border px-4 py-2">{item.name}</td>
-                <td className="border px-4 py-2">{item.from}:00</td>
-                <td className="border px-4 py-2">{item.to}:00</td>
+                <td className="border px-4 py-2">{item.from}</td>
+                <td className="border px-4 py-2">{item.to}</td>
                 <td className="border px-4 py-2">{item.subject.name}</td>
                 {
 campusType === "SCHOOL" ? <td className="border px-4 py-2">{item.class.className}</td> : <td className="border px-4 py-2">{item.course.courseName}</td>

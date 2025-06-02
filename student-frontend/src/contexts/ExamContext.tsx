@@ -3,11 +3,12 @@ import { createContext, useContext, useState, ReactNode, useEffect } from "react
 import { toast } from "@/components/ui/use-toast";
 import { Question } from "@/data/sampleQuestions";
 import { examApi } from "@/services/examApi";
+import { response } from "express";
 
 interface ExamContextType {
   questions: Question[];
   currentQuestion: number;
-  answers: Record<number, number | null>;
+ answers: Record<string, string>; // questionId -> optionId (e.g., "q123": "B")
   timeLeft: number;
   isExamStarted: boolean;
   isExamFinished: boolean;
@@ -17,7 +18,7 @@ interface ExamContextType {
   examResults: ExamResults | null;
   startExam: () => Promise<void>;
   endExam: () => Promise<void>;
-  setAnswer: (questionId: number, answerIndex: number) => void;
+  setAnswer: (questionId: string, optionId: string) => void;
   nextQuestion: () => void;
   prevQuestion: () => void;
   jumpToQuestion: (index: number) => void;
@@ -43,7 +44,7 @@ export const ExamProvider = ({ children }: { children: ReactNode }) => {
   const [isExamFinished, setIsExamFinished] = useState<boolean>(false);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
-  const [answers, setAnswers] = useState<Record<number, number | null>>({});
+  const [answers, setAnswers] = useState<Record<string, string | null>>({});
   const [timeLeft, setTimeLeft] = useState<number>(EXAM_DURATION);
   const [disconnectionTime, setDisconnectionTime] = useState<number | null>(null);
   const [tabSwitchCount, setTabSwitchCount] = useState<number>(0);
@@ -88,14 +89,17 @@ export const ExamProvider = ({ children }: { children: ReactNode }) => {
 const formattedQuestions: Question[] = quesData.map((q) => ({
   id: q.questionId,
   question: q.question,
-  options: q.options.map((opt) => opt.option),
-  correctAnswer: q.options.findIndex((opt) => opt.id === q.answer)
+  options: q.options.map((opt) => ({
+    id: opt.id, // e.g., "A", "B", "C"
+    option: opt.option
+  })),
+  correctAnswer: q.answer // This is already the option ID (like "A")
 }));
+
 
 setQuestions(formattedQuestions);
 
-      // setSessionId(data.sessionId);
-      // setQuestions(quesData);
+      setSessionId(data.sessionId);
       
       // Start the exam
       setTimeLeft(EXAM_DURATION);
@@ -108,7 +112,8 @@ setQuestions(formattedQuestions);
         description: "Good luck with your exam!",
       });
     } catch (error) {
-      console.error("Failed to start exam:", error);
+      console.error("Failed to start exam:", error.response.data.message);
+      alert(error.response.data.message)
       toast({
         title: "Failed to Start Exam",
         description: "Please check your internet connection and try again.",
@@ -119,7 +124,7 @@ setQuestions(formattedQuestions);
     }
   };
 
-  const endExam = async () => {
+  const endExam = async (examId) => {
     if (!sessionId) {
       toast({
         title: "Error",
@@ -131,21 +136,20 @@ setQuestions(formattedQuestions);
     
     try {
       setIsLoading(true);
-      
       // Submit answers to the server
-      const results = await examApi.submitExam(sessionId, answers);
+      const results = await examApi.submitExam(sessionId, answers, examId);
       
       // Update the state
       setIsExamFinished(true);
       setExamResults(results);
-      
+      alert(`Exam Submitted and your score is ${results.score}`)
       toast({
         title: "Exam Submitted",
-        description: `Your score: ${results.score}/${results.totalQuestions}`,
+        description: `Your score: ${results.score}`,
       });
     } catch (error) {
-      console.error("Failed to submit exam:", error);
-      
+      console.error("Failed to submit exam:", error.response.data.message);
+         alert(`Failed to submit exam:`, error.response.data.message);
       // Still mark the exam as finished even if submission fails
       setIsExamFinished(true);
       
@@ -159,10 +163,10 @@ setQuestions(formattedQuestions);
     }
   };
 
- const setAnswer = (questionId: string, answerIndex: number) => {
+const setAnswer = (questionId: string, optionId: string) => {
   setAnswers((prev) => ({
     ...prev,
-    [questionId]: answerIndex
+    [questionId]: optionId
   }));
 };
 
@@ -233,12 +237,13 @@ setQuestions(formattedQuestions);
  const getScore = () => {
   let score = 0;
   questions.forEach((q) => {
-    if (answers[q.id] === q.correctAnswer) {
+    if (answers[q.id] === q.answer) {
       score += 1;
     }
   });
   return score;
 };
+
 
 
   return (

@@ -17,7 +17,7 @@ export function ExamStart({ onStart, questionCount, examDuration }: ExamStartPro
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   
   return (
-    <Card className="w-full max-w-2xl">
+    <Card className="w-full max-w-2xl ">
       <CardHeader className="text-center">
         <CardTitle className="text-2xl">Exam</CardTitle>
         <CardDescription>Please read the instructions carefully before starting</CardDescription>

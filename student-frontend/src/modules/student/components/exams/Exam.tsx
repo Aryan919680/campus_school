@@ -96,20 +96,18 @@ function ExamComponent({examId, duration}) {
   };
   
   const handleStartExam = async (examId) => {
-    console.log("here",examId)
     setIsLoading(true);
     try {
-      console.log(examId,"aa")
       await startExam(examId);
     } finally {
       setIsLoading(false);
     }
   };
   
-  const handleEndExam = async () => {
+  const handleEndExam = async (examId) => {
     setIsLoading(true);
     try {
-      await endExam();
+      await endExam(examId);
     } finally {
       setIsLoading(false);
     }
@@ -118,7 +116,7 @@ function ExamComponent({examId, duration}) {
   // If not started or finished, show appropriate screens
   if (!isExamStarted) {
     return (
-      <div className="relative">
+      <div className="flex items-center justify-center">
         <ExamStart 
           onStart={() => handleStartExam(examId)} 
           questionCount={10} 
@@ -136,11 +134,14 @@ function ExamComponent({examId, duration}) {
     );
   }
 
-  if (isExamFinished) {
-    return <ExamResultsWrapper />;
-  }
 
-  console.log(questions)
+  // will do later when i want to show result
+  // if (isExamFinished) {
+  
+  //   return <ExamResultsWrapper />;
+  // }
+
+
 
   // Main exam interface
   return (
@@ -182,7 +183,7 @@ function ExamComponent({examId, duration}) {
       )}
       
       <div className="flex justify-between items-center">
-        <Timer secondsLeft={timeLeft} onTimeUp={handleEndExam} />
+        <Timer secondsLeft={timeLeft} onTimeUp={() => handleEndExam(examId)} />
         
         <AlertDialog>
           <AlertDialogTrigger asChild>
@@ -205,7 +206,7 @@ function ExamComponent({examId, duration}) {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Continue Exam</AlertDialogCancel>
-              <AlertDialogAction onClick={handleEndExam} className="bg-destructive">
+              <AlertDialogAction onClick={() => handleEndExam(examId)} className="bg-destructive">
                 {isLoading ? (
                   <div className="flex items-center gap-2">
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -221,15 +222,17 @@ function ExamComponent({examId, duration}) {
       </div>
 
       {questions.length > 0 ? (
-      <QuestionCard
+<QuestionCard
   question={questions[currentQuestion]}
-  currentAnswer={answers[questions[currentQuestion]?.id] ?? null}
-  onAnswerSelect={(index) => setAnswer(questions[currentQuestion].id, index)}
+  currentAnswer={answers[questions[currentQuestion]?.id] ?? ""}
+  onAnswerSelect={(optionId) => setAnswer(questions[currentQuestion].id, optionId)}
   onNext={nextQuestion}
   onPrev={prevQuestion}
   questionNumber={currentQuestion}
   totalQuestions={questions.length}
 />
+
+
 
 
       ) : (

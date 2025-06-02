@@ -84,6 +84,7 @@ const AttendancePage = () => {
             setAttendanceRecords(prevRecords => prevRecords.map(record =>
                 record.attendanceId === recordId ? { ...record, status } : record
             ));
+            alert("Record Updated Succesfully");
         } catch (error) {
             console.error("Error updating attendance record:", error);
         }

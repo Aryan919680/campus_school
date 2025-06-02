@@ -114,7 +114,7 @@ const Attendance = ({ onClose }) => {
 			alert("Attendance marked successfully!");
 		} catch (error) {
 			console.error("Error marking attendance:", error);
-			alert("Error marking attendance. Please try again.");
+				alert(error.response.data.message);
 		} finally {
 			setShowUpdateDialog(false);
 			onClose();
@@ -129,6 +129,7 @@ const Attendance = ({ onClose }) => {
                 });
                 alert("Record Deleted Successfully");
             } catch (error) {
+				alert(error.response.data.message);
                 console.error("Error deleting attendance record:", error);
             }
         };
@@ -159,7 +160,7 @@ const Attendance = ({ onClose }) => {
     ListName={"Employee Name"}
     ListRole={"Date"}
     ListDepartment={"Status"}
-    ListAction={"Actions"}
+    // ListAction={"Actions"}
     showDataList={attendanceRecords.map(record => (
         <CommonTable 
             key={record.attendanceId}
@@ -176,13 +177,13 @@ const Attendance = ({ onClose }) => {
                     <option value="LATE">LATE</option>
                 </select>
             }
-            actions={[
-                {
-                    type: "button",
-                    label: "Delete",
-                    onClick: () => deleteAttendance(record.attendanceId)
-                }
-            ]}
+            // actions={[
+            //     {
+            //         type: "button",
+            //         label: "Delete",
+            //         onClick: () => deleteAttendance(record.attendanceId)
+            //     }
+            // ]}
         />
     ))}
 />

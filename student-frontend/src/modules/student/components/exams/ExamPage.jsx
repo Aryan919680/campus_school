@@ -33,13 +33,26 @@ export default function ExamPage() {
     }
   }, [campusId, token]);
 
-  const startExamFunc = (examId,timeAllotted) => {
-    console.log("Starting exam with ID:", examId);
-    setExamId(examId);
-setDuration(timeAllotted);
-    setStartExam(true);
-    // You can add navigation or logic to open the exam screen here.
-  };
+const startExamFunc = (examId, timeAllotted, startAt) => {
+  const now = new Date().getTime();
+  const startTime = new Date(startAt).getTime();
+  const endTime = startTime + timeAllotted * 60 * 1000; // Convert minutes to ms
+
+  if (now < startTime) {
+    alert("You cannot start the exam before the scheduled start time.");
+    return;
+  }
+
+  if (now > endTime) {
+    alert("The time to start this exam has expired.");
+    return;
+  }
+
+  setExamId(examId);
+  setDuration(timeAllotted);
+  setStartExam(true);
+};
+
 
   return (
     <>
@@ -71,12 +84,15 @@ setDuration(timeAllotted);
                 </p>
               </div>
               <div className="mt-4 flex justify-end">
-                <button
-                  onClick={() => startExamFunc(exam.examId, exam.timeAllotted)}
-                  className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-4 py-2 rounded-md text-sm"
-                >
-                  Start Exam
-                </button>
+               <button
+  onClick={() =>
+    startExamFunc(exam.examId, exam.timeAllotted, exam.startAt)
+  }
+  className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-4 py-2 rounded-md text-sm"
+>
+  Start Exam
+</button>
+
               </div>
             </div>
           ))
