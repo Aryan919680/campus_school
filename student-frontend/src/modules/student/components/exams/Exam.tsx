@@ -86,13 +86,13 @@ function ExamComponent({examId, duration}) {
     setShowTabWarning(false);
   };
 
-  const handleExcessTabSwitches = () => {
+  const handleExcessTabSwitches = (examId) => {
     toast({
       title: "Exam Terminated",
       description: "Too many tab switches detected. This may be considered cheating.",
       variant: "destructive"
     });
-    endExam();
+    endExam(examId);
   };
   
   const handleStartExam = async (examId) => {
@@ -151,7 +151,7 @@ function ExamComponent({examId, duration}) {
         isVisible={showTabWarning}
         tabSwitchCount={tabSwitchCount}
         onClose={handleTabWarningClose}
-        onExceedLimit={handleExcessTabSwitches}
+        onExceedLimit={() => handleExcessTabSwitches(examId)}
         maxAllowedSwitches={3}
       />
       
@@ -183,7 +183,7 @@ function ExamComponent({examId, duration}) {
       )}
       
       <div className="flex justify-between items-center">
-        <Timer secondsLeft={timeLeft} onTimeUp={() => handleEndExam(examId)} />
+        <Timer secondsLeft={duration} onTimeUp={() => handleEndExam(examId)} />
         
         <AlertDialog>
           <AlertDialogTrigger asChild>
@@ -258,7 +258,7 @@ export default function Exam({examId, duration}) {
       {/* <Header /> */}
       <div className="flex-grow">
         <ExamProvider>
-          <ExamComponent examId={examId} duration={duration}/>
+          <ExamComponent examId={examId} duration={duration} />
         </ExamProvider>
       </div>
       {/* <Footer /> */}

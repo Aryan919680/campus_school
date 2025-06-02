@@ -17,7 +17,7 @@ export function TabSwitchWarning({
   tabSwitchCount,
   onClose,
   onExceedLimit,
-  maxAllowedSwitches = 3
+  maxAllowedSwitches = 2,
 }: TabSwitchWarningProps) {
   const [showWarning, setShowWarning] = useState(false);
   
