@@ -300,7 +300,7 @@ const handleSubmit = (e) => {
     ) : (
         <ul className="list-disc list-inside text-sm mt-2 space-y-1">
             {savedSubjects.map((subj, index) => (
-                <li key={`new-${index}`}>{subj.subjectName || subj.name} <span className="text-xs text-yellow-300">(new)</span></li>
+                <li key={`new-${index}`}>{subj.subjectCode}-{subj.subjectName || subj.name} <span className="text-xs text-yellow-300">(new)</span></li>
             ))}
         </ul>
     )}
