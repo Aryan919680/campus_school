@@ -17,37 +17,46 @@ const Classes = () => {
   const [isClassFees,setIsClassFees] = useState(false);
   const [selectedClassId, setSelectedClassId] = useState(null);
   const [classData,setClassData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageSize] = useState(10); // you can make this dynamic too
+
   const userData = JSON.parse(localStorage.getItem("userData"));
   const parsedData = userData;
   const token = parsedData.token;
 
-  const fetchClassOptions = useCallback(async () => {
-    try {
-      const response = await axios.get(API_ENDPOINTS.FETCH_CLASS(), {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      let classes = response.data.data.class;
-      classes.sort((a, b) => {
-        const numA = parseInt(a.className.match(/\d+/)?.[0] || 0, 10); 
-        const numB = parseInt(b.className.match(/\d+/)?.[0] || 0, 10);
-        return numA - numB; 
-      });
-  
-      setClasses(classes); 
-    } catch (error) {
-      console.error("Error fetching class options:", error.response?.data || error.message);
-      alert("Failed to fetch class data. Please try again.");
-    }
-  }, [token]);
-  
-  useEffect(() => {
-    fetchClassOptions();
-  }, [fetchClassOptions]);
-  
+ const fetchClassOptions = useCallback(async () => {
+  try {
+    const response = await axios.get(API_ENDPOINTS.FETCH_CLASS(), {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      params: {
+        search: searchTerm,
+        pageNumber,
+        pageSize,
+      },
+    });
 
+    let classes = response.data.data.class;
+    classes.sort((a, b) => {
+      const numA = parseInt(a.className.match(/\d+/)?.[0] || 0, 10); 
+      const numB = parseInt(b.className.match(/\d+/)?.[0] || 0, 10);
+      return numA - numB; 
+    });
+
+    setClasses(classes);
+  } catch (error) {
+    console.error("Error fetching class options:", error.response?.data || error.message);
+    alert("Failed to fetch class data. Please try again.");
+  }
+}, [token, searchTerm, pageNumber, pageSize]);
+
+  
+useEffect(() => {
+  fetchClassOptions();
+}, [fetchClassOptions]);
 
   const onClose = useCallback(() => {
     setOpenForm(false);
@@ -137,15 +146,29 @@ const Classes = () => {
         <h2 className="text-gray-600 font-semibold text-2xl">
           Class, Section, and Fee Management
         </h2>
-        <div className="flex justify-center items-center">
+         <div className="mb-4 w-[400px]">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search Class..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-[400px] pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              />
+              <span className="absolute left-3 top-2.5 text-gray-400 pointer-events-none">
+                🔍
+              </span>
+            </div>
+          </div>
+     
           <button
             onClick={handleForm}
-            className="bg-linear-blue text-white font-bold py-2 px-4 rounded w-full md:w-fit"
+            className="bg-linear-blue text-white font-bold py-2 px-4 rounded"
           >
             Add New Classes and Sections
           </button>
         </div>
-      </div>
+     
 
       {errorMessage && (
         <div
@@ -166,6 +189,12 @@ const Classes = () => {
           refreshClasses={fetchClassOptions}
         />
       )}
+      <div className="flex items-center justify-between mb-4">
+  {/* Search */}
+ 
+
+</div>
+
 
       <ListTable
         ListName="Class Name"
@@ -185,6 +214,23 @@ const Classes = () => {
         )
       } */}
       
+  {/* Pagination */}
+  <div className="flex justify-between mt-6">
+    <button
+      onClick={() => setPageNumber((prev) => Math.max(1, prev - 1))}
+      disabled={pageNumber === 1}
+      className="bg-gray-200 px-4 py-2 rounded"
+    >
+      Prev
+    </button>
+    <span>Page {pageNumber}</span>
+    <button
+      onClick={() => setPageNumber((prev) => prev + 1)}
+      className="bg-gray-200 px-4 py-2 rounded"
+    >
+      Next
+    </button>
+  </div>
 {/* {isClassFees && (<CheckFees setIsClassFees={setIsClassFees} classId={selectedClassId} />)} */}
       {isEdit && <UpdateClass setUpdateClass={setIsEdit} updateClassValue={classData} />}
     </div>

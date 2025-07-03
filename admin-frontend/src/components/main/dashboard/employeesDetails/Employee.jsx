@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import ListTable from "../../../List/ListTable";
 import CommonTable from "../../../List/CommonTable";
 import ListTableBtn from "../../../List/ListTableBtn";
@@ -13,58 +13,49 @@ import UpdateEmployee from "../../../Employees/UpdateEmployee";
 const Employee = () => {
 	const [teachers, setTeachers] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
-	const [modalOpen, setModalOpen] = useState(false);
 	const [formModalOpen, setFormModalOpen] = useState(false);
-	const [selectedProfile, setSelectedProfile] = useState(null);
 	const [isEditing, setIsEditing] = useState(false);
-	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 	const [editData,setEditData] = useState([]);
-	const dropdownRef = useRef(null);
+	const [searchTerm, setSearchTerm] = useState("");
+	  const [pageNumber, setPageNumber] = useState(1);
+	  const [pageSize] = useState(10); // you can make this dynamic too
     const userData = JSON.parse(localStorage.getItem("userData"));
     const token = userData?.token;
-	const defaultMalePhoto =
-		"https://res.cloudinary.com/duyau9qkl/image/upload/v1717910208/images/w7y88n61dxedxzewwzpn.png";
-	const defaultFemalePhoto =
-		"https://res.cloudinary.com/duyau9qkl/image/upload/v1717910872/images/dxflhaspx3rm1kcak2is.png";
 
-	useEffect(() => {
+
+
+  const fetchTeachers = useCallback(async () => {
+    //setIsLoading(true);
+    try {
+      const response = await axios.get(API_ENDPOINTS.FETCH_ALL_TEACHERS(), {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          search: searchTerm,
+          pageNumber,
+          pageSize,
+        },
+      });
+
+      if (Array.isArray(response.data.data)) {
+        setTeachers(response.data.data);
+		console.log(teachers)
+       // setTotalPages(response.data.totalPages || 1); // optional
+      } else {
+        console.error("Unexpected data format:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching teachers:", error.response?.data || error.message);
+    }finally{
+		setIsLoading(false)
+	}
+  }, [token, searchTerm, pageNumber, pageSize]);
+
+		useEffect(() => {
 		fetchTeachers();
-		document.addEventListener("mousedown", handleClickOutside);
-		return () => {
-			document.removeEventListener("mousedown", handleClickOutside);
-		};
-	}, []);
-
-	const handleClickOutside = (event) => {
-		if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-			setIsDropdownOpen(false);
-		}
-	};
-
-	const fetchTeachers = async () => {
-		try {
-			const response = await fetch(API_ENDPOINTS.FETCH_ALL_TEACHERS() ,
-				{headers: { Authorization: `Bearer ${token}` }}
-			);
-			if (!response.ok) throw new Error("Network response was not ok");
-			const data = await response.json();
-
-			if (Array.isArray(data.data)) {
-				setTeachers(data.data);
-			} else {
-				console.error("Unexpected data format:", data);
-			}
-		} catch (error) {
-			console.error("Error fetching teachers:", error);
-		} finally {
-			setIsLoading(false);
-		}
-	};
-
-	const handleViewProfile = (profile) => {
-		setSelectedProfile(profile);
-		setModalOpen(true);
-	};
+	}, [fetchTeachers]);
 
 	const handleDeleteProfile = async (id) => {
 		try {
@@ -85,7 +76,6 @@ const Employee = () => {
 
 	const handleFormModal = () => {
 		setFormModalOpen(true);
-		setIsDropdownOpen(false);
 	};
 
 	const handleEmployeeAdded = () => {
@@ -93,23 +83,9 @@ const Employee = () => {
 		setFormModalOpen(false);
 	};
 
-	const getDefaultPhoto = (gender) => {
-		return gender && gender.toLowerCase() === "female"
-			? defaultFemalePhoto
-			: defaultMalePhoto;
-	};
 
-
-	const handleChange = (e) => {
-		const { name, value } = e.target;
-		setSelectedProfile((prevProfile) => ({
-			...prevProfile,
-			[name]: value,
-		}));
-	};
 
 	const handleUpdateProfile = (teacher) =>{
-		console.log(teacher)
           setIsEditing(true);
 		  setEditData(teacher);
 	}
@@ -122,13 +98,27 @@ const Employee = () => {
 				<div className="bg-white p-8 rounded-md w-full">
 					<div className="flex items-center justify-between pb-6 ">
 						<h2 className="text-gray-600 font-semibold  text-2xl">Employee Details</h2>
+						 <div className="mb-4 w-full sm:w-1/2">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search Employee..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              />
+              <span className="absolute left-3 top-2.5 text-gray-400 pointer-events-none">
+                🔍
+              </span>
+            </div>
+          </div>
 						<div>
-							<ListTableBtn
-								text={"Add Employee"}
-								buttonColor={"bg-emerald-600"}
-								borderRadius={"rounded-md"}
+							<button
 								onClick={handleFormModal}
-							/>
+								    className="bg-linear-blue text-white font-bold py-2 px-4 rounded"
+							>
+								Add Employees
+							</button>
 						</div>
 					</div>
 
@@ -175,20 +165,36 @@ const Employee = () => {
 					)}
 
 					
-					<Modal
+					{/* <Modal
 						modalOpen={formModalOpen}
 						setModalOpen={setFormModalOpen}
 						responsiveWidth={"md:w-fit"}
-					>
+					> */}
 						{formModalOpen && 
 						<CreateEmployee setFormModalOpen={setFormModalOpen} onEmployeeAdded={handleEmployeeAdded}/>
 }
 
 				{/* <EmployeeAddForm onEmployeeAdded={handleEmployeeAdded} /> */}
-					</Modal>
+					{/* </Modal> */}
 					{
 	isEditing && <UpdateEmployee setIsEditing={setIsEditing} editData={editData} onEmployeeAdded={handleEmployeeAdded}/>
 }
+ <div className="flex justify-between mt-6">
+    <button
+      onClick={() => setPageNumber((prev) => Math.max(1, prev - 1))}
+      disabled={pageNumber === 1}
+      className="bg-gray-200 px-4 py-2 rounded"
+    >
+      Prev
+    </button>
+    <span>Page {pageNumber}</span>
+    <button
+      onClick={() => setPageNumber((prev) => prev + 1)}
+      className="bg-gray-200 px-4 py-2 rounded"
+    >
+      Next
+    </button>
+  </div>
 		
 				</div>
 				

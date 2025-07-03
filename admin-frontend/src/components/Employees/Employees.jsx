@@ -10,16 +10,16 @@ const Employees = () => {
 	const [leaves, setLeaves] = useState([]);
 	const [teachers, setTeachers] = useState({});
 	const userData = JSON.parse(localStorage.getItem("userData"));
-    const token = userData?.token;
-	const defaultMalePhoto =
-		"https://res.cloudinary.com/duyau9qkl/image/upload/v1717910208/images/w7y88n61dxedxzewwzpn.png";
-	const defaultFemalePhoto =
-		"https://res.cloudinary.com/duyau9qkl/image/upload/v1717910872/images/dxflhaspx3rm1kcak2is.png";
+    // const token = userData?.token;
+	// const defaultMalePhoto =
+	// 	"https://res.cloudinary.com/duyau9qkl/image/upload/v1717910208/images/w7y88n61dxedxzewwzpn.png";
+	// const defaultFemalePhoto =
+	// 	"https://res.cloudinary.com/duyau9qkl/image/upload/v1717910872/images/dxflhaspx3rm1kcak2is.png";
 
-	useEffect(() => {
-		// fetchLeaves();
-		fetchTeachers();
-	}, []);
+	// useEffect(() => {
+	// 	// fetchLeaves();
+	// 	fetchTeachers();
+	// }, []);
 
 	// const fetchLeaves = async () => {
 	// 	try {
@@ -53,21 +53,21 @@ const Employees = () => {
 	// 	return validLeaves;
 	// };
 
-	const fetchTeacherDetails = async (teacherId) => {
-		try {
-			const response = await axios.get(API_ENDPOINTS.FETCH_TEACHERS(teacherId));
-			if (response.data.success && response.data.data) {
-				setTeachers((prev) => ({ ...prev, [teacherId]: response.data.data }));
-				return response.data.data;
-			}
-			return null;
-		} catch (error) {
-			if (error.response?.status !== 404) {
-				throw error;
-			}
-			return null;
-		}
-	};
+	// const fetchTeacherDetails = async (teacherId) => {
+	// 	try {
+	// 		const response = await axios.get(API_ENDPOINTS.FETCH_TEACHERS(teacherId));
+	// 		if (response.data.success && response.data.data) {
+	// 			setTeachers((prev) => ({ ...prev, [teacherId]: response.data.data }));
+	// 			return response.data.data;
+	// 		}
+	// 		return null;
+	// 	} catch (error) {
+	// 		if (error.response?.status !== 404) {
+	// 			throw error;
+	// 		}
+	// 		return null;
+	// 	}
+	// };
 
 	// const updateLeaveStatus = async (teacherId, action) => {
 	// 	try {
@@ -86,34 +86,34 @@ const Employees = () => {
 	// const handleApprove = (teacherId) => updateLeaveStatus(teacherId, "Accept");
 	// const handleReject = (teacherId) => updateLeaveStatus(teacherId, "Reject");
 
-	const fetchTeachers = async () => {
-		try {
-			const response = await axios.get(API_ENDPOINTS.FETCH_ALL_TEACHERS(),
-					{headers: { Authorization: `Bearer ${token}` }}
-			);
-			const teachersData = response.data.data || [];
-			const teachersObj = teachersData.reduce((acc, teacher) => {
-				acc[teacher.id] = teacher;
-				return acc;
-			}, {});
-			setTeachers(teachersObj);
-		} catch (error) {
-			console.error("Error fetching teachers:", error);
-		}
-	};
+	// const fetchTeachers = async () => {
+	// 	try {
+	// 		const response = await axios.get(API_ENDPOINTS.FETCH_ALL_TEACHERS(),
+	// 				{headers: { Authorization: `Bearer ${token}` }}
+	// 		);
+	// 		const teachersData = response.data.data || [];
+	// 		const teachersObj = teachersData.reduce((acc, teacher) => {
+	// 			acc[teacher.id] = teacher;
+	// 			return acc;
+	// 		}, {});
+	// 		setTeachers(teachersObj);
+	// 	} catch (error) {
+	// 		console.error("Error fetching teachers:", error);
+	// 	}
+	// };
 
-	const getDefaultPhoto = (gender) =>
-		gender?.toLowerCase() === "female" ? defaultFemalePhoto : defaultMalePhoto;
+	// const getDefaultPhoto = (gender) =>
+	// 	gender?.toLowerCase() === "female" ? defaultFemalePhoto : defaultMalePhoto;
 
-	const cards = leaves.map((leave) => ({
-		userDP:
-			teachers[leave.teacherId]?.photo ||
-			getDefaultPhoto(teachers[leave.teacherId]?.gender),
-		userName: leave.name,
-		userReq: leave.reason,
-		onApprove: () => handleApprove(leave.teacherId),
-		onReject: () => handleReject(leave.teacherId),
-	}));
+	// const cards = leaves.map((leave) => ({
+	// 	userDP:
+	// 		teachers[leave.teacherId]?.photo ||
+	// 		getDefaultPhoto(teachers[leave.teacherId]?.gender),
+	// 	userName: leave.name,
+	// 	userReq: leave.reason,
+	// 	onApprove: () => handleApprove(leave.teacherId),
+	// 	onReject: () => handleReject(leave.teacherId),
+	// }));
 
 	return (
 		<>

@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
       (response) => response,
       (error) => {
         if (error.response.data.message.toLowerCase() === "jwt expired" && error.response.status === 400) {
-          
+          alert("JWT expired. Logging out...")
           console.error("JWT expired. Logging out...");
           handleLogout();
         }
