@@ -16,8 +16,18 @@ const CollegeStudentList = () => {
   const [selectedSemester, setSelectedSemester] = useState("");
   const [isEdit,setIsEdit] = useState(false);
   const [editData,setEditData] = useState();
+  const [searchTerm,setSearchTerm] = useState('');
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(""); // ✅
   const userData = JSON.parse(localStorage.getItem("userData"));
   const token = userData?.token;
+
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500); // ✅ debounce input by 500ms
+    return () => clearTimeout(delayDebounce);
+  }, [searchTerm]);
+
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
@@ -50,14 +60,23 @@ const CollegeStudentList = () => {
     fetchCourses();
   }, [selectedDepartment]);
 
+  
   useEffect(() => {
     if (!selectedSemester || !selectedCourse) return;
     const fetchStudents = async () => {
+      setIsLoading(true);
       try {
-        const response = await fetch(
-          `${API_ENDPOINTS.GET_STUDENTS_DATA()}?semesterId=${selectedSemester}&courseId=${selectedCourse}`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        const url = new URL(API_ENDPOINTS.GET_STUDENTS_DATA());
+        url.searchParams.append("semesterId", selectedSemester);
+        url.searchParams.append("courseId", selectedCourse);
+        if (debouncedSearchTerm) {
+          url.searchParams.append("search", debouncedSearchTerm); // ✅ pass search param
+        }
+
+        const response = await fetch(url, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
         const data = await response.json();
         setStudents(data.data);
       } catch (error) {
@@ -67,7 +86,7 @@ const CollegeStudentList = () => {
       }
     };
     fetchStudents();
-  }, [selectedSemester, selectedCourse]);
+  }, [selectedSemester, selectedCourse, debouncedSearchTerm]);
 
 
   const handleFormModal = () => {
@@ -104,9 +123,9 @@ const CollegeStudentList = () => {
         <div className="bg-white p-8 rounded-md w-fit sm:w-full">
           <div className="flex items-center justify-between pb-6">
             <div>
-              <h2 className="text-gray-600 font-semibold">Student Details</h2>
+              <h2 className="text-gray-600 font-semibold text-2xl mt-4">Student Details</h2>
             </div>
-            <div className="flex gap-4 mt-4">
+            <div className="flex gap-2 mt-4">
               <select
                 onChange={(e) => setSelectedDepartment(e.target.value)}
                 value={selectedDepartment}
@@ -152,14 +171,28 @@ const CollegeStudentList = () => {
                 ))}
               </select>
             </div>
-            <div className="flex items-center justify-between">
+             <div className="mt-4 w-[250px]">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search Student..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              />
+              <span className="absolute left-3 top-2.5 text-gray-400 pointer-events-none">
+                🔍
+              </span>
+            </div>
+          </div>
+            <div className="flex items-center justify-between mt-4">
               <div className="flex flex-col gap-2">
-                <ListTableBtn
-                  onClick={handleFormModal}
-                  text={"Add Student"}
-                  buttonColor={"bg-linear-green"}
-                  borderRadius={"rounded"}
-                />
+               <button
+								onClick={handleFormModal}
+								    className="bg-linear-blue text-white font-bold py-2 px-4 rounded"
+							>
+								Add Students
+							</button>
               </div>
             </div>
 

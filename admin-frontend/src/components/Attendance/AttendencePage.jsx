@@ -15,14 +15,16 @@ const AttendancePage = () => {
     const [attendanceRecords, setAttendanceRecords] = useState([]);
     const [selectedDate, setSelectedDate] = useState(moment());
     const [teachers,setTeachers] = useState([]);
-
+    const [searchTerm,setSearchTerm] = useState('');
+    const [pageNumber, setPageNumber] = useState(1);
+    const [pageSize] = useState(10);
     const userData = JSON.parse(localStorage.getItem("userData"));
     const parsedData = userData;
     const token = parsedData.token;
     const campusType = parsedData.data.campusType;
     useEffect(() => {
         fetchAttendanceRecords();
-    }, [selectedDate]);
+    }, [selectedDate,searchTerm,pageNumber,pageSize]);
 
     useEffect(() => {
         if (activeTab === "leave") {
@@ -60,6 +62,11 @@ const AttendancePage = () => {
                        
                 Authorization: `Bearer ${token}`,
               },
+               params: {
+          search: searchTerm,
+          pageNumber,
+          pageSize,
+        },
             
         });
             setAttendanceRecords(response.data.data);
@@ -100,7 +107,6 @@ const AttendancePage = () => {
             const leaveData = response.data.data;
     
             // Ensure teachers data is available
-            console.log(teachers)
             if (teachers.length > 0) {
                 const updatedLeaveRequests = leaveData.map(request => {
                     const matchingTeacher = teachers.find(teacher => teacher.employeeId === request.employeeId);
@@ -167,7 +173,7 @@ const AttendancePage = () => {
     onClick={() => setActiveTab("attendance")}
     className={`px-4 py-2 rounded ${activeTab === "attendance" ? "bg-linear-blue text-white" : "bg-gray-300"}`}
 >
-    Marked Employee   Attendance
+    Marked Employee Attendance
 </button> 
 <button
     onClick={() => setActiveTab("mark attendance")}
@@ -226,13 +232,29 @@ const AttendancePage = () => {
                 <div>
              
                     <h2 className="text-xl font-semibold mb-4">Attendance Records</h2>
+                    <div className="flex gap-8">
                     <input
 				type="date"
 				value={selectedDate.format("YYYY-MM-DD")}
 				onChange={(e) => handleDateChange(e.target.value)}
 				className="border p-2 rounded"
 			/>
-             
+              <div className="mb-4 w-full sm:w-1/2">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search Course..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              />
+              <span className="absolute left-3 top-2.5 text-gray-400 pointer-events-none">
+                🔍
+              </span>
+            </div>
+               </div>
+          </div>
+
 
             
                    <ListTable 
@@ -266,7 +288,23 @@ const AttendancePage = () => {
         />
     ))}
 />
-
+ <div className="flex justify-between mt-6">
+    <button
+      onClick={() => setPageNumber((prev) => Math.max(1, prev - 1))}
+      disabled={pageNumber === 1}
+      className="bg-gray-200 px-4 py-2 rounded"
+    >
+      Prev
+    </button>
+    <span>Page {pageNumber}</span>
+    <button
+      onClick={() => setPageNumber((prev) => prev + 1)}
+      className="bg-gray-200 px-4 py-2 rounded"
+    >
+      Next
+    </button>
+  </div>
+		
                 </div>
             ) }
             
