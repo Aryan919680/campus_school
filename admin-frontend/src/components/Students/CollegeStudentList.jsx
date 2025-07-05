@@ -14,10 +14,12 @@ const CollegeStudentList = () => {
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const [selectedCourse, setSelectedCourse] = useState("");
   const [selectedSemester, setSelectedSemester] = useState("");
-  const [isEdit,setIsEdit] = useState(false);
-  const [editData,setEditData] = useState();
-  const [searchTerm,setSearchTerm] = useState('');
+  const [isEdit, setIsEdit] = useState(false);
+  const [editData, setEditData] = useState();
+  const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(""); // ✅
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageSize] = useState(10);
   const userData = JSON.parse(localStorage.getItem("userData"));
   const token = userData?.token;
 
@@ -60,7 +62,7 @@ const CollegeStudentList = () => {
     fetchCourses();
   }, [selectedDepartment]);
 
-  
+
   useEffect(() => {
     if (!selectedSemester || !selectedCourse) return;
     const fetchStudents = async () => {
@@ -69,8 +71,12 @@ const CollegeStudentList = () => {
         const url = new URL(API_ENDPOINTS.GET_STUDENTS_DATA());
         url.searchParams.append("semesterId", selectedSemester);
         url.searchParams.append("courseId", selectedCourse);
+        url.searchParams.append("pageNumber", pageNumber);
+        url.searchParams.append("pageSize", pageSize);
         if (debouncedSearchTerm) {
           url.searchParams.append("search", debouncedSearchTerm); // ✅ pass search param
+
+
         }
 
         const response = await fetch(url, {
@@ -86,7 +92,7 @@ const CollegeStudentList = () => {
       }
     };
     fetchStudents();
-  }, [selectedSemester, selectedCourse, debouncedSearchTerm]);
+  }, [selectedSemester, selectedCourse, debouncedSearchTerm, pageNumber, pageSize]);
 
 
   const handleFormModal = () => {
@@ -110,7 +116,7 @@ const CollegeStudentList = () => {
     setStudents((prevState) => [...prevState, newStudent]);
   };
 
-  const onUpdateProfile =  (student) =>{
+  const onUpdateProfile = (student) => {
     setEditData(student);
     setIsEdit(true);
   }
@@ -171,28 +177,28 @@ const CollegeStudentList = () => {
                 ))}
               </select>
             </div>
-             <div className="mt-4 w-[250px]">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search Student..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
-              <span className="absolute left-3 top-2.5 text-gray-400 pointer-events-none">
-                🔍
-              </span>
+            <div className="mt-4 w-[250px]">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search Student..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+                <span className="absolute left-3 top-2.5 text-gray-400 pointer-events-none">
+                  🔍
+                </span>
+              </div>
             </div>
-          </div>
             <div className="flex items-center justify-between mt-4">
               <div className="flex flex-col gap-2">
-               <button
-								onClick={handleFormModal}
-								    className="bg-linear-blue text-white font-bold py-2 px-4 rounded"
-							>
-								Add Students
-							</button>
+                <button
+                  onClick={handleFormModal}
+                  className="bg-linear-blue text-white font-bold py-2 px-4 rounded"
+                >
+                  Add Students
+                </button>
               </div>
             </div>
 
@@ -207,14 +213,30 @@ const CollegeStudentList = () => {
           <StudentTable
             students={students}
             onDeleteProfile={handleDeleteProfile}
-            onUpdateProfile = {onUpdateProfile}
+            onUpdateProfile={onUpdateProfile}
           />
-       
+          <div className="flex justify-between mt-3 mb-3">
+            <button
+              onClick={() => setPageNumber((prev) => Math.max(1, prev - 1))}
+              disabled={pageNumber === 1}
+              className="bg-gray-200 px-4 py-2 rounded"
+            >
+              Prev
+            </button>
+            <span>Page {pageNumber}</span>
+            <button
+              onClick={() => setPageNumber((prev) => prev + 1)}
+              className="bg-gray-200 px-4 py-2 rounded"
+            >
+              Next
+            </button>
+          </div>
         </div>
       )}
       {
-        isEdit && <UpdateStudent studentData={editData} setIsEditing={setIsEdit}/>
+        isEdit && <UpdateStudent studentData={editData} setIsEditing={setIsEdit} />
       }
+
     </>
   );
 };

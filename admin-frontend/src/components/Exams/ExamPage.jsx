@@ -7,9 +7,11 @@ import SchoolCreateExamForm from "./SchoolCreateExamForm";
 export default function ExamPage (){
     const [openForm, setOpenForm] = useState(false);
     const [examData, setExamData] = useState([]);
+     const [searchTerm, setSearchTerm] = useState("");
+      const [pageNumber, setPageNumber] = useState(1);
+      const [pageSize] = useState(6); // you can make this dynamic too
      const userData = JSON.parse(localStorage.getItem("userData"));
      const campusType = userData.data.campusType;
-     console.log(campusType)
       const token = userData?.token;
       const handleForm = () => {
        setOpenForm(true);
@@ -23,8 +25,12 @@ export default function ExamPage (){
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
+         params: {
+        search: searchTerm,
+        pageNumber,
+        pageSize,
+      },
       });
-      console.log(response);
       setExamData(response.data.data);
     } catch (error) {
       console.error("Error fetching exam data:", error);
@@ -32,7 +38,7 @@ export default function ExamPage (){
   };
 
   getExamData();
-}, [openForm]);
+}, [openForm,pageNumber,searchTerm,pageSize]);
      
  const onClose = () =>{
    setOpenForm(false);
@@ -43,6 +49,20 @@ export default function ExamPage (){
  <div className="bg-white p-8 rounded-md w-full">
              <div className="flex items-center justify-between pb-6 flex-wrap gap-2">
                <h2 className="text-gray-600 font-semibold text-2xl">Exams</h2>
+                 <div className="mb-4 w-full sm:w-1/2">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search Exam..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-[400px] pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              />
+              <span className="absolute left-3 top-2.5 text-gray-400 pointer-events-none">
+                🔍
+              </span>
+            </div>
+          </div>
                <div className="flex justify-center items-center">
                  <button
                    onClick={handleForm}
@@ -85,12 +105,29 @@ export default function ExamPage (){
             Edit
           </button> */}
         </div>
+        
       </div>
     ))
   ) : (
     <div className="col-span-full text-center text-gray-500">No exams found.</div>
   )}
 </div>
+  <div className="flex justify-between mt-6">
+    <button
+      onClick={() => setPageNumber((prev) => Math.max(1, prev - 1))}
+      disabled={pageNumber === 1}
+      className="bg-gray-200 px-4 py-2 rounded"
+    >
+      Prev
+    </button>
+    <span>Page {pageNumber}</span>
+    <button
+      onClick={() => setPageNumber((prev) => prev + 1)}
+      className="bg-gray-200 px-4 py-2 rounded"
+    >
+      Next
+    </button>
+  </div>
            </div>
       }
      

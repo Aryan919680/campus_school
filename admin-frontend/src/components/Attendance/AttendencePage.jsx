@@ -163,7 +163,7 @@ const AttendancePage = () => {
         setActiveTab('attendance');
         fetchAttendanceRecords();
       }
-        console.log(activeTab)
+      
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4">Admin Attendance Module</h1>
@@ -243,7 +243,7 @@ const AttendancePage = () => {
             <div className="relative">
               <input
                 type="text"
-                placeholder="Search Course..."
+                placeholder="Search Employee..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -256,8 +256,8 @@ const AttendancePage = () => {
           </div>
 
 
-            
-                   <ListTable 
+
+                <ListTable 
     ListName={"Employee Name"}
     ListRole={"Date"}
     ListDepartment={"Status"}
@@ -286,7 +286,7 @@ const AttendancePage = () => {
                 }
             ]}
         />
-    ))}
+    )) } 
 />
  <div className="flex justify-between mt-6">
     <button

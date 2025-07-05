@@ -5,6 +5,7 @@ import StudentTable from "./StudentTable";
 import ListTableBtn from "../List/ListTableBtn";
 import SchoolStudentForm from "./SchoolStudentForm";
 import UpdateStudent from "./UpdateStudent";
+import axios from "axios";
 const SchoolStudentList = () => {
   const [students, setStudents] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -13,10 +14,14 @@ const SchoolStudentList = () => {
   const [subClasses, setSubClasses] = useState([]);
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedSubClass, setSelectedSubClass] = useState("");
-  const [isEdit,setIsEdit] = useState(false);
-  const [editData,setEditData] = useState();
+  const [isEdit, setIsEdit] = useState(false);
+  const [editData, setEditData] = useState();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageSize] = useState(10);
   const userData = JSON.parse(localStorage.getItem("userData"));
   const token = userData?.token;
+
 
   useEffect(() => {
     const fetchClasses = async () => {
@@ -45,26 +50,33 @@ const SchoolStudentList = () => {
 
   useEffect(() => {
     if (!selectedClass || !selectedSubClass) return; // Ensure both are selected
-  
+
     const fetchStudents = async () => {
-      setIsLoading(true);
+      // setIsLoading(true);
       try {
-        const response = await fetch(
+        const response = await axios.get(
           `${API_ENDPOINTS.GET_STUDENTS_DATA()}?classId=${selectedClass}&subClassId=${selectedSubClass}`,
-          { headers: { Authorization: `Bearer ${token}` } }
+          {
+            headers: { Authorization: `Bearer ${token}` },
+            params: {
+              search: searchTerm,
+              pageNumber,
+              pageSize,
+            }
+          }
         );
-        const data = await response.json();
+        const data = response.data;
         setStudents(data.data);
       } catch (error) {
         console.error("Error fetching students:", error);
       } finally {
-        setIsLoading(false);
+        // setIsLoading(false);
       }
     };
-  
+
     fetchStudents();
-  }, [selectedClass, selectedSubClass]);
-  
+  }, [selectedClass, selectedSubClass,searchTerm, pageNumber, pageSize]);
+
 
   const handleFormModal = () => {
     setFormModalOpen(true);
@@ -87,7 +99,7 @@ const SchoolStudentList = () => {
     setStudents((prevState) => [...prevState, newStudent]);
   };
 
-  const onUpdateProfile =  (student) =>{
+  const onUpdateProfile = (student) => {
     setEditData(student);
     setIsEdit(true);
   }
@@ -98,61 +110,93 @@ const SchoolStudentList = () => {
         <p>Loading...</p>
       ) : (
         <div className="bg-white p-8 rounded-md w-fit sm:w-full">
-           <div className="flex items-center justify-between pb-6">
+          <div className="flex items-center justify-between pb-6">
             <h2 className="text-gray-600 font-semibold">Student Details</h2>
             <div className="flex gap-4 mt-4">
-            {/* Class Dropdown */}
-            <select onChange={handleClassChange} value={selectedClass}>
-              <option value="">Select Class</option>
-              {classes.map((cls) => (
-                <option key={cls.classId} value={cls.classId}>
-                  {cls.className}
-                </option>
-              ))}
-            </select>
+              {/* Class Dropdown */}
+              <select onChange={handleClassChange} value={selectedClass}>
+                <option value="">Select Class</option>
+                {classes.map((cls) => (
+                  <option key={cls.classId} value={cls.classId}>
+                    {cls.className}
+                  </option>
+                ))}
+              </select>
 
-            {/* SubClass Dropdown */}
-            <select
-              onChange={(e) => setSelectedSubClass(e.target.value)}
-              value={selectedSubClass}
-              disabled={!selectedClass}
-            >
-              <option value="">Select Subclass</option>
-              {subClasses.map((subCls) => (
-                <option key={subCls.subClassId} value={subCls.subClassId}>
-                  {subCls.subClassName}
-                </option>
-              ))}
-            </select>
+              {/* SubClass Dropdown */}
+              <select
+                onChange={(e) => setSelectedSubClass(e.target.value)}
+                value={selectedSubClass}
+                disabled={!selectedClass}
+              >
+                <option value="">Select Subclass</option>
+                {subClasses.map((subCls) => (
+                  <option key={subCls.subClassId} value={subCls.subClassId}>
+                    {subCls.subClassName}
+                  </option>
+                ))}
+              </select>
+              <div className="mt-4 w-[250px]">
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Search Student..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  />
+                  <span className="absolute left-3 top-2.5 text-gray-400 pointer-events-none">
+                    🔍
+                  </span>
+                </div>
+              </div>
+            </div>
+
+
+
+
+            <div className="flex items-center justify-between mt-4">
+              <ListTableBtn
+                onClick={handleFormModal}
+                text={"Add Student"}
+                buttonColor={"bg-linear-green"}
+                borderRadius={"rounded"}
+              />
+            </div>
+
+            {formModalOpen && (
+              <SchoolStudentForm
+                isOpen={formModalOpen}
+                onClose={() => setFormModalOpen(false)}
+                onStudentAdd={handleStudentAdd}
+              />
+            )}
           </div>
-        
-
-         
-
-          <div className="flex items-center justify-between mt-4">
-            <ListTableBtn
-              onClick={handleFormModal}
-              text={"Add Student"}
-              buttonColor={"bg-linear-green"}
-              borderRadius={"rounded"}
-            />
-          </div>
-
-          {formModalOpen && (
-            <SchoolStudentForm
-              isOpen={formModalOpen}
-              onClose={() => setFormModalOpen(false)}
-              onStudentAdd={handleStudentAdd}
-            />
-          )}
-  </div>
-          <StudentTable students={students} onDeleteProfile={handleDeleteProfile}     onUpdateProfile = {onUpdateProfile}/>
+          
+          <StudentTable students={students} onDeleteProfile={handleDeleteProfile} onUpdateProfile={onUpdateProfile} />
+           
         </div>
-        
+
       )}
-       {
-              isEdit && <UpdateStudent studentData={editData} setIsEditing={setIsEdit}/>
-            }
+      {
+        isEdit && <UpdateStudent studentData={editData} setIsEditing={setIsEdit} />
+      }
+       <div className="flex justify-between mt-6">
+    <button
+      onClick={() => setPageNumber((prev) => Math.max(1, prev - 1))}
+      disabled={pageNumber === 1}
+      className="bg-gray-200 px-4 py-2 rounded"
+    >
+      Prev
+    </button>
+    <span>Page {pageNumber}</span>
+    <button
+      onClick={() => setPageNumber((prev) => prev + 1)}
+      className="bg-gray-200 px-4 py-2 rounded"
+    >
+      Next
+    </button>
+  </div>
     </>
   );
 };

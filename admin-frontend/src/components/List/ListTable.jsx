@@ -26,6 +26,7 @@ const ListTable = ({
 										<th className="w-fit px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-sm md:text-base font-semibold text-gray-600 uppercase tracking-wider">
 											{ListDepartment}
 										</th>
+										
 										<th className="w-fit px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-sm md:text-base font-semibold text-gray-600 uppercase tracking-wider">
 											{ListAction}
 										</th>

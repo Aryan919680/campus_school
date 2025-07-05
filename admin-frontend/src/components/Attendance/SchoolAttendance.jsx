@@ -18,6 +18,9 @@ const SchoolAttendance = () => {
 	const userData = JSON.parse(localStorage.getItem("userData"));
 	const token = userData?.token;
 	const [initialAttendance, setInitialAttendance] = useState({});
+	  const [searchTerm, setSearchTerm] = useState('');
+	  const [pageNumber, setPageNumber] = useState(1);
+	  const [pageSize] = useState(10);
 
 	const getUserIdFromLocalStorage = () => {
 		const userData = JSON.parse(localStorage.getItem("userData"));
@@ -57,11 +60,16 @@ const SchoolAttendance = () => {
     const fetchStudents = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch(
+        const response = await axios.get(
           `${API_ENDPOINTS.GET_STUDENTS_DATA()}?classId=${selectedClass}&subClassId=${selectedSubClass}`,
-          { headers: { Authorization: `Bearer ${token}` } }
+          { headers: { Authorization: `Bearer ${token}` },
+		 params: {
+              search: searchTerm,
+              pageNumber,
+              pageSize,
+            } }
         );
-        const data = await response.json();
+        const data =  response.data;
         setStudents(data.data);
       } catch (error) {
         console.error("Error fetching students:", error);
@@ -71,7 +79,7 @@ const SchoolAttendance = () => {
     };
   
     fetchStudents();
-  }, [selectedClass, selectedSubClass]);
+  }, [selectedClass, selectedSubClass,searchTerm, pageNumber, pageSize]);
 
 	// Fetch Attendance for the Selected Date
 	const fetchAttendance = async (date) => {
@@ -105,18 +113,6 @@ const SchoolAttendance = () => {
 		setSelectedDate(moment(date));
 	};
 
-	// const handleAttendanceChange = (employeeId, status) => {
-	// 	if (!employeeId) {
-	// 		console.error("Error: teacherId is undefined");
-	// 		return;
-	// 	}
-
-	// 	setAttendance((prev) => ({
-	// 		...prev,
-	// 		[employeeId]: status,
-	// 	}));
-	// };
-
 	const submitAttendance = async () => {
 		// Filter only updated attendance
 		const updatedAttendance = Object.keys(attendance)
@@ -149,18 +145,7 @@ const SchoolAttendance = () => {
 			alert(error.response.data.message);
 		} 
 	};
-	
-// 	 const deleteAttendance = async (recordId) => {
-//             try {
-//                 await axios.delete(API_ENDPOINTS.MARK_ATTENDANCE(), {
-//                     headers: { Authorization: `Bearer ${token}` },
-//                     data: { attendanceIds: [recordId] }
-//                 });
-//                 alert("Record Deleted Successfully");
-//             } catch (error) {
-//                 console.error("Error deleting attendance record:", error);
-//             }
-//         };
+
 
 	const handleAttendanceChange = (studentId, status) => {
 		if (!studentId) {
@@ -217,6 +202,20 @@ const SchoolAttendance = () => {
                 </option>
               ))}
             </select>
+			 <div className="mt-4 w-[250px]">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search Student..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+            <span className="absolute left-3 top-2.5 text-gray-400 pointer-events-none">
+              🔍
+            </span>
+          </div>
+        </div>
             </div>
 			{students.length === 0 ? (
 				<p>No employees found for the selected date.</p>
@@ -248,6 +247,22 @@ const SchoolAttendance = () => {
 />
 
 			)}
+			 <div className="flex justify-between mt-3 mb-3">
+        <button
+          onClick={() => setPageNumber((prev) => Math.max(1, prev - 1))}
+          disabled={pageNumber === 1}
+          className="bg-gray-200 px-4 py-2 rounded"
+        >
+          Prev
+        </button>
+        <span>Page {pageNumber}</span>
+        <button
+          onClick={() => setPageNumber((prev) => prev + 1)}
+          className="bg-gray-200 px-4 py-2 rounded"
+        >
+          Next
+        </button>
+      </div>
 			<button onClick={submitAttendance} className="bg-linear-blue hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded">
   Mark Attendance
 </button>

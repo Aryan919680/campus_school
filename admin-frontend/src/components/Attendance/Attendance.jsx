@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import API_ENDPOINTS from "../../API/apiEndpoints";
 import moment from "moment";
-import EmployeeCard from "./EmployeeCard";
 import ListTable from "../List/ListTable";
 import CommonTable from "../List/CommonTable";
+
+
 const Attendance = ({ onClose }) => {
 	const [teachers, setTeachers] = useState([]);
 	const [selectedDate, setSelectedDate] = useState(moment());
@@ -15,6 +16,11 @@ const Attendance = ({ onClose }) => {
 	const userData = JSON.parse(localStorage.getItem("userData"));
 	const token = userData?.token;
 	const [initialAttendance, setInitialAttendance] = useState({});
+	 const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
 
 	const getUserIdFromLocalStorage = () => {
 		const userData = JSON.parse(localStorage.getItem("userData"));
@@ -22,25 +28,46 @@ const Attendance = ({ onClose }) => {
 	};
 	const userId = getUserIdFromLocalStorage();
 
+	  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchTerm);
+      setPageNumber(1); // reset to first page on new search
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [searchTerm]);
 	// Fetch All Teachers
-	useEffect(() => {
-		const fetchTeachers = async () => {
-			try {
-				setIsLoading(true);
-				const response = await axios.get(`${API_ENDPOINTS.FETCH_ALL_TEACHERS()}`, {
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				});
-				setTeachers(response.data.data);
-			} catch (error) {
-				setError("Failed to fetch teachers. Please try again.");
-			} finally {
-				setIsLoading(false);
-			}
-		};
-		fetchTeachers();
-	}, []);
+  const fetchTeachers = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get(API_ENDPOINTS.FETCH_ALL_TEACHERS(), {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          search: debouncedSearch,
+          pageNumber,
+          pageSize,
+        },
+      });
+
+      if (Array.isArray(response.data.data)) {
+        setTeachers(response.data.data);
+        setTotalPages(response.data.totalPages || 1); // optional
+      } else {
+        console.error("Unexpected data format:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching teachers:", error.response?.data || error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [token, debouncedSearch, pageNumber, pageSize]);
+
+  useEffect(() => {
+    fetchTeachers();
+  }, [fetchTeachers]);
+
 
 	// Fetch Attendance for the Selected Date
 	const fetchAttendance = async (date) => {
@@ -121,18 +148,6 @@ const Attendance = ({ onClose }) => {
 		}
 	};
 	
-	 const deleteAttendance = async (recordId) => {
-            try {
-                await axios.delete(API_ENDPOINTS.MARK_ATTENDANCE(), {
-                    headers: { Authorization: `Bearer ${token}` },
-                    data: { attendanceIds: [recordId] }
-                });
-                alert("Record Deleted Successfully");
-            } catch (error) {
-				alert(error.response.data.message);
-                console.error("Error deleting attendance record:", error);
-            }
-        };
 
 
 	const attendanceRecords = teachers.map((teacher) => ({
@@ -146,13 +161,31 @@ const Attendance = ({ onClose }) => {
 
 	return (
 		<div className="container mx-auto p-4">
-			<h1 className="text-2xl font-bold mb-4">Mark Employee Attendance</h1>
+			<h1 className=" font-bold mb-4">Mark Employee Attendance</h1>
+			<div className="flex gap-4">
+
 			<input
 				type="date"
 				value={selectedDate.format("YYYY-MM-DD")}
 				onChange={(e) => handleDateChange(e.target.value)}
 				className="border p-2 rounded"
 			/>
+			   <div className="mb-4 w-full sm:w-1/2">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search Employee..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              />
+              <span className="absolute left-3 top-2.5 text-gray-400 pointer-events-none">
+                🔍
+              </span>
+            </div>
+               </div>
+			   
+			</div>
 			{teachers.length === 0 ? (
 				<p>No employees found for the selected date.</p>
 			) : (
@@ -177,18 +210,26 @@ const Attendance = ({ onClose }) => {
                     <option value="LATE">LATE</option>
                 </select>
             }
-            // actions={[
-            //     {
-            //         type: "button",
-            //         label: "Delete",
-            //         onClick: () => deleteAttendance(record.attendanceId)
-            //     }
-            // ]}
         />
     ))}
 />
-
 			)}
+			 <div className="flex justify-between mt-3 mb-3">
+    <button
+      onClick={() => setPageNumber((prev) => Math.max(1, prev - 1))}
+      disabled={pageNumber === 1}
+      className="bg-gray-200 px-4 py-2 rounded"
+    >
+      Prev
+    </button>
+    <span>Page {pageNumber}</span>
+    <button
+      onClick={() => setPageNumber((prev) => prev + 1)}
+      className="bg-gray-200 px-4 py-2 rounded"
+    >
+      Next
+    </button>
+  </div>
 			<button onClick={submitAttendance} className="bg-linear-blue hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded">
   Mark Attendance
 </button>
