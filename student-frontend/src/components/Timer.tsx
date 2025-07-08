@@ -1,55 +1,52 @@
-
 import { useEffect, useState } from "react";
-import { AlertDialog, AlertDialogContent, AlertDialogDescription, 
-  AlertDialogHeader, AlertDialogTitle, AlertDialogFooter, 
-  AlertDialogAction } from "@/components/ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogFooter,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 
 interface TimerProps {
-  secondsLeft: number;
+  minutesLeft: number;
   onTimeUp: () => void;
 }
 
-export function Timer({ secondsLeft, onTimeUp }: TimerProps) {
+export function Timer({ minutesLeft, onTimeUp }: TimerProps) {
   const [showTimeWarning, setShowTimeWarning] = useState(false);
   const [isTimeUp, setIsTimeUp] = useState(false);
 
-  // Format seconds into MM:SS
-  const formatTime = (seconds: number): string => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+  // Format time as MM:00
+  const formatTime = (minutes: number): string => {
+    return `${minutes.toString().padStart(2, "0")}:00`;
   };
 
   // Get color based on time remaining
-  const getTimerColor = (seconds: number): string => {
-    if (seconds <= 60) return "text-red-500"; // Last minute
-    if (seconds <= 300) return "text-amber-500"; // Last 5 minutes
-    return "text-green-600"; // More than 5 minutes
+  const getTimerColor = (minutes: number): string => {
+    if (minutes <= 1) return "text-red-500";     // Last 1 minute
+    if (minutes <= 5) return "text-amber-500";   // Last 5 minutes
+    return "text-green-600";                     // More than 5 minutes
   };
 
   useEffect(() => {
-    if (secondsLeft <= 300 && secondsLeft > 295 && !showTimeWarning) {
-      // Show 5 minute warning
+    if ((minutesLeft === 5 || minutesLeft === 1) && !showTimeWarning) {
       setShowTimeWarning(true);
     }
 
-    if (secondsLeft <= 60 && secondsLeft > 55 && !showTimeWarning) {
-      // Show 1 minute warning
-      setShowTimeWarning(true);
-    }
-
-    if (secondsLeft === 0 && !isTimeUp) {
+    if (minutesLeft === 0 && !isTimeUp) {
       setIsTimeUp(true);
     }
-  }, [secondsLeft, showTimeWarning, isTimeUp]);
+  }, [minutesLeft, showTimeWarning, isTimeUp]);
 
   return (
     <>
       <div className="flex items-center gap-2 text-lg font-semibold">
         <span>Time Remaining:</span>
-        <span className={getTimerColor(secondsLeft)}>
-          {formatTime(secondsLeft)}
+        <span className={getTimerColor(minutesLeft)}>
+          {formatTime(minutesLeft)}
         </span>
       </div>
 
@@ -58,7 +55,7 @@ export function Timer({ secondsLeft, onTimeUp }: TimerProps) {
           <AlertDialogHeader>
             <AlertDialogTitle>Time Warning</AlertDialogTitle>
             <AlertDialogDescription>
-              {secondsLeft <= 60 
+              {minutesLeft <= 1
                 ? "Only 1 minute remaining! Please finalize your answers."
                 : "Only 5 minutes remaining! Please start reviewing your answers."}
             </AlertDialogDescription>
@@ -69,12 +66,15 @@ export function Timer({ secondsLeft, onTimeUp }: TimerProps) {
         </AlertDialogContent>
       </AlertDialog>
 
-      <AlertDialog open={isTimeUp} onOpenChange={(open) => {
-        if (!open) {
-          setIsTimeUp(false);
-          onTimeUp();
-        }
-      }}>
+      <AlertDialog
+        open={isTimeUp}
+        onOpenChange={(open) => {
+          if (!open) {
+            setIsTimeUp(false);
+            onTimeUp();
+          }
+        }}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Time's Up!</AlertDialogTitle>

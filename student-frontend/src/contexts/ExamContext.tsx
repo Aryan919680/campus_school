@@ -142,11 +142,12 @@ setQuestions(formattedQuestions);
       // Update the state
       setIsExamFinished(true);
       setExamResults(results);
-      alert(`Exam Submitted and your score is ${results.score}.`, "Please return to Home Page");
+      // alert(`Exam Submitted and your score is ${results.score}.`, "Please return to Home Page");
       toast({
         title: "Exam Submitted",
         description: `Your score: ${results.score}`,
       });
+      localStorage.setItem("examResult", results.score );
     } catch (error) {
       console.error("Failed to submit exam:", error.response.data.message);
          alert(`Failed to submit exam:`, error.response.data.message, "Please return to Home Page");

@@ -18,8 +18,9 @@ import { ExamResultsWrapper } from "@/components/ExamResultsWrapper";
 
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import ExamResultPage from "./ExamResultPage";
 
-function ExamComponent({examId, duration}) {
+function ExamComponent({examId, duration, title, onClose}) {
   const { 
     questions, 
     currentQuestion, 
@@ -40,7 +41,7 @@ function ExamComponent({examId, duration}) {
   const [showTabWarning, setShowTabWarning] = useState(false);
   const [showNetworkWarning, setShowNetworkWarning] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [showExamResult, setShowExamResult] = useState(false);
   // Tab switching detection
   useEffect(() => {
     if (isExamStarted && !isExamFinished && isHidden) {
@@ -108,6 +109,7 @@ function ExamComponent({examId, duration}) {
     setIsLoading(true);
     try {
       await endExam(examId);
+      setShowExamResult(true);
     } finally {
       setIsLoading(false);
     }
@@ -136,10 +138,10 @@ function ExamComponent({examId, duration}) {
 
 
   // will do later when i want to show result
-  // if (isExamFinished) {
+  if (showExamResult) {
   
-  //   return <ExamResultsWrapper />;
-  // }
+    return <ExamResultPage title={title} onClose={onClose}/>;
+  }
 
 
 
@@ -183,7 +185,7 @@ function ExamComponent({examId, duration}) {
       )}
       
       <div className="flex justify-between items-center">
-        <Timer secondsLeft={duration} onTimeUp={() => handleEndExam(examId)} />
+        <Timer minutesLeft={duration} onTimeUp={() => handleEndExam(examId)} />
         
         <AlertDialog>
           <AlertDialogTrigger asChild>
@@ -232,9 +234,6 @@ function ExamComponent({examId, duration}) {
   totalQuestions={questions.length}
 />
 
-
-
-
       ) : (
         <div className="p-8 bg-white rounded-lg shadow text-center">
           <Loader2 className="h-8 w-8 animate-spin mx-auto" />
@@ -252,13 +251,13 @@ function ExamComponent({examId, duration}) {
   );
 }
 
-export default function Exam({examId, duration}) {
+export default function Exam({examId, duration, title, onClose}) {
   return (
     <div className="min-h-screen bg-gray-50 pt-16 flex flex-col">
       {/* <Header /> */}
       <div className="flex-grow">
         <ExamProvider>
-          <ExamComponent examId={examId} duration={duration} />
+          <ExamComponent examId={examId} duration={duration} title={title} onClose={onClose}/>
         </ExamProvider>
       </div>
       {/* <Footer /> */}

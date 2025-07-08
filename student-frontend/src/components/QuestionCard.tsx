@@ -39,12 +39,12 @@ export function QuestionCard({
           <Badge variant="outline" className="px-2 py-1">
             Question {questionNumber + 1}/{totalQuestions}
           </Badge>
-          <Badge 
+          {/* <Badge 
             variant={currentAnswer !== null ? "default" : "outline"}
             className={`${currentAnswer !== null ? "bg-green-100 text-green-800 hover:bg-green-100" : "text-gray-500"}`}
           >
             {currentAnswer !== null ? "Answered" : "Not Answered"}
-          </Badge>
+          </Badge> */}
         </div>
         <CardTitle className="text-xl mt-2">{question.question}</CardTitle>
       </CardHeader>

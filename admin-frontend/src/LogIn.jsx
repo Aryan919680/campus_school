@@ -67,7 +67,7 @@ const LogIn = ({ onSchoolOnboarding,onCollegeOnboarding }) => {
 				localStorage.setItem("token", response.data.data.token);
 				localStorage.setItem("userData", JSON.stringify(response.data.data));
 				localStorage.setItem("userType", userType);
-				localStorage.setItem("campusType", campusType);
+				localStorage.setItem("campusType", response.data.data.data.campusType);
 				window.dispatchEvent(new Event("userDataUpdated"));
 				setUserData(response.data.data);
 

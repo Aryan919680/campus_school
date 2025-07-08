@@ -10,7 +10,10 @@ export default function ExamPage() {
   const [examData, setExamData] = useState([]);
   const [examId, setExamId] = useState();
   const [duration,setDuration] = useState();
-  console.log('campus',campusId)
+   const [searchTerm, setSearchTerm] = useState("");
+      const [pageNumber, setPageNumber] = useState(1);
+      const [pageSize] = useState(6); // you can make this dynamic too
+ const [examTitle,setExamTitle]= useState();
   useEffect(() => {
     const getExamData = async () => {
       const campusId = localStorage.getItem("campusId");
@@ -22,6 +25,11 @@ export default function ExamPage() {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
+             params: {
+        search: searchTerm,
+        pageNumber,
+        pageSize,
+      },
           }
         );
         setExamData(response.data.data);
@@ -33,9 +41,9 @@ export default function ExamPage() {
     if (campusId && token) {
       getExamData();
     }
-  }, [campusId, token]);
+  }, [campusId, token,pageNumber,searchTerm,pageSize]);
 
-const startExamFunc = (examId, timeAllotted, startAt) => {
+const startExamFunc = (examId, timeAllotted, startAt, title) => {
   const now = new Date().getTime();
   const startTime = new Date(startAt).getTime();
   const endTime = startTime + timeAllotted * 60 * 1000; // Convert minutes to ms
@@ -53,16 +61,38 @@ const startExamFunc = (examId, timeAllotted, startAt) => {
   setExamId(examId);
   setDuration(timeAllotted);
   setStartExam(true);
+  setExamTitle()
 };
+
+const onClose = () =>{
+    setStartExam(false);
+}
 
 
   return (
     <>
 {
   !startExam && <div className="w-full ml-6 rounded-xl p-4">
-      <h1 className="text-3xl font-bold pt-6 mb-6">Exam Page</h1>
-
+    <div className="flex gap-4">
+  <h1 className="text-3xl font-bold pt-6 mb-6">Exam Page</h1>
+  <div className="mb-4 w-full sm:w-1/2 mt-6">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search Exam..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-[400px] pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              />
+              <span className="absolute left-3 top-2.5 text-gray-400 pointer-events-none">
+                🔍
+              </span>
+            </div>
+          </div>
+    </div>
+    
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
+          
         {examData.length > 0 ? (
           examData.map((exam) => (
             <div
@@ -88,7 +118,7 @@ const startExamFunc = (examId, timeAllotted, startAt) => {
               <div className="mt-4 flex justify-end">
                <button
   onClick={() =>
-    startExamFunc(exam.examId, exam.timeAllotted, exam.startAt)
+    startExamFunc(exam.examId, exam.timeAllotted, exam.startAt, exam.title)
   }
   className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-4 py-2 rounded-md text-sm"
 >
@@ -104,11 +134,26 @@ const startExamFunc = (examId, timeAllotted, startAt) => {
           </div>
         )}
       </div>
-      
+      <div className="flex justify-between mt-6">
+    <button
+      onClick={() => setPageNumber((prev) => Math.max(1, prev - 1))}
+      disabled={pageNumber === 1}
+      className="bg-gray-200 px-4 py-2 rounded"
+    >
+      Prev
+    </button>
+    <span>Page {pageNumber}</span>
+    <button
+      onClick={() => setPageNumber((prev) => prev + 1)}
+      className="bg-gray-200 px-4 py-2 rounded"
+    >
+      Next
+    </button>
+  </div>
     </div>
 }
     
-      {startExam && <Exam examId={examId} duration={duration}/>}
+      {startExam && <Exam examId={examId} duration={duration} title={examTitle} onClose={onClose}/>}
         </>
   );
 }
