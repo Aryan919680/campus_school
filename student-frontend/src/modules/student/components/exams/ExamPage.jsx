@@ -10,8 +10,10 @@ export default function ExamPage() {
   const [examData, setExamData] = useState([]);
   const [examId, setExamId] = useState();
   const [duration,setDuration] = useState();
+  console.log('campus',campusId)
   useEffect(() => {
     const getExamData = async () => {
+      const campusId = localStorage.getItem("campusId");
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_BASE_URL}/api/v1/exam/campus/${campusId}`,
