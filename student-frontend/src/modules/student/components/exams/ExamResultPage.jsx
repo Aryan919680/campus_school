@@ -41,9 +41,10 @@ export default function ExamResultPage({title, onClose}) {
                     <span className="text-red-600 font-semibold">Failed</span>
                   )}
                 </p> */}
+                 <button onClick={onClose}>Close</button>
               </div>
             </div>
-      <button onClick={onClose}>Close</button>
+     
       </div>
     </div>
   );
