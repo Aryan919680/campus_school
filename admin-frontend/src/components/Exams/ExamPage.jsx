@@ -3,6 +3,7 @@ import CollegeCreateExamForm from "./CollegeCreateExamForm";
 import axios from "axios";
 import API_ENDPOINTS from "../../API/apiEndpoints";
 import SchoolCreateExamForm from "./SchoolCreateExamForm";
+import ExamResultPage from "./ExamResultPage";
 
 export default function ExamPage (){
     const [openForm, setOpenForm] = useState(false);
@@ -10,6 +11,8 @@ export default function ExamPage (){
      const [searchTerm, setSearchTerm] = useState("");
       const [pageNumber, setPageNumber] = useState(1);
       const [pageSize] = useState(6); // you can make this dynamic too
+      const[exam,setExam] = useState();
+      const[showResultPage,setShowResultPage] = useState(false);
      const userData = JSON.parse(localStorage.getItem("userData"));
      const campusType = userData.data.campusType;
       const token = userData?.token;
@@ -41,11 +44,18 @@ export default function ExamPage (){
 }, [openForm,pageNumber,searchTerm,pageSize]);
      
  const onClose = () =>{
+  setShowResultPage(false)
    setOpenForm(false);
+ }
+ 
+ const openResultPage = (exam) =>{
+  setOpenForm(false)
+     setShowResultPage(true)
+     setExam(exam);
  }
     return(
       <>
-      {   !openForm && 
+      {   !openForm && !showResultPage && ( 
  <div className="bg-white p-8 rounded-md w-full">
              <div className="flex items-center justify-between pb-6 flex-wrap gap-2">
                <h2 className="text-gray-600 font-semibold text-2xl">Exams</h2>
@@ -98,12 +108,12 @@ export default function ExamPage (){
           </p>
         </div>
         <div className="mt-4 flex justify-end">
-          {/* <button
-            onClick={() => alert(`Edit exam ${exam.examId}`)} // Replace with real handler
+          <button
+            onClick={() => openResultPage(exam)} // Replace with real handler
             className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-4 py-2 rounded-md text-sm"
           >
-            Edit
-          </button> */}
+            Result
+          </button>
         </div>
         
       </div>
@@ -129,7 +139,7 @@ export default function ExamPage (){
     </button>
   </div>
            </div>
-      }
+    )  }
      
             {openForm && campusType.toLowerCase() === "college" && (
                <CollegeCreateExamForm onClose={onClose}
@@ -141,6 +151,11 @@ export default function ExamPage (){
                
                />
              )}
+             {
+              showResultPage && (
+                <ExamResultPage onClose={onClose} exam={exam}/>
+              )
+             }
       </>
         
     )

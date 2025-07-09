@@ -140,7 +140,7 @@ function ExamComponent({examId, duration, title, onClose}) {
   // will do later when i want to show result
   if (showExamResult) {
   
-    return <ExamResultPage title={title} onClose={onClose}/>;
+    return <ExamResultPage  onClose={onClose} examId={examId}/>;
   }
 
 
