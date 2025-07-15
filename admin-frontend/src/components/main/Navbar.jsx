@@ -40,7 +40,7 @@ const Navbar = ({ logout, userData, toggleSidebar, setUserData }) => {
 			new window.google.translate.TranslateElement(
 				{
 					pageLanguage: "en",
-					includedLanguages: "en,hi",
+					includedLanguages: "en,hi,bho",
 				},
 				"google_translate_element"
 			);
