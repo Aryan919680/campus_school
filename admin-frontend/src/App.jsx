@@ -1,13 +1,11 @@
-import React, { useContext, useState } from "react";
+import  { useContext, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthContext } from "./context/AuthContext";
 import LogIn from "./LogIn";
 import Layout from "./Layout";
-import FeesDashboard from "./components/Dashboard/FeesDashboard";
 import ResetPassword from "./ResetPassword";
 import LandingPage from "./LandingPage";
 import OnboardingForm from "./onboarding/OnboardingForm";
-import CollegeDashboard from "./components/Dashboard/CollegeDashboard";
 import "./App.css";
 import PageSkeleton from "./components/Skeleton/PageSkeleton";
 import OnboardingSchoolForm from "./onboardingSchool/OnboardingSchoolForm";
@@ -51,26 +49,7 @@ function App() {
 						)
 					}
 				/>
-				<Route
-					path="/fees"
-					element={
-						isLoggedIn && userType === "finance" && campusType === "school" ? (
-							<FeesDashboard userData={userData} logout={logout} />
-						) : (
-							<Navigate to="/" />
-						)
-					}
-				/>
-				<Route
-					path="/college-dashboard"
-					element={
-						isLoggedIn && campusType === "college" ? (
-							<CollegeDashboard userData={userData} logout={logout} />
-						) : (
-							<Navigate to="/" />
-						)
-					}
-				/>
+				
 				<Route
 					path="/reset-password/:token/:userId"
 					element={<ResetPassword />}

@@ -21,13 +21,6 @@ const Attendance = ({ onClose }) => {
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
-
-	const getUserIdFromLocalStorage = () => {
-		const userData = JSON.parse(localStorage.getItem("userData"));
-		return userData && userData.id ? userData.id : null;
-	};
-	const userId = getUserIdFromLocalStorage();
-
 	  useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchTerm);
