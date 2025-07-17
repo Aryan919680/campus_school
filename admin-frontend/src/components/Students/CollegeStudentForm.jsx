@@ -17,7 +17,8 @@ const CollegeStudentForm = ({ onClose, onStudentAdded }) => {
     const [currentStudent, setCurrentStudent] = useState({
         fullName: "", dob: "", aadhaarId: "", contactNumber: "", email: "",
         parentName: "", parentContact: "", address: "", departmentId: "",
-        courseId: "", semesterId: "", admissionNumber: "", rollNumber: ""
+        courseId: "", semesterId: "", admissionNumber: "", rollNumber: "",
+        category: ""
     });
         const [error, setError] = useState("");
     const [payloadData,setPayloadData] = useState([]);
@@ -68,6 +69,7 @@ const CollegeStudentForm = ({ onClose, onStudentAdded }) => {
     };
 
     async function changePayload(studentData) {
+        console.log(studentData)
         try {
             const updatedStudents = await Promise.all(
                 studentData.map(async (student) => {
@@ -82,8 +84,8 @@ const CollegeStudentForm = ({ onClose, onStudentAdded }) => {
                         { headers: { Authorization: `Bearer ${token}` } }
                     );
                     const coursesData = coursesResponse.data.data;
-
-                    const course = coursesData.find(c => c.courseName.toLowerCase() === student.Course.toLowerCase());
+                    console.log(coursesData)
+                    const course = coursesData.find(c => c.courseName.toLowerCase() === student.Courses.toLowerCase());
                     if (!course) {
                         console.warn(`Course ${student.Course} not found for ${student["Full Name"]}`);
                         return null;
@@ -103,9 +105,10 @@ const CollegeStudentForm = ({ onClose, onStudentAdded }) => {
 
                     return {
                         name: student["Full Name"],
-                        gender: student.Gender || "UNKNOWN",
+                        gender: student["Gender"] || "UNKNOWN",
                         email: student["Email Address"],
                         semesterId: semesterId,
+                        category: student["Category"],
                         extraDetails: {
                             contactNumber: student["Contact Number"],
                             parentName: student["Parent/Guardian Name"],
@@ -185,7 +188,7 @@ const CollegeStudentForm = ({ onClose, onStudentAdded }) => {
         setCurrentStudent({
             fullName: "", dob: "", aadhaarId: "", contactNumber: "", email: "",
             parentName: "", parentContact: "", address: "", departmentId: "",
-            courseId: "", semesterId: "", admissionNumber: "", rollNumber: ""
+            courseId: "", semesterId: "", admissionNumber: "", rollNumber: "",  category : ""
         });
         setStep(3);
     };
@@ -201,7 +204,7 @@ const CollegeStudentForm = ({ onClose, onStudentAdded }) => {
     };
 
     const downloadSampleCSV = () => {
-        const sampleData = `Full Name,Date of birth,Aadhaar ID,Contact Number,Parent/Guardian Name,Parent Contact,Email Address,Address,Department,Courses,Sem,Admission Number, Roll Number\nJohn Doe,12-03-2000,123456789012,9876543210,Jane Doe,9876543210,john@example.com,123 Street City,Test Fees,fees two,1,123456789,121`;
+        const sampleData = `Full Name,Date of birth,Aadhaar ID,Contact Number,Parent/Guardian Name,Parent Contact,Email Address,Address,Department,Courses,Sem,Admission Number,Roll Number,Category\nJohn Doe,12-03-2000,123456789012,9876543210,Jane Doe,9876543210,john@example.com,123 Street City,Test Fees,fees two,1,123456789,121,GEN`;
         
         const blob = new Blob([sampleData], { type: "text/csv" });
         const url = URL.createObjectURL(blob);
@@ -226,6 +229,7 @@ const CollegeStudentForm = ({ onClose, onStudentAdded }) => {
             gender: student.gender || "UNKNOWN",
             email: student.email,
             semesterId: student.semesterId,
+            category : student.category,
             extraDetails: {
                 contactNumber: student.contactNumber,
                 parentName: student.parentName,
@@ -273,6 +277,7 @@ const CollegeStudentForm = ({ onClose, onStudentAdded }) => {
                             <>
                                 <input type="text" name="fullName" value={currentStudent.fullName} onChange={handleChange} placeholder="Full Name" className="block w-full p-2 border border-gray-300 rounded-md" />
                                 <input type="date" name="dob" value={currentStudent.dob} onChange={handleChange} className="mt-2 block w-full p-2 border border-gray-300 rounded-md" />
+                                <input type="text" name="category" value={currentStudent.category} onChange={handleChange} placeholder="Category" className="mt-2 block w-full p-2 border border-gray-300 rounded-md" />
                                 <input type="text" name="aadhaarId" value={currentStudent.aadhaarId} onChange={handleChange} placeholder="Aadhaar ID" className="mt-2 block w-full p-2 border border-gray-300 rounded-md" />
                                 <input type="text" name="contactNumber" value={currentStudent.contactNumber} onChange={handleChange} placeholder="Contact Number" className="mt-2 block w-full p-2 border border-gray-300 rounded-md" />
                                 <input type="text" name="parentName" value={currentStudent.parentName} onChange={handleChange} placeholder="Parent/Guardian Name" className="mt-2 block w-full p-2 border border-gray-300 rounded-md" />

@@ -79,27 +79,27 @@ const DepartmentFees = ({  closeFeesPage, closeAllPages }) => {
                             </label>
                         </div>
                     </div>
-                    <div className="mb-4 p-3 bg-gray-700 rounded-md text-white">
-                        <label className="block text-sm font-medium">Additional Fees:</label>
+                    <div className="mb-4 p-3 bg-gray-700 rounded-md text-black">
+                        <label className="block text-sm font-medium text-white">Additional Fees:</label>
                         {fee.slice(1).map((fee, index) => (
-                            <div key={index} className="flex gap-2 items-center mt-2">
+                            <div key={index} className="flex gap-2 items-center mt-2 text-white">
                                 <input
                                     type="text"
                                     value={fee.name}
                                     onChange={(e) => handleFeeChange(index + 1, "name", e.target.value)}
-                                    className="px-2 py-1 border rounded-md w-1/2"
+                                    className="px-2 py-1 border rounded-md w-1/2 text-black"
                                     placeholder="Fee Name"
                                 />
                                 <input
                                     type="number"
                                     value={fee.amount}
                                     onChange={(e) => handleFeeChange(index + 1, "amount", e.target.value)}
-                                    className="px-2 py-1 border rounded-md w-1/3"
+                                    className="px-2 py-1 border rounded-md w-1/3 text-black"
                                     placeholder="Amount"
                                 />
                             </div>
                         ))}
-                        <button type="button" onClick={addFeeField} className="mt-3 text-blue-400">
+                        <button type="button" onClick={addFeeField} className="mt-3 bg-linear-blue text-black rounded">
                             + Add Another Fee
                         </button>
                     </div>
