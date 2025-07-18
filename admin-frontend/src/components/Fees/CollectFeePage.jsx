@@ -143,6 +143,28 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import API_ENDPOINTS from "../../API/apiEndpoints";
 import ReceiptDownloadButton from "./ReceiptDownloadButton";
+const dummyReceipt = {
+  receiptNo: "RCPT-20250717-0001",
+  student: {
+    name: "Aryan Malpotra",
+    id: "STU123456",
+    course: "B.Tech Computer Science",
+    semester: "6",
+  },
+  breakdown: [
+    { name: "Tuition Fee", paid: "40000", due: 0 },
+    { name: "Library Fee", paid: "500", due: 0 },
+    { name: "Lab Fee", paid: "1500", due: 0 },
+  ],
+  summary: {
+    discountLabel: "1000",
+    amountReceived: 42000,
+    paymentMode: "Online",
+    totalPaid: 42000,
+    totalDue: 0,
+  },
+};
+
 const CollectFeePage = () => {
   const [discount, setDiscount] = useState();
   const [notes, setNotes] = useState("");
@@ -154,7 +176,7 @@ const CollectFeePage = () => {
   const [students, setStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [receiptData, setReceiptData] = useState(null);
+  const [receiptData, setReceiptData] = useState(dummyReceipt);
   const userData = JSON.parse(localStorage.getItem("userData"));
   const token = userData?.token;
   const campusType = userData.data.campusType;
@@ -190,44 +212,66 @@ const CollectFeePage = () => {
     }
   }, [selectedStudent]);
 
-  const getFees = async () => {
-    try {
-      const response = await axios.get(
-        campusType === "COLLEGE"
-          ? `${API_ENDPOINTS.SUBMIT_FEES()}/fees`
-          : `${API_ENDPOINTS.FETCH_FEES()}/fees`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+const getFees = async () => {
+  try {
+    const response = await axios.get(
+      campusType === "COLLEGE"
+        ? `${API_ENDPOINTS.GET_PAYMENT_FEES()}`
+        : `${API_ENDPOINTS.FETCH_FEES()}/fees`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { name: searchTerm },
+      }
+    );
+
+    const allFeeData = response.data.data;
+    if (selectedStudent?.courseId) {
+      const studentFeeData = allFeeData.find(
+        (entry) => entry.studentId === selectedStudent.studentId
       );
 
-      const allFeeData = response.data.data;
-      if (selectedStudent?.courseId) {
-        const courseFees = allFeeData.find(
-          (course) => course.courseId === selectedStudent.courseId
-        );
+      if (studentFeeData && studentFeeData.fees) {
+        const { fees, payments, feeSummary } = studentFeeData;
+        const totalPaid = feeSummary?.[0]?.totalPaid || 0;
 
-        if (courseFees && courseFees.fees) {
-          const formattedFees = courseFees.fees.map((fee) => ({
+        const formattedFees = fees.map((fee) => {
+          const multiplier = getMultiplier(fee.type);
+          const totalFeeAmount = fee.amount * multiplier;
+
+          // Assuming one-time totalPaid to be distributed to the first fee
+          let due = totalFeeAmount;
+          if (totalPaid > 0) {
+            if (totalPaid >= totalFeeAmount) {
+              due = 0;
+            } else {
+              due = totalFeeAmount - totalPaid;
+            }
+          }
+
+          return {
             name: fee.name,
-            due: fee.amount,
-            toCollect: fee.amount,
+            due,
+            toCollect: due,
             feesId: fee.feesId,
             selected: false,
-            courseId: selectedStudent.courseId ,
-            type: fee.type
-          }));
-          setFees(formattedFees);
-        } else {
-          setFees([]);
-        }
+            courseId: selectedStudent.courseId,
+            type: fee.type,
+            originalAmount: totalFeeAmount,
+          };
+        });
+
+        setFees(formattedFees);
       } else {
         setFees([]);
       }
-    } catch (error) {
-      console.error("Failed to fetch fees.", error);
+    } else {
+      setFees([]);
     }
-  };
+  } catch (error) {
+    console.error("Failed to fetch fees.", error);
+  }
+};
+
 
 const getMultiplier = (type) => {
   switch (type) {
@@ -290,7 +334,7 @@ console.log(fees)
           { name: "Library Fee", paid: 200, due: 0 },
         ],
         summary: {
-          discountLabel: `₹${discount || 0}`,
+          discountLabel: `${discount || 0}`,
           amountReceived: payload.amount,
           paymentMode: response.paymentMode || "Online",
           totalPaid: amountReceived,
@@ -410,13 +454,14 @@ console.log(fees)
       const total = fee.due * multiplier;
 
       return (
-        <tr key={index} className="border-t">
-          <td className="p-2">{fee.name}</td>
-          <td className="p-2">{fee.type}</td>
-          <td className="p-2 text-left">{fee.due.toLocaleString()}</td>
-          <td className="p-2 text-left">× {multiplier}</td>
-          <td className="p-2 text-left font-medium">{total.toLocaleString()}</td>
-        </tr>
+       <tr key={index} className="border-t">
+  <td className="p-2">{fee.name}</td>
+  <td className="p-2">{fee.type}</td>
+  <td className="p-2 text-left">{fee.originalAmount?.toLocaleString()}</td>
+  <td className="p-2 text-left">× {getMultiplier(fee.type)}</td>
+  <td className="p-2 text-left font-medium text-red-500">Due: ₹{fee.due.toLocaleString()}</td>
+</tr>
+
       );
     })}
   </tbody>

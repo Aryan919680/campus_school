@@ -8,6 +8,7 @@ import {
   StyleSheet,
 } from "@react-pdf/renderer";
 
+
 const styles = StyleSheet.create({
   page: {
     padding: 30,
@@ -75,18 +76,18 @@ const ReceiptDocument = ({ receipt }) => {
           {breakdown.map((fee, i) => (
             <View key={i} style={styles.row}>
               <Text>{fee.name}</Text>
-              <Text>₹{fee.paid}</Text>
-              <Text>₹{fee.due}</Text>
+              <Text>Rs. {fee.paid}</Text>
+              <Text>Rs. {fee.due}</Text>
             </View>
           ))}
         </View>
 
         <View style={styles.section}>
           <Text style={styles.bold}>Payment Summary</Text>
-          <Text>Amount Received: ₹{summary.amountReceived}</Text>
-          <Text>Total Paid: ₹{summary.totalPaid}</Text>
-          <Text>Total Due: ₹{summary.totalDue}</Text>
-          <Text>Discount: {summary.discountLabel}</Text>
+          <Text>Amount Received: Rs. {summary.amountReceived}</Text>
+          <Text>Total Paid: Rs. {summary.totalPaid}</Text>
+          <Text>Total Due: Rs. {summary.totalDue}</Text>
+          <Text>Discount: Rs. {summary.discountLabel}</Text>
           <Text>Payment Mode: {summary.paymentMode}</Text>
         </View>
 
