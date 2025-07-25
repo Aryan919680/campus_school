@@ -1,226 +1,338 @@
+
 import { useState, useEffect } from "react";
 import axios from "axios";
 import API_ENDPOINTS from "../../API/apiEndpoints";
-
-export default function FeeManagement() {
-  const [departments, setDepartments] = useState([]);
-  const [courses, setCourses] = useState([]);
-  const [classes, setClasses] = useState([]);
-  const [selectedClass, setSelectedClass] = useState("");
-  const [students, setStudents] = useState([]);
-  const [selectedDepartment, setSelectedDepartment] = useState("");
-  const [selectedCourse, setSelectedCourse] = useState("");
-  const [search, setSearch] = useState("");
-  const [filters, setFilters] = useState({ paid: true, due: true, partial: true });
+import ReceiptDownloadButton from "./ReceiptDownloadButton";
+export default function ViewFeePage() {
+  const [filters, setFilters] = useState({
+    search: "",
+    course: "All Courses",
+    semester: "All Semesters"
+  });
+    const [receiptData, setReceiptData] = useState(null);
+  const [feeRecords, setFeeRecords] = useState([]);
+  const [loading, setLoading] = useState(false);
   const userData = JSON.parse(localStorage.getItem("userData"));
   const token = userData?.token;
-  const campusType = userData.data.campusType;
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [students, setStudents] = useState([]);
+  const [departments, setDepartments] = useState([]);
+  const [courses, setCourses] = useState([]);
+  const [semesters, setSemesters] = useState([]);
+  const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [selectedCourse, setSelectedCourse] = useState("");
+  const [selectedSemester, setSelectedSemester] = useState("");
+ const [selectedReceiptRecordId, setSelectedReceiptRecordId] = useState(null);
   useEffect(() => {
-    if(campusType === "COLLEGE"){
-      fetchDepartments();
-    }else{
-      fetchClasses();
-    }
-
+    const fetchDepartments = async () => {
+      try {
+        const response = await fetch(API_ENDPOINTS.GET_DEPARTMENTS(), {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await response.json();
+        setDepartments(data.data);
+      } catch (error) {
+        console.error("Error fetching departments:", error);
+      }
+    };
+    fetchDepartments();
   }, []);
-  const fetchClasses = async () => {
-    try {
-      const response = await axios.get(API_ENDPOINTS.FETCH_CLASS(),{
-        headers: { Authorization: `Bearer ${token}` },
-    });
-      setClasses(response.data.data.class || []);
-    } catch (error) {
-      console.error("Failed to fetch classes.", error);
-    }
-  };
+
   useEffect(() => {
-    if (selectedDepartment) fetchCourses(selectedDepartment);
+    if (!selectedDepartment) return;
+    const fetchCourses = async () => {
+      try {
+        const response = await fetch(
+          `${API_ENDPOINTS.GET_COURSES_OF_DEPARTMENT()}/${selectedDepartment}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        const data = await response.json();
+        setCourses(data.data);
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      }
+    };
+    fetchCourses();
   }, [selectedDepartment]);
 
   useEffect(() => {
-    if (selectedClass) fetchStudents(selectedClass);
-  }, [selectedClass]);
+    const handleClickOutside = () => setShowSuggestions(false);
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
 
   useEffect(() => {
-    if (selectedCourse) fetchStudents(selectedCourse);
-  }, [selectedCourse]);
+    const delayDebounce = setTimeout(() => {
+      if (searchTerm) getStudents();
+    }, 300);
+    return () => clearTimeout(delayDebounce);
+  }, [searchTerm]);
 
-  const fetchDepartments = async () => {
+useEffect(() => {
+  if (selectedDepartment || selectedCourse || selectedSemester) {
+    fetchFeeRecords(searchTerm);
+  }
+}, [selectedDepartment, selectedCourse, selectedSemester]);
+
+  const getStudents = async () => {
     try {
-      const response = await axios.get(API_ENDPOINTS.GET_DEPARTMENTS(),{
+      const response = await axios.get(API_ENDPOINTS.GET_STUDENTS_DATA(), {
         headers: { Authorization: `Bearer ${token}` },
+        params: { search: searchTerm },
+      });
+      setStudents(response.data.data);
+    } catch (error) {
+      console.error("Failed to fetch students.", error);
+    }
+  };
+
+const fetchFeeRecords = async (studentName = "") => {
+  setLoading(true);
+  try {
+    const response = await axios.get(API_ENDPOINTS.FEES_SUMMARY(), {
+      headers: { Authorization: `Bearer ${token}` },
+      params: {
+        studentName: studentName || filters.search,
+        departmentIds: selectedDepartment || undefined,
+        courseIds: selectedCourse || undefined,
+        semesterIds: selectedSemester || undefined,
+      },
     });
-      setDepartments(response.data.data || []);
-    } catch (error) {
-      console.error("Failed to fetch departments.", error);
-    }
-  };
 
-  const fetchCourses = async (departmentId) => {
-    try {
-      const response = await axios.get(`${API_ENDPOINTS.GET_COURSES_OF_DEPARTMENT()}/${departmentId}`,{
-        headers: { Authorization: `Bearer ${token}` },
+    setFeeRecords(response.data.data || []);
+  } catch (error) {
+    console.error("Error fetching fee records:", error);
+    setFeeRecords([]);
+  } finally {
+    setLoading(false);
+  }
+};
+
+const handleGenerateReceipt = async (record) => {
+  try {
+    const response = await axios.get(`${API_ENDPOINTS.GET_PAYMENT_FEES()}`, {
+      headers: { Authorization: `Bearer ${token}` },
+      params: { name: record.studentName },
     });
-      setCourses(response.data.data || []);
-    } catch (error) {
-      console.error("Failed to fetch courses.", error);
-    }
-  };
+    const payments = response.data[0].payments;
+    const fees =  response.data[0].fees;
+    // Group payments by feesId to calculate total paid so far (oldPaid)
+    const oldPaidMap = {};
+    payments.forEach(p => {
+      if (!oldPaidMap[p.feesId]) oldPaidMap[p.feesId] = 0;
+      oldPaidMap[p.feesId] += p.paidAmount;
+    });
 
-  const fetchStudents = async (courseId) => {
-    try {
-      var response = '';
-      if(campusType === "COLLEGE"){
-        response = await axios.get(`${API_ENDPOINTS.PAYMENT_FEES()}?courseId=${courseId}&year=2025`,{
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      }else{
-        response = await axios.get(`${API_ENDPOINTS.PAYMENT_FEES()}?year=2025&classId=${courseId}`,{
-          headers: { Authorization: `Bearer ${token}` },
-      }
-    )
-    }
-      const data = response.data.data || [];
-      const processedStudents = data.map((s) => ({
-        name: s.name,
-        classSem: campusType === "COLLEGE" ? s.semester : s.subclass,
-        course :campusType === "COLLEGE" ? s.course : s.class,
-        total: s.amount || 0,
-        paid: s.amount || 0,
-        status: s.status ,
-      }));
-      setStudents(processedStudents);
-    } catch (error) {
-      console.error("Failed to fetch students data.", error);
-    }
-  };
+    // Get the latest payments (assumes sorted by createdAt ascending, reverse if needed)
+    const latestPayments = payments.slice(-3); // or filter based on a timestamp or condition
 
-  const filteredStudents = students
+    const updatedFees = latestPayments.map(fee => {
+      const fullFee = fees.find(f => f.feesId === fee.feesId);
+      const totalPaidForFee = oldPaidMap[fee.feesId] || 0;
+
+      return {
+        name: fullFee?.name || "Fee",
+        oldPaid: totalPaidForFee - fee.paidAmount,
+        newPaid: fee.paidAmount,
+        due: fee.dueAmount,
+      };
+    });
+
+    const totalAmount = updatedFees.reduce((sum, f) => sum + f.newPaid, 0);
+    const discount = 0;
+    const receipt = {
+      receiptNo: record.receiptNo || "RCPT-XXXXXX",
+      student: {
+        name: record.studentName || "Student",
+        id: record.studentId,
+        course: record.courseName || "-",
+        semester: record.semesterName || "-",
+      },
+      breakdown: updatedFees,
+      summary: {
+        discountLabel: `${discount}`,
+        amountReceived: totalAmount,
+        paymentMode: response.data.payment?.paymentMode || "Online",
+        totalPaid: totalAmount,
+      },
+    };
+
+    setReceiptData(receipt);
+    setSelectedReceiptRecordId(record.studentId);
+  } catch (error) {
+    console.error("Error generating receipt:", error);
+  }
+};
+
 
   return (
-    <div className="max-w-4xl mx-auto p-4 border rounded-lg shadow-lg bg-white">
-      <h2 className="text-xl font-bold mb-4">View Fees Record</h2>
+    <div className="max-w-6xl mx-auto p-6 bg-white rounded shadow mt-6">
+      <h2 className="text-2xl font-bold mb-4">View Fee Records</h2>
 
-{
-  campusType === "COLLEGE" && <div>  <select
-  className="border rounded p-2 w-full mb-4"
-  value={selectedDepartment}
-  onChange={(e) => {
-    setSelectedDepartment(e.target.value);
-    setSelectedCourse(""); 
-    setStudents([]); 
-  }}
->
-  <option value="">Select Department</option>
-  {departments.map((dept) => (
-    <option key={dept.departmentId} value={dept.departmentId}>
-      {dept.name}
-    </option>
-  ))}
-</select>
-   <select
-   className="border rounded p-2 w-full mb-4"
-   value={selectedCourse}
-   onChange={(e) => setSelectedCourse(e.target.value)}
-   disabled={!selectedDepartment}
- >
-   <option value="">Select Course</option>
-   {courses.map((course) => (
-     <option key={course.courseId} value={course.courseId}>
-       {course.courseName}
-     </option>
-   ))}
- </select>
- </div>
-}
-   {
-    campusType === "SCHOOL" && <div>
-         <select
-        className="border rounded p-2 w-full mb-4"
-        value={selectedClass}
-        onChange={(e) => {
-          setSelectedClass(e.target.value);
-          setSelectedCourse("");
-          setStudents([]);
-        }}
-      >
-        <option value="">Select Class</option>
-        {classes.map((cls) => (
-          <option key={cls.classId} value={cls.classId}>
-            {cls.className}
-          </option>
-        ))}
-      </select>
-      </div>
-   }
+      {/* Filters */}
+      <div className="flex flex-wrap gap-4 mb-6">
 
-   
-      {/* Course Selection */}
-   
-
-      {/* Search and Filters */}
-      <div className="flex items-center space-x-2 mb-4">
-        <input
-          type="text"
-          placeholder="Search Student"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="border rounded p-2 w-full"
-        />
-        <button className="bg-blue-500 text-white px-4 py-2">🔍</button>
-      </div>
-
-      <div className="flex space-x-4 mb-4">
-        {Object.entries(filters).map(([key, value]) => (
-          <label key={key} className="flex items-center space-x-2">
+        <div className="mb-4 w-full sm:w-1/2 relative">
+          <div className="relative">
             <input
-              type="checkbox"
-              checked={value}
-              onChange={() => setFilters({ ...filters, [key]: !value })}
+              type="text"
+              placeholder="Search Student..."
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setShowSuggestions(true);
+              }}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
-            <span className="capitalize">{key.replace("partial", "Partially Paid")}</span>
-          </label>
-        ))}
+            <span className="absolute left-3 top-2.5 text-gray-400 pointer-events-none">
+              🔍
+            </span>
+          </div>
+
+          {showSuggestions && students.length > 0 && (
+            <ul className="absolute z-10 bg-white border border-gray-300 w-full max-h-60 overflow-y-auto rounded-md mt-1 shadow">
+              {students.map((student) => (
+                <li
+                  key={student.id}
+                  className="px-4 py-2 hover:bg-blue-100 cursor-pointer"
+                  onClick={() => {
+                    setSelectedStudent(student);
+                    setSearchTerm(student.name);
+                    setShowSuggestions(false);
+                    fetchFeeRecords(student.name); 
+                  }}
+                >
+                  {student.name} - {student.departmentName} , {student.courseName}, {student.semesterName}
+                </li>
+
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <div className="flex gap-2 ">
+          <select
+            onChange={(e) => setSelectedDepartment(e.target.value)}
+            value={selectedDepartment}
+          >
+            <option value="">Select Department</option>
+            {departments.map((dept) => (
+              <option key={dept.departmentId} value={dept.departmentId}>
+                {dept.name}
+              </option>
+            ))}
+          </select>
+
+          <select
+            onChange={(e) => {
+              setSelectedCourse(e.target.value);
+              const selected = courses.find(
+                (course) => course.courseId === e.target.value
+              );
+              setSemesters(selected ? selected.semester : []);
+            }}
+            value={selectedCourse}
+            disabled={!selectedDepartment}
+          >
+            <option value="">Select Course</option>
+            {courses.map((course) => (
+              <option key={course.courseId} value={course.courseId}>
+                {course.courseName}
+              </option>
+            ))}
+          </select>
+
+          <select
+            onChange={(e) => setSelectedSemester(e.target.value)}
+            value={selectedSemester}
+            disabled={!selectedCourse}
+          >
+            <option value="">Select Semester</option>
+            {semesters.map((sem) => (
+              <option key={sem.semesterId} value={sem.semesterId}>
+                {sem.semesterName}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
-      {/* Student Fees Table */}
-      <table className="w-full border-collapse border border-gray-300">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="border p-2">Student Name</th>
-            <th className="border p-2">Course</th>
-            <th className="border p-2">Class/Sem</th>
-            <th className="border p-2">Total Fee</th>
-            <th className="border p-2">Paid</th>
-            <th className="border p-2">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredStudents.length > 0 ? (
-            filteredStudents.map((student) => (
-              <tr key={student.name} className="text-center">
-                <td className="border p-2">{student.name}</td>
-                <td className="border p-2">{student.course}</td>
-                <td className="border p-2">{student.classSem}</td>
-                <td className="border p-2">₹{student.total.toLocaleString()}</td>
-                <td className="border p-2">₹{student.paid.toLocaleString()}</td>
-                <td className="border p-2">{student.status}</td>
+      {/* Fee Table */}
+      <div className="overflow-x-auto">
+        {loading ? (
+          <div className="text-center py-6 text-gray-500">Loading...</div>
+        ) : feeRecords.length === 0 ? (
+          <div className="text-center py-6 text-gray-500">No records found.</div>
+        ) : (
+          <table className="min-w-full border divide-y divide-gray-200 text-sm">
+            <thead className="bg-gray-100 text-left font-medium">
+              <tr>
+                <th className="px-4 py-2">Student Name</th>
+                <th className="px-4 py-2">Student ID</th>
+                <th className="px-4 py-2">Course</th>
+                <th className="px-4 py-2">Semester</th>
+                <th className="px-4 py-2">Total Fee (₹)</th>
+                <th className="px-4 py-2">Paid (₹)</th>
+                <th className="px-4 py-2">Due (₹)</th>
+                <th className="px-4 py-2">Receipt No.</th>
+                <th className="px-4 py-2">Last Payment</th>
+                <th className="px-4 py-2">Status</th>
+                <th className="px-4 py-2">Action</th>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="6" className="border p-2 text-center text-gray-500">
-                No records found
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {feeRecords.map((record) => (
+                <tr key={record.id}>
+                  <td className="px-4 py-2">{record.studentName}</td>
+                  <td className="px-4 py-2">{record.studentId}</td>
+                  <td className="px-4 py-2">{record.courseName}</td>
+                  <td className="px-4 py-2">{record.semesterName}</td>
+                  <td className="px-4 py-2">{record.totalFee}</td>
+                  <td className="px-4 py-2">{record.totalPaid}</td>
+                  <td className="px-4 py-2">{record.totalDue}</td>
+                  <td className="px-4 py-2">{record.receiptNo}</td>
+                  <td className="px-4 py-2">{(record.lastPayment)}</td>
+                  <td className="px-4 py-2">
+                    <span
+                      className={`px-2 py-1 text-xs rounded-full ${record.status === "PAID"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-yellow-100 text-yellow-700"
+                        }`}
+                    >
+                      {record.status}
+                    </span>
+                  </td>
+              
+                     <td className="px-4 py-2">
+  {selectedReceiptRecordId === record.studentId ? (
+    <ReceiptDownloadButton
+   
+      receipt={receiptData}
+      onDownloadComplete={() => {
+        setReceiptData(null);
+        setSelectedReceiptRecordId(null);
+      }}
+    />
+  ) : (
+    <button
+      onClick={() => handleGenerateReceipt(record)}
+      className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+    >
+      Generate Receipt
+    </button>
+  )}
+</td>
 
-      {/* <div className="flex justify-between mt-4">
-        <button className="bg-red-500 text-white px-4 py-2">Send Due Fee Notification</button>
-        <button className="bg-gray-500 text-white px-4 py-2">Next</button>
-      </div> */}
+                        
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
     </div>
   );
 }
+

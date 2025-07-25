@@ -70,13 +70,15 @@ const ReceiptDocument = ({ receipt }) => {
           <Text style={styles.bold}>Fee Breakdown</Text>
           <View style={styles.tableHeader}>
             <Text>Fee Type</Text>
-            <Text>Paid</Text>
-            <Text>Due</Text>
+            <Text>Old Paid Amount</Text>
+            <Text>New Entry</Text>
+            <Text>Due Amount</Text>
           </View>
           {breakdown.map((fee, i) => (
             <View key={i} style={styles.row}>
               <Text>{fee.name}</Text>
-              <Text>Rs. {fee.paid}</Text>
+              <Text>Rs. {fee.oldPaid}</Text>
+              <Text>Rs. {fee.newPaid}</Text>
               <Text>Rs. {fee.due}</Text>
             </View>
           ))}

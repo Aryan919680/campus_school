@@ -45,6 +45,9 @@ const API_ENDPOINTS = {
     }/api/v1/department/campus/${getCampusId()}/department`,
 
   //FEES
+  FEES_SUMMARY: () => `${
+      import.meta.env.VITE_BASE_URL
+    }/api/v1/payment/campus/${getCampusId()}/feesSummary`,
   SUBMIT_FEES: () =>
     `${
       import.meta.env.VITE_BASE_URL
