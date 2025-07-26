@@ -53,6 +53,30 @@ const CollectFeePage = () => {
     }
   };
 
+useEffect(() => {
+  if (!fees.length) return;
+
+  const updatedFees = fees.map((fee) => {
+    if (fee.name.toLowerCase().includes("tuition")) {
+      const adjustedDue = Math.max(fee.originalAmount - fee.feesPaid - (discount || 0), 0);
+      return {
+        ...fee,
+        due: adjustedDue,
+        toCollect: adjustedDue,
+      };
+    } else {
+      const remainingDue = Math.max(fee.originalAmount - fee.feesPaid, 0);
+      return {
+        ...fee,
+        due: remainingDue,
+        toCollect: remainingDue,
+      };
+    }
+  });
+
+  setFees(updatedFees);
+}, [discount]);
+
   useEffect(() => {
     if (selectedStudent?.courseId) {
       getFees();
@@ -150,15 +174,27 @@ const CollectFeePage = () => {
       alert("Please select a student before submitting.");
       return;
     }
-    const selectedFees = fees
-      .filter((fee, index) => (newPaidEntries[index] || 0) > 0)
-      .map((fee, index) => ({
-        feesId: fee.feesId,
-        courseId: fee.courseId,
-        paidAmount: newPaidEntries[index] || 0,  // 👈 use new entry amount
-        due: Math.max(fee.originalAmount - (fee.feesPaid + (newPaidEntries[index] || 0)), 0),
-        type: fee.type,
-      }));
+ const selectedFees = fees
+ .filter((fee, index) => (newPaidEntries[index] || 0) > 0)
+  .map((fee, index) => {
+    const isTuition = fee.name.toLowerCase().includes("tuition");
+    const discountToApply = isTuition ? discount || 0 : 0;
+    const paidAmount = newPaidEntries[index] + discountToApply  || 0;
+
+    const newDue = Math.max(
+      fee.originalAmount - fee.feesPaid - paidAmount,
+      0
+    );
+
+    return {
+      feesId: fee.feesId,
+      courseId: fee.courseId,
+      paidAmount,
+      due: newDue,
+      type: fee.type,
+    };
+  });
+
 
 
     if (selectedFees.length === 0) {
@@ -173,15 +209,17 @@ const CollectFeePage = () => {
       amount: totalAmount,
       localTransactionId: "",
       additional_details: {
-        discount: discount || 0,
+        
         notes,
         modeOfPayment,
         referenceNo,
         category: selectedStudent?.category || "",
       },
+      discount: discount || 0,
       fees: selectedFees,
     };
 
+    console.log(payload)
     try {
       const res = await axios.post(
         API_ENDPOINTS.PAYMENT_FEES(),
@@ -201,7 +239,7 @@ const CollectFeePage = () => {
           due: fee.due,
         };
       });
-
+      const totalDue = response.data.feeSummary.remainingDue;
       const receipt = {
         receiptNo: response.data.payment.paymentId || "RCPT-XXXXXX",
         student: {
@@ -216,6 +254,7 @@ const CollectFeePage = () => {
           amountReceived: totalAmount,
           paymentMode: response.paymentMode || modeOfPayment,
           totalPaid: totalAmount,
+          totalDue: totalDue
         },
       };
 
@@ -227,6 +266,8 @@ const CollectFeePage = () => {
       alert("Failed to submit fees.");
     }
   };
+
+
   const handlePayment = () => {
     if (!feePaymentAmount || isNaN(feePaymentAmount)) return;
 
@@ -238,18 +279,9 @@ const CollectFeePage = () => {
     setShowFeeModal(false);
   };
 
-  const handleDownloadAndReset = () => {
-    setReceiptData(null);
-    setSubmitted(false);
-    setSelectedStudent(null);
-    setFees([]);
-    setDiscount(0);
-    setNotes("");
-    setAmountReceived("");
-    setModeOfPayment("Cash");
-    setReferenceNo("");
-    setSearchTerm("");
-  };
+const handleDownloadAndReset = () => {
+  window.location.reload();
+};
 
   return (
     <div className="max-w-6xl mx-auto p-6 bg-white rounded shadow mt-6">
@@ -391,9 +423,11 @@ const CollectFeePage = () => {
         </thead>
         <tbody>
           {fees.map((fee, index) => {
-            const newEntry = newPaidEntries[index] || 0;
-            const totalPaid = fee.feesPaid + newEntry;
-            const newDue = Math.max(fee.originalAmount - totalPaid, 0);
+           const isTuition = fee.name.toLowerCase().includes("tuition");
+const discountToApply = isTuition ? discount || 0 : 0;
+const newEntry = newPaidEntries[index] || 0;
+const totalPaid = fee.feesPaid + newEntry;
+const newDue = Math.max(fee.originalAmount - discountToApply - totalPaid, 0);
 
             return (
               <tr key={index} className="border-t text-center">
@@ -404,7 +438,8 @@ const CollectFeePage = () => {
                 <td className="p-2 text-green-600">
                   ₹{newEntry ? newEntry.toLocaleString() : "-"}
                 </td>
-                <td className="p-2 text-red-500">₹{newDue.toLocaleString()}</td>
+             <td className="p-2 text-red-500">₹{newDue.toLocaleString()}</td>
+
                 <td className="p-2">
                   <button
                     onClick={() => {

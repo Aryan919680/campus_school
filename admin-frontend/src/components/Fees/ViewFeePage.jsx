@@ -5,10 +5,15 @@ import API_ENDPOINTS from "../../API/apiEndpoints";
 import ReceiptDownloadButton from "./ReceiptDownloadButton";
 export default function ViewFeePage() {
   const [filters, setFilters] = useState({
-    search: "",
-    course: "All Courses",
-    semester: "All Semesters"
-  });
+  search: "",
+  course: "All Courses",
+  semester: "All Semesters",
+  category: "All Categories",
+  status: "All Statuses",
+});
+const [selectedCategory, setSelectedCategory] = useState("All Categories");
+const [selectedStatus, setSelectedStatus] = useState("All Statuses");
+
     const [receiptData, setReceiptData] = useState(null);
   const [feeRecords, setFeeRecords] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -71,10 +76,10 @@ export default function ViewFeePage() {
   }, [searchTerm]);
 
 useEffect(() => {
-  if (selectedDepartment || selectedCourse || selectedSemester) {
+  if (selectedDepartment || selectedCourse || selectedSemester || selectedCategory || selectedStatus) {
     fetchFeeRecords(searchTerm);
   }
-}, [selectedDepartment, selectedCourse, selectedSemester]);
+}, [selectedDepartment, selectedCourse, selectedSemester, selectedCategory, selectedStatus]);
 
   const getStudents = async () => {
     try {
@@ -93,12 +98,15 @@ const fetchFeeRecords = async (studentName = "") => {
   try {
     const response = await axios.get(API_ENDPOINTS.FEES_SUMMARY(), {
       headers: { Authorization: `Bearer ${token}` },
-      params: {
-        studentName: studentName || filters.search,
-        departmentIds: selectedDepartment || undefined,
-        courseIds: selectedCourse || undefined,
-        semesterIds: selectedSemester || undefined,
-      },
+     params: {
+  studentName: studentName || filters.search,
+  departmentIds: selectedDepartment || undefined,
+  courseIds: selectedCourse || undefined,
+  semesterIds: selectedSemester || undefined,
+  category: selectedCategory !== "All Categories" ? selectedCategory : undefined,
+  status: selectedStatus !== "All Statuses" ? selectedStatus : undefined,
+}
+
     });
 
     setFeeRecords(response.data.data || []);
@@ -118,6 +126,7 @@ const handleGenerateReceipt = async (record) => {
     });
     const payments = response.data[0].payments;
     const fees =  response.data[0].fees;
+    const feeSummary = response.data[0].feeSummary;
     // Group payments by feesId to calculate total paid so far (oldPaid)
     const oldPaidMap = {};
     payments.forEach(p => {
@@ -140,8 +149,6 @@ const handleGenerateReceipt = async (record) => {
       };
     });
 
-    const totalAmount = updatedFees.reduce((sum, f) => sum + f.newPaid, 0);
-    const discount = 0;
     const receipt = {
       receiptNo: record.receiptNo || "RCPT-XXXXXX",
       student: {
@@ -152,10 +159,11 @@ const handleGenerateReceipt = async (record) => {
       },
       breakdown: updatedFees,
       summary: {
-        discountLabel: `${discount}`,
-        amountReceived: totalAmount,
+        discountLabel: `${record.discount}`,
+        amountReceived: feeSummary[0].totalPaid,
         paymentMode: response.data.payment?.paymentMode || "Online",
-        totalPaid: totalAmount,
+        totalPaid: feeSummary[0].totalFee,
+        totalDue: feeSummary[0].remainingDue
       },
     };
 
@@ -172,9 +180,9 @@ const handleGenerateReceipt = async (record) => {
       <h2 className="text-2xl font-bold mb-4">View Fee Records</h2>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-4 mb-6">
+      <div className="flex  gap-2 mb-6">
 
-        <div className="mb-4 w-full sm:w-1/2 relative">
+        <div className="mb-4 w-[250px]">
           <div className="relative">
             <input
               type="text"
@@ -256,6 +264,33 @@ const handleGenerateReceipt = async (record) => {
               </option>
             ))}
           </select>
+          <select
+  onChange={(e) => {
+    setSelectedCategory(e.target.value);
+    setFilters((prev) => ({ ...prev, category: e.target.value }));
+  }}
+  value={selectedCategory}
+>
+  <option>All Categories</option>
+  <option>GEN</option>
+  <option>SC</option>
+  <option>BC</option>
+  <option>ST</option>
+</select>
+
+<select
+  onChange={(e) => {
+    setSelectedStatus(e.target.value);
+    setFilters((prev) => ({ ...prev, status: e.target.value }));
+  }}
+  value={selectedStatus}
+>
+  <option>All Statuses</option>
+  <option>FULLY PAID</option>
+  <option>PARTIALLY PAID</option>
+   <option>NOT PAID</option>
+</select>
+
         </div>
       </div>
 
