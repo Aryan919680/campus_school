@@ -272,7 +272,7 @@ const handleGenerateReceipt = async (record) => {
   value={selectedCategory}
 >
   <option>All Categories</option>
-  <option>GEN</option>
+  <option>GENERAL</option>
   <option>SC</option>
   <option>BC</option>
   <option>ST</option>
