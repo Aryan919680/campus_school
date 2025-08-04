@@ -125,6 +125,11 @@ const Sidebar = ({ sidebar, boxRef }) => {
                <ClipboardList /> Exams
             </Link>
           </li>
+          <li>
+            <Link to="/fees" className="flex gap-4 my-6 items-center">
+              <BadgeIndianRupee /> Fees
+            </Link>
+          </li>
           {/* <li>
             <Link to="/academics" className="flex gap-4 my-6 items-center">
               <GraduationCap /> Academics

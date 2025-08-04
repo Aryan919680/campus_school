@@ -7,6 +7,7 @@ import ListTable from "../List/ListTable.jsx";
 import DepartmentFees from "./DepartmentFees.jsx";
 import CommonTable from "../List/CommonTable.jsx";
 import UpdateCoursePage from "./UpdateCoursePage.jsx";
+import AddSubjects from "./AddSubjects.jsx";
 const Departments = () => {
   const [openForm, setOpenForm] = useState(false);
   const [formValues, setFormValues] = useState({ name: "", code: "" });
@@ -32,7 +33,7 @@ const Departments = () => {
 
   const [pageSize, setPageSize] = useState(10);
   const [courseSearchTerm, setCourseSearchTerm] = useState("");
-
+  const [subjectPage, setAddSubjectPage] = useState(false);
   const fetchDepartmentOptions = useCallback(async () => {
     try {
       const response = await axios.get(API_ENDPOINTS.GET_DEPARTMENTS(), {
@@ -105,21 +106,38 @@ const Departments = () => {
     setShowFeesPage(true);
     setShowCourse(false);
     setOpenForm(false);
+    setAddSubjectPage(false);
   };
   const closeFeesPage = () => {
-    setShowCourse(true);
+    setShowCourse(false);
     setOpenForm(false);
     setShowFeesPage(false);
+    setAddSubjectPage(true);
   };
   const closeAllPages = () => {
     setShowCourse(false);
     setOpenForm(false);
     setShowFeesPage(false);
+    setAddSubjectPage(false)
   };
+
+  const openSubjectPage = () => {
+    setShowCourse(false);
+    setOpenForm(false);
+    setShowFeesPage(false);
+    setAddSubjectPage(true);
+  }
+
+  const closeSubjectPage = () => {
+    setShowCourse(true);
+    setOpenForm(false);
+    setShowFeesPage(false);
+    setAddSubjectPage(false);
+  }
 
   const showCourseData = async (departmentId) => {
     setShowDepartment(false);
-  //  setCoursePageNumber(1);
+    //  setCoursePageNumber(1);
     setSelectedDepartmentId(departmentId); // store to reuse for filtering
     try {
       const response = await axios.get(
@@ -301,7 +319,7 @@ const Departments = () => {
       {showCourse && (
         <CourseForm
           closeCoursePage={closeCoursePage}
-          openFeesPage={openFeesPage}
+          openSubjectPage={openSubjectPage}
         />
       )}
       {showFeesPage && (
@@ -310,6 +328,11 @@ const Departments = () => {
           closeAllPages={closeAllPages}
         />
       )}
+      {
+        subjectPage && (
+          <AddSubjects openFeesPage={openFeesPage} closeSubjectPage={closeSubjectPage} />
+        )
+      }
       {showDepartment ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
           {departments.map((department) => (
@@ -429,7 +452,7 @@ const Departments = () => {
               setDepartmentPageNumber((prev) => Math.max(1, prev - 1))
             }
             className="bg-gray-200 px-4 py-2 rounded"
-           disabled={departmentPageNumber === 1}
+            disabled={departmentPageNumber === 1}
           >
             Prev
           </button>
@@ -446,7 +469,7 @@ const Departments = () => {
           <button
             onClick={() => setCoursePageNumber((prev) => Math.max(1, prev - 1))}
             className="bg-gray-200 px-4 py-2 rounded"
-           disabled={coursePageNumber === 1}
+            disabled={coursePageNumber === 1}
           >
             Prev
           </button>

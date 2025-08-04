@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import API_ENDPOINTS from "../../API/apiEndpoints";
 
-const CourseForm = ({ closeCoursePage, openFeesPage }) => {
+const CourseForm = ({ closeCoursePage, openSubjectPage }) => {
     useEffect(() => {
         document.body.style.overflow = "hidden";
         fetchDepartments();
@@ -68,7 +68,7 @@ const CourseForm = ({ closeCoursePage, openFeesPage }) => {
     };
 
     const handleSubmit = async () => {
-        openFeesPage();
+        openSubjectPage();
     };
 
     return (

@@ -110,6 +110,7 @@ const DepartmentFees = ({  closeFeesPage, closeAllPages }) => {
                         <button className="px-4 py-2 w-1/2 text-white bg-green-600 rounded-lg" type="button" onClick={submitFees}>
                             Submit Fees
                         </button>
+                        
                     </div>
                 </form>
             </div>

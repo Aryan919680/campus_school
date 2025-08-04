@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import API_ENDPOINTS from "../../API/apiEndpoints";
-import AssignTeacher from "./AssignTeacher";
 import CreateTimetable from "./CreateTimetable";
 const AddSubjects = ({ setOpenForm,openForm }) => {
     const userData = JSON.parse(localStorage.getItem("userData"));

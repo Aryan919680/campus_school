@@ -5,7 +5,6 @@ import FeesDetails from "../components/fees/FeesDetails";
 const FeesPayment = () => {
   return (
     <div className="flex flex-col md:flex-row w-full gap-6 mx-6">
-      <StudentDetails />
       <FeesDetails />
     </div>
   );

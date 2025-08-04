@@ -3,21 +3,27 @@ import { BadgeIndianRupee } from "lucide-react";
 import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "@/auth/context/AuthContext";
-import paidImage from "@/assets/images/paid.png"; // Adjust the path based on your project structure
-
+import ReceiptDownloadButton from "./ReceiptDownloadButton";
 const FeesDetails = () => {
   const { data } = useContext(AuthContext);
   const studentID = data.id;
+  const campusId = data.campusId;
   const [payments, setPayments] = useState([]);
-  const [selectedPayment, setSelectedPayment] = useState(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [paymentDetails, setPaymentDetails] = useState(null);
-
+   const [selectedReceiptRecordId, setSelectedReceiptRecordId] = useState(null);
+     const [receiptData, setReceiptData] = useState(null);
+    const token = localStorage.getItem("token");
+  console.log(data,token)
   useEffect(() => {
     const fetchPayments = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/payment/student/${studentID}`);
-        const paymentData = response.data.data.payment;
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/payment/campus/${campusId}/feesSummary`,{
+             headers: { Authorization: `Bearer ${token}` },
+             params: {
+              studentId:studentID
+             }
+        });
+        console.log(response.data)
+        const paymentData = response.data.data;
         setPayments(paymentData);
       } catch (error) {
         console.error("Error fetching payment data:", error);
@@ -27,98 +33,140 @@ const FeesDetails = () => {
     fetchPayments();
   }, [studentID]);
 
-  const fetchPaymentDetails = async (paymentID) => {
-    try {
-      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/payment/status/${paymentID}`);
-      setPaymentDetails(response.data.data);
-      setSidebarOpen(true);
-    } catch (error) {
-      console.error("Error fetching payment details:", error);
-    }
-  };
 
-  const handleViewDetails = (paymentID) => {
-    fetchPaymentDetails(paymentID);
-  };
 
-  const handleCloseSidebar = () => {
-    setSidebarOpen(false);
-    setPaymentDetails(null);
-  };
+  const handleGenerateReceipt = async (record) => {
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/payment/campus/${campusId}/getFeesByStudentName`, {
+      headers: { Authorization: `Bearer ${token}` },
+      params: { name: record.studentName },
+    });
+    const payments = response.data[0].payments;
+    const fees =  response.data[0].fees;
+    const feeSummary = response.data[0].feeSummary;
+    // Group payments by feesId to calculate total paid so far (oldPaid)
+    const oldPaidMap = {};
+    payments.forEach(p => {
+      if (!oldPaidMap[p.feesId]) oldPaidMap[p.feesId] = 0;
+      oldPaidMap[p.feesId] += p.paidAmount;
+    });
 
+    // Get the latest payments (assumes sorted by createdAt ascending, reverse if needed)
+    const latestPayments = payments.slice(-3); // or filter based on a timestamp or condition
+
+    const updatedFees = latestPayments.map(fee => {
+      const fullFee = fees.find(f => f.feesId === fee.feesId);
+      const totalPaidForFee = oldPaidMap[fee.feesId] || 0;
+
+      return {
+        name: fullFee?.name || "Fee",
+        oldPaid: totalPaidForFee - fee.paidAmount,
+        newPaid: totalPaidForFee,
+        due: fee.dueAmount,
+      };
+    });
+
+    const receipt = {
+      receiptNo: record.receiptNo || "RCPT-XXXXXX",
+      student: {
+        name: record.studentName || "Student",
+        id: record.studentId,
+        course: record.courseName || "-",
+        semester: record.semesterName || "-",
+      },
+      breakdown: updatedFees,
+      summary: {
+        discountLabel: `${record.discount}`,
+        amountReceived: feeSummary[0].totalPaid,
+        paymentMode: response.data.payment?.paymentMode || "Online",
+        totalPaid: feeSummary[0].totalFee,
+        totalDue: feeSummary[0].remainingDue
+      },
+    };
+
+    setReceiptData(receipt);
+    setSelectedReceiptRecordId(record.studentId);
+  } catch (error) {
+    console.error("Error generating receipt:", error);
+  }
+};
   return (
-    <div className="fees w-11/12 max-w-screen-lg flex flex-col gap-6 items-center p-6 relative">
-      <div className="flex gap-2 text-3xl font-bold items-center">
+    <div className="fees w-full min-h-screen flex flex-col items-center bg-gray-50 p-6">
+
+      <div className="flex gap-2 text-3xl font-bold items-center mb-4">
         <BadgeIndianRupee className="text-primary-foreground size-12" /> Fee Details
       </div>
-      <div className={`flex flex-wrap justify-center gap-6 ${payments.length === 1 ? 'w-full justify-center' : ''}`}>
+      <div className="w-full overflow-x-auto">
         {payments.length > 0 ? (
-          payments.map((payment) => (
-            <div
-              key={payment.id}
-              className={`bg-white py-10 px-6 rounded-xl shadow-lg ${payments.length === 1 ? 'w-full sm:w-96' : 'w-full sm:w-5/12'} relative ${payment.status === "paid" ? "bg-[url('/src/assets/images/paid.png')] bg-center bg-no-repeat bg-opacity-10" : ""}`}
-            >
-              <div className="py-6 bg-primary text-center rounded-t-lg px-10">
-                <h1 className="text-4xl font-bold text-primary-foreground">{payment.title}</h1>
-                <p className="text-xl font-bold">{payment.description || "No description available"}</p>
-              </div>
-              <ul className="mt-8 flex flex-col gap-3">
-                <li className="flex gap-10 justify-between text-xl font-semibold">
-                  <p>Amount</p>
-                  <p>₹{payment.amount}</p>
-                </li>
-                <li className="flex gap-10 justify-between text-xl font-semibold">
-                  <p>Transaction ID</p>
-                  <p>{payment.localTransactionId || "N/A"}</p>
-                </li>
-                <li className="flex gap-10 justify-between text-xl font-semibold">
-                  <p>Status</p>
-                  <p>{payment.status}</p>
-                </li>
-                <li className="flex gap-10 justify-between text-xl font-semibold">
-                  <p>Created At</p>
-                  <p>{new Date(payment.created_at).toLocaleDateString()}</p>
-                </li>
-              </ul>
-              <div className="mt-6 flex justify-center">
-                {payment.status === "paid" ? (
-                  <Button onClick={() => handleViewDetails(payment.id)}>View Details</Button>
-                ) : (
-                  <Button>Proceed</Button>
-                )}
-              </div>
-            </div>
-          ))
+      <table className="w-full border divide-y divide-gray-200 text-sm">
+            <thead className="bg-gray-100 text-left font-medium">
+              <tr>
+                <th className="px-4 py-2">Student Name</th>
+                <th className="px-4 py-2">Student ID</th>
+                <th className="px-4 py-2">Course</th>
+                <th className="px-4 py-2">Semester</th>
+                <th className="px-4 py-2">Total Fee (₹)</th>
+                <th className="px-4 py-2">Paid (₹)</th>
+                <th className="px-4 py-2">Due (₹)</th>
+                <th className="px-4 py-2">Receipt No.</th>
+                <th className="px-4 py-2">Last Payment</th>
+                <th className="px-4 py-2">Status</th>
+                <th className="px-4 py-2">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {payments.map((record) => (
+                <tr key={record.id}>
+                  <td className="px-4 py-2">{record.studentName}</td>
+                  <td className="px-4 py-2">{record.studentId}</td>
+                  <td className="px-4 py-2">{record.courseName}</td>
+                  <td className="px-4 py-2">{record.semesterName}</td>
+                  <td className="px-4 py-2">{record.totalFee}</td>
+                  <td className="px-4 py-2">{record.totalPaid}</td>
+                  <td className="px-4 py-2">{record.totalDue}</td>
+                  <td className="px-4 py-2">{record.receiptNo}</td>
+                  <td className="px-4 py-2">{(record.lastPayment)}</td>
+                  <td className="px-4 py-2">
+                    <span
+                      className={`px-2 py-1 text-xs rounded-full ${record.status === "FULLY PAID"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-yellow-100 text-yellow-700"
+                        }`}
+                    >
+                      {record.status}
+                    </span>
+                  </td>
+              
+                     <td className="px-4 py-2">
+  {selectedReceiptRecordId === record.studentId ? (
+    <ReceiptDownloadButton
+   
+      receipt={receiptData}
+      onDownloadComplete={() => {
+        setReceiptData(null);
+        setSelectedReceiptRecordId(null);
+      }}
+    />
+  ) : (
+    <button
+      onClick={() => handleGenerateReceipt(record)}
+      className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+    >
+      Generate Receipt
+    </button>
+  )}
+</td>
+
+                        
+                </tr>
+              ))}
+            </tbody>
+          </table>
         ) : (
           <div className="text-2xl font-semibold">Loading...</div>
         )}
       </div>
-      {sidebarOpen && paymentDetails && (
-        <div className="fixed top-0 right-0 w-80 h-full bg-white shadow-lg p-6 overflow-auto z-50">
-          <button className="absolute top-4 right-4 text-2xl" onClick={handleCloseSidebar}>&times;</button>
-          <h2 className="text-3xl font-bold mb-4">Payment Details</h2>
-          <ul className="flex flex-col gap-3">
-            <li className="text-xl">
-              <strong>Amount:</strong> ₹{paymentDetails.paymentdetails[0].amount}
-            </li>
-            <li className="text-xl">
-              <strong>Status:</strong> {paymentDetails.paymentdetails[0].status}
-            </li>
-            <li className="text-xl">
-              <strong>Description:</strong> {paymentDetails.paymentdetails[0].description}
-            </li>
-            <li className="text-xl">
-              <strong>Created At:</strong> {new Date(paymentDetails.paymentdetails[0].created_at).toLocaleDateString()}
-            </li>
-            <li className="text-xl">
-              <strong>Updated At:</strong> {new Date(paymentDetails.paymentdetails[0].updated_at).toLocaleDateString()}
-            </li>
-            <li className="text-xl">
-              <strong>Message:</strong> {paymentDetails.paymentdetails[0].message}
-            </li>
-          </ul>
-        </div>
-      )}
+   
     </div>
   );
 };

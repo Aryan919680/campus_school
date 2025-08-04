@@ -144,7 +144,7 @@ const handleGenerateReceipt = async (record) => {
       return {
         name: fullFee?.name || "Fee",
         oldPaid: totalPaidForFee - fee.paidAmount,
-        newPaid: fee.paidAmount,
+        newPaid: totalPaidForFee,
         due: fee.dueAmount,
       };
     });
