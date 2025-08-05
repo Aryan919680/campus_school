@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import API_ENDPOINTS from "../../API/apiEndpoints";
 
-export default function AssignTeacher({ subjectData, onClose }) {
+export default function AssignTeacher({ selectedSemesterId,selectedCourseId, onClose }) {
     const userData = JSON.parse(localStorage.getItem("userData"));
     const token = userData?.token;
     const campusType = userData?.data.campusType;
@@ -17,7 +17,7 @@ export default function AssignTeacher({ subjectData, onClose }) {
         const fetchData = async () => {
             try {
                 const idParam = campusType.toLowerCase() === "college"
-                    ? `courseId=${subjectData.courseId}`
+                    ? `courseId=${selectedCourseId}`
                     : `classId=${subjectData.classId}`;
 
                 const [teacherRes, subjectRes] = await Promise.all([
@@ -36,7 +36,7 @@ export default function AssignTeacher({ subjectData, onClose }) {
         };
 
         fetchData();
-    }, [token, subjectData]);
+    }, [token, selectedCourseId]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -107,7 +107,7 @@ export default function AssignTeacher({ subjectData, onClose }) {
             role: "TEACHER",
             subjectId,
             ...(campusType.toLowerCase() === "college"
-                ? { semesters: [subjectData.semesterId] }
+                ? { semesters: [selectedSemesterId] }
                 : { subClasses: [subjectData.subClassId] })
         };
 
@@ -142,7 +142,7 @@ export default function AssignTeacher({ subjectData, onClose }) {
 
             <div className="fixed inset-0 z-50 flex justify-center items-center h-full w-full bg-black bg-opacity-80 backdrop-blur-sm">
                 <div className="bg-gray-800 p-6 rounded-xl w-3/12 text-white space-y-4">
-                    <h2 className="text-xl font-semibold">Step 3: Assign Subject to Teacher</h2>
+                    <h2 className="text-xl font-semibold">Step 2: Assign Subject to Teacher</h2>
                     <div className="grid grid-cols-2 gap-4">
                         <select name="subjectId" value={formData.subjectId} onChange={handleChange} className="p-2 rounded-md text-black">
                             <option value="">Select Subject</option>
