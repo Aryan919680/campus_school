@@ -1,8 +1,6 @@
 import { useState,useCallback,useEffect } from "react";
 import API_ENDPOINTS from "../../API/apiEndpoints";
-import AddSubjects from "./AddSubjects";
-import axios from "axios";
-import ListTable from "../List/ListTable";
+import CreateTimetable from "./CreateTimetable";
 const TimeTablePage = () => {
   const [departments, setDepartments] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
@@ -158,7 +156,7 @@ const TimeTablePage = () => {
         </div>
       )}
 
-       {openForm && <AddSubjects setOpenForm={setOpenForm} openForm={openForm}/>
+       {openForm && <CreateTimetable setOpenForm={setOpenForm} openForm={openForm}/>
 
        }
 {timeTable.length > 0 && (
