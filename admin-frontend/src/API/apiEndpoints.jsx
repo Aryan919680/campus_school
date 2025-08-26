@@ -56,6 +56,9 @@ const API_ENDPOINTS = {
     GET_PAYMENT_FEES:() => `${
       import.meta.env.VITE_BASE_URL
     }/api/v1/payment/campus/${getCampusId()}/getFeesByStudentName`,
+        GET_PAYMENT_FEES_SCHOOL:() => `${
+      import.meta.env.VITE_BASE_URL
+    }/api/v1/payment/campus/${getCampusId()}/getFeesBySchoolStudentName`,
   PAYMENT_FEES: () =>
     `${
       import.meta.env.VITE_BASE_URL

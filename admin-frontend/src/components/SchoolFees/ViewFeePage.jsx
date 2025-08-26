@@ -91,9 +91,9 @@ const fetchFeeRecords = async (studentName = "") => {
       headers: { Authorization: `Bearer ${token}` },
      params: {
   studentName: studentName || filters.search,
-  departmentIds: selectedDepartment || undefined,
-  courseIds: selectedCourse || undefined,
-  semesterIds: selectedSemester || undefined,
+  // departmentIds: selectedDepartment || undefined,
+  // courseIds: selectedCourse || undefined,
+  // semesterIds: selectedSemester || undefined,
   category: selectedCategory !== "All Categories" ? selectedCategory : undefined,
   status: selectedStatus !== "All Statuses" ? selectedStatus : undefined,
 }

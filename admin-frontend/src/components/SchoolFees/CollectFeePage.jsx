@@ -12,7 +12,20 @@ const CollectFeePage = () => {
   const [amountReceived, setAmountReceived] = useState('');
   const [modeOfPayment, setModeOfPayment] = useState("Cash");
   const [referenceNo, setReferenceNo] = useState("");
-  const [fees, setFees] = useState([]);
+    const [fees, setFees] = useState([
+    { month: "January", feeHead: "Tuition Fee", total: 5000, isPaid: true, due: 0, newEntry: 0 },
+    { month: "February", feeHead: "Tuition Fee", total: 5000, isPaid: false, due: 5000, newEntry: 0 },
+    { month: "March", feeHead: "Tuition Fee", total: 5000, isPaid: true, due: 0, newEntry: 0 },
+    { month: "April", feeHead: "Tuition Fee", total: 5000, isPaid: false, due: 5000, newEntry: 0 },
+    { month: "May", feeHead: "Tuition Fee", total: 5000, isPaid: true, due: 0, newEntry: 0 },
+    { month: "June", feeHead: "Tuition Fee", total: 5000, isPaid: false, due: 5000, newEntry: 0 },
+    { month: "July", feeHead: "Tuition Fee", total: 5000, isPaid: false, due: 5000, newEntry: 0 },
+    { month: "August", feeHead: "Tuition Fee", total: 5000, isPaid: true, due: 0, newEntry: 0 },
+    { month: "September", feeHead: "Tuition Fee", total: 5000, isPaid: false, due: 5000, newEntry: 0 },
+    { month: "October", feeHead: "Tuition Fee", total: 5000, isPaid: true, due: 0, newEntry: 0 },
+    { month: "November", feeHead: "Tuition Fee", total: 5000, isPaid: false, due: 5000, newEntry: 0 },
+    { month: "December", feeHead: "Tuition Fee", total: 5000, isPaid: true, due: 0, newEntry: 0 },
+  ]);
   const [searchTerm, setSearchTerm] = useState("");
   const [students, setStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
@@ -53,32 +66,8 @@ const CollectFeePage = () => {
     }
   };
 
-useEffect(() => {
-  if (!fees.length) return;
-
-  const updatedFees = fees.map((fee) => {
-    if (fee.name.toLowerCase().includes("tuition")) {
-      const adjustedDue = Math.max(fee.originalAmount - fee.feesPaid - (discount || 0), 0);
-      return {
-        ...fee,
-        due: adjustedDue,
-        toCollect: adjustedDue,
-      };
-    } else {
-      const remainingDue = Math.max(fee.originalAmount - fee.feesPaid, 0);
-      return {
-        ...fee,
-        due: remainingDue,
-        toCollect: remainingDue,
-      };
-    }
-  });
-
-  setFees(updatedFees);
-}, [discount]);
-
   useEffect(() => {
-    if (selectedStudent?.courseId) {
+    if (selectedStudent) {
       getFees();
     }
   }, [selectedStudent]);
@@ -88,16 +77,14 @@ useEffect(() => {
 
     setLoadingFees(true); 
     try {
-      const response = await axios.get(
-        campusType === "COLLEGE"
-          ? `${API_ENDPOINTS.GET_PAYMENT_FEES()}`
-          : `${API_ENDPOINTS.FETCH_FEES()}/fees`,
+      const response = await axios.get(`${API_ENDPOINTS.GET_PAYMENT_FEES_SCHOOL()}`,
         {
           headers: { Authorization: `Bearer ${token}` },
           params: { name: searchTerm },
         }
       );
-
+ 
+      console.log(response.data)
       const allFeeData = response.data;
       const studentFeeData = allFeeData.find(
         (entry) => entry.studentId === selectedStudent.studentId
@@ -407,7 +394,7 @@ const handleDownloadAndReset = () => {
         </div>
       </div>
 
-      <table className="w-full mt-4 border border-gray-300 rounded-md">
+      {/* <table className="w-full mt-4 border border-gray-300 rounded-md">
         <thead className="bg-gray-100">
 
           <tr className="text-center">
@@ -424,7 +411,7 @@ const handleDownloadAndReset = () => {
         <tbody>
           {fees.map((fee, index) => {
            const isTuition = fee.name.toLowerCase().includes("tuition");
-const discountToApply = isTuition ? discount || 0 : 0;
+   const discountToApply = isTuition ? discount || 0 : 0;
 const newEntry = newPaidEntries[index] || 0;
 const totalPaid = fee.feesPaid + newEntry;
 const newDue = Math.max(fee.originalAmount - discountToApply - totalPaid, 0);
@@ -457,6 +444,62 @@ const newDue = Math.max(fee.originalAmount - discountToApply - totalPaid, 0);
           })}
         </tbody>
 
+      </table> */}
+   <table className="w-full border border-gray-300 rounded-md shadow-md">
+        <thead className="bg-gray-100">
+          <tr className="text-center text-gray-700 font-semibold">
+            <th className="p-2">Month</th>
+            <th className="p-2">Fee Head</th>
+            <th className="p-2">Total Fees</th>
+            <th className="p-2">Is Paid</th>
+            <th className="p-2">Due Amount</th>
+            <th className="p-2">New Entry</th>
+            <th className="p-2">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {fees.map((fee, index) => (
+            <tr
+              key={index}
+              className={`text-center border-t ${
+                fee.isPaid ? "bg-green-50" : "bg-red-50"
+              }`}
+            >
+              <td className="p-2 font-medium">{fee.month}</td>
+              <td className="p-2">{fee.feeHead}</td>
+              <td className="p-2">₹{fee.total.toLocaleString()}</td>
+              <td
+                className={`p-2 font-semibold ${
+                  fee.isPaid ? "text-green-600" : "text-red-600"
+                }`}
+              >
+                {fee.isPaid ? "Yes" : "No"}
+              </td>
+              <td className="p-2 text-red-500">₹{fee.due.toLocaleString()}</td>
+              <td className="p-2 text-green-600">
+                ₹{fee.newEntry ? fee.newEntry.toLocaleString() : "-"}
+              </td>
+              <td className="p-2">
+                {!fee.isPaid && (
+                  <button
+                    onClick={() => {
+                      const updated = [...fees];
+                      updated[index].isPaid = true;
+                      updated[index].due = 0;
+                      setFees(updated);
+                    }}
+                    className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow-sm transition"
+                  >
+                    Pay
+                  </button>
+                )}
+                {fee.isPaid && (
+                  <span className="text-green-700 font-semibold">Paid</span>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
       </table>
 
       <div className="grid grid-cols-3 gap-4 mb-6">
