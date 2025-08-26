@@ -8,7 +8,8 @@ import Support from "./components/Support/Support";
 import Classes from "./components/Classes/Classes";
 import Departments from "./components/Departments/Department";
 import AttendancePage from "./components/Attendance/AttendencePage";
-import FeePage from "./components/Fees/FeePage";
+import FeePage from "./components/CollegeFees/FeePage";
+import FeePageSchool from "./components/SchoolFees/FeePage";
 import EmployeePage from "./components/Role/EmployeePage";
 import Timetable from "./components/Timetable/TimeTablePage";
 import SchoolTimeTablePage from "./components/Timetable/SchoolTimeTablePage";
@@ -74,7 +75,7 @@ const Layout = ({ logout }) => {
 						<Route path="/employees" element={<Employees />} />
 						<Route path="/students" element={<Students />} />
 						<Route path="/attendance" element={<AttendancePage />} />
-						<Route path="/finance" element={<FeePage />} />
+						<Route path="/finance" element={<FeePageSchool />} />
 						<Route path='/role' element={<EmployeePage />} />
 						<Route path="/timetable" element={<SchoolTimeTablePage /> }/>
 						<Route path="/notice" element={<NoticePage /> }/>
