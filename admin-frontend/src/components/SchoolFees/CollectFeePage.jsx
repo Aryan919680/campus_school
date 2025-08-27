@@ -7,25 +7,10 @@ import ReceiptDownloadButton from "../CollegeFees/ReceiptDownloadButton";
 
 
 const CollectFeePage = () => {
-  const [discount, setDiscount] = useState();
   const [notes, setNotes] = useState("");
-  const [amountReceived, setAmountReceived] = useState('');
   const [modeOfPayment, setModeOfPayment] = useState("Cash");
   const [referenceNo, setReferenceNo] = useState("");
-    const [fees, setFees] = useState([
-    { month: "January", feeHead: "Tuition Fee", total: 5000, isPaid: true, due: 0, newEntry: 0 },
-    { month: "February", feeHead: "Tuition Fee", total: 5000, isPaid: false, due: 5000, newEntry: 0 },
-    { month: "March", feeHead: "Tuition Fee", total: 5000, isPaid: true, due: 0, newEntry: 0 },
-    { month: "April", feeHead: "Tuition Fee", total: 5000, isPaid: false, due: 5000, newEntry: 0 },
-    { month: "May", feeHead: "Tuition Fee", total: 5000, isPaid: true, due: 0, newEntry: 0 },
-    { month: "June", feeHead: "Tuition Fee", total: 5000, isPaid: false, due: 5000, newEntry: 0 },
-    { month: "July", feeHead: "Tuition Fee", total: 5000, isPaid: false, due: 5000, newEntry: 0 },
-    { month: "August", feeHead: "Tuition Fee", total: 5000, isPaid: true, due: 0, newEntry: 0 },
-    { month: "September", feeHead: "Tuition Fee", total: 5000, isPaid: false, due: 5000, newEntry: 0 },
-    { month: "October", feeHead: "Tuition Fee", total: 5000, isPaid: true, due: 0, newEntry: 0 },
-    { month: "November", feeHead: "Tuition Fee", total: 5000, isPaid: false, due: 5000, newEntry: 0 },
-    { month: "December", feeHead: "Tuition Fee", total: 5000, isPaid: true, due: 0, newEntry: 0 },
-  ]);
+  const [fees, setFees] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [students, setStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
@@ -40,6 +25,7 @@ const CollectFeePage = () => {
   const [loadingFees, setLoadingFees] = useState(false);
   const [newPaidEntries, setNewPaidEntries] = useState({});
   const [submitted, setSubmitted] = useState(false);
+  const [feeSummary, setFeeSummary] = useState([]);
   useEffect(() => {
     const handleClickOutside = () => setShowSuggestions(false);
     document.addEventListener("click", handleClickOutside);
@@ -91,47 +77,45 @@ const CollectFeePage = () => {
       );
 
       if (studentFeeData) {
-        const { fees, payments, feeSummary } = studentFeeData;
-        const totalPaid = feeSummary?.[0]?.totalPaid || 0;
+        const {fees, feeSummary} =  studentFeeData;
+        console.log(fees, feeSummary);
+        // const { fees, payments, feeSummary } = studentFeeData;
+        // const totalPaid = feeSummary?.[0]?.totalPaid || 0;
+        // console.log(fees)
+        // const formattedFees = fees.map((fee) => {
 
-        const formattedFees = fees.map((fee) => {
-          const multiplier = getMultiplier(fee.type);
-          const totalFeeAmount = fee.amount * multiplier;
+        //   if (!payments || payments.length === 0 || feeSummary.length === 0) {
+        //     return {
+        //       name: fee.name,
+        //       feesId: fee.feesId,
+        //       selected: false,
+        //       type: fee.type,
+        //       feesPaid: 0, 
+        //     };
+        //   }
 
-          if (!payments || payments.length === 0 || feeSummary.length === 0) {
-            return {
-              name: fee.name,
-              due: totalFeeAmount,
-              toCollect: totalFeeAmount,
-              feesId: fee.feesId,
-              selected: false,
-              courseId: selectedStudent.courseId,
-              type: fee.type,
-              feesPaid: 0, 
-              originalAmount: totalFeeAmount,
-            };
-          }
+          // const paid = payments
+          //   .filter((p) => p.feesId === fee.feesId)
+          //   .reduce((sum, p) => sum + Number(p.paidAmount || 0), 0);
 
-          const paid = payments
-            .filter((p) => p.feesId === fee.feesId)
-            .reduce((sum, p) => sum + Number(p.paidAmount || 0), 0);
+          // const due = paid > 0 ? Math.max(totalFeeAmount - paid, 0) : totalFeeAmount;
 
-          const due = paid > 0 ? Math.max(totalFeeAmount - paid, 0) : totalFeeAmount;
+          // return {
+          //   name: fee.name,
+          //   due,
+          //   toCollect: due,
+          //   feesId: fee.feesId,
+          //   selected: false,
+          //   courseId: selectedStudent.courseId,
+          //   type: fee.type,
+          //   feesPaid: paid > 0 ? paid : 0,
+          //   originalAmount: totalFeeAmount,
+          // };
+        // });
 
-          return {
-            name: fee.name,
-            due,
-            toCollect: due,
-            feesId: fee.feesId,
-            selected: false,
-            courseId: selectedStudent.courseId,
-            type: fee.type,
-            feesPaid: paid > 0 ? paid : 0,
-            originalAmount: totalFeeAmount,
-          };
-        });
-
-        setFees(formattedFees);
+        setFees(fees);
+        setFeeSummary(feeSummary[0]);
+        
       } else {
         setFees([]); // No data found for this student
       }
@@ -142,19 +126,6 @@ const CollectFeePage = () => {
       setLoadingFees(false); // Stop loading state
     }
   };
-
-  const getMultiplier = (type) => {
-    switch (type) {
-      case "SEMESTER":
-        return 2;
-      case "MONTHLY":
-        return 12;
-      case "ANNUAL":
-      default:
-        return 1;
-    }
-  };
-
 
   const handleSubmitFees = async () => {
     if (!selectedStudent?.studentId) {
@@ -346,8 +317,8 @@ const handleDownloadAndReset = () => {
 
                   }}
                 >
-                  {student.name} - {student.departmentName} ,{" "}
-                  {student.courseName}, {student.semesterName}
+                  {student.name} - 
+                  {student.className}, {student.subClassName}
                 </li>
               ))}
             </ul>
@@ -375,144 +346,111 @@ const handleDownloadAndReset = () => {
           />
         </div>
         <div>
-          <label className="text-sm text-gray-600">Course</label>
+          <label className="text-sm text-gray-600">Class</label>
           <input
             type="text"
-            value={selectedStudent?.courseName || ""}
+            value={selectedStudent?.className || ""}
             readOnly
             className="w-full border p-2 rounded"
           />
         </div>
         <div>
-          <label className="text-sm text-gray-600">Semester</label>
+          <label className="text-sm text-gray-600">Sub Class</label>
           <input
             type="text"
-            value={selectedStudent?.semesterName || ""}
+            value={selectedStudent?.subClassName || ""}
             readOnly
             className="w-full border p-2 rounded"
           />
         </div>
       </div>
-
-      {/* <table className="w-full mt-4 border border-gray-300 rounded-md">
-        <thead className="bg-gray-100">
-
-          <tr className="text-center">
-            <th className="p-2">Fee Head</th>
-            <th className="p-2">Type</th>
-            <th className="p-2">Total fees</th>
-            <th className="p-2">Old Paid Amount</th>
-            <th className="p-2">New Entry</th>
-            <th className="p-2">Due</th>
-            <th className="p-2">Action</th>
-
-          </tr>
-        </thead>
-        <tbody>
-          {fees.map((fee, index) => {
-           const isTuition = fee.name.toLowerCase().includes("tuition");
-   const discountToApply = isTuition ? discount || 0 : 0;
-const newEntry = newPaidEntries[index] || 0;
-const totalPaid = fee.feesPaid + newEntry;
-const newDue = Math.max(fee.originalAmount - discountToApply - totalPaid, 0);
-
-            return (
-              <tr key={index} className="border-t text-center">
-                <td className="p-2">{fee.name}</td>
-                <td className="p-2">{fee.type}</td>
-                <td className="p-2">₹{fee.originalAmount.toLocaleString()}</td>
-                <td className="p-2">₹{fee.feesPaid.toLocaleString()}</td>
-                <td className="p-2 text-green-600">
-                  ₹{newEntry ? newEntry.toLocaleString() : "-"}
-                </td>
-             <td className="p-2 text-red-500">₹{newDue.toLocaleString()}</td>
-
-                <td className="p-2">
-                  <button
-                    onClick={() => {
-                      setCurrentFeeIndex(index);
-                      setFeePaymentAmount('');
-                      setShowFeeModal(true);
-                    }}
-                    className="px-3 py-1 bg-linear-blue text-white rounded"
-                  >
-                    Pay
-                  </button>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-
-      </table> */}
-   <table className="w-full border border-gray-300 rounded-md shadow-md">
-        <thead className="bg-gray-100">
-          <tr className="text-center text-gray-700 font-semibold">
-            <th className="p-2">Month</th>
-            <th className="p-2">Fee Head</th>
-            <th className="p-2">Total Fees</th>
-            <th className="p-2">Is Paid</th>
-            <th className="p-2">Due Amount</th>
-            <th className="p-2">New Entry</th>
-            <th className="p-2">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {fees.map((fee, index) => (
-            <tr
-              key={index}
-              className={`text-center border-t ${
-                fee.isPaid ? "bg-green-50" : "bg-red-50"
-              }`}
+  <table className="w-full border border-gray-300 rounded-md shadow-md">
+  <thead className="bg-gray-100">
+    <tr className="text-center text-gray-700 font-semibold">
+      <th className="p-2">Month</th>
+      <th className="p-2">Fee Head</th>
+      <th className="p-2">Fee Amount</th>
+      <th className="p-2">Paid Amount</th>
+      <th className="p-2">Due Amount</th>
+      <th className="p-2">Is Paid</th>
+      <th className="p-2">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {fees.map((fee, index) => (
+      <tr
+        key={index}
+        className={`text-center border-t ${
+          fee.isPaid ? "bg-green-50" : "bg-red-50"
+        }`}
+      >
+        <td className="p-2 font-medium">{fee.month}</td>
+        <td className="p-2">{fee.name}</td>
+        <td className="p-2">₹{fee.feeAmount.toLocaleString()}</td>
+        <td className="p-2 text-green-600">₹{fee.paidAmount.toLocaleString()}</td>
+        <td className="p-2 text-red-500">₹{fee.due.toLocaleString()}</td>
+        <td
+          className={`p-2 font-semibold ${
+            fee.isPaid ? "text-green-600" : "text-red-600"
+          }`}
+        >
+          {fee.isPaid ? "Yes" : "No"}
+        </td>
+        <td className="p-2">
+          {!fee.isPaid && (
+            <button
+              onClick={() => {
+                const updated = [...fees];
+                updated[index].isPaid = true;
+                updated[index].due = 0;
+                updated[index].paidAmount = updated[index].feeAmount; // mark full payment
+                setFees(updated);
+              }}
+              className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow-sm transition"
             >
-              <td className="p-2 font-medium">{fee.month}</td>
-              <td className="p-2">{fee.feeHead}</td>
-              <td className="p-2">₹{fee.total.toLocaleString()}</td>
-              <td
-                className={`p-2 font-semibold ${
-                  fee.isPaid ? "text-green-600" : "text-red-600"
-                }`}
-              >
-                {fee.isPaid ? "Yes" : "No"}
-              </td>
-              <td className="p-2 text-red-500">₹{fee.due.toLocaleString()}</td>
-              <td className="p-2 text-green-600">
-                ₹{fee.newEntry ? fee.newEntry.toLocaleString() : "-"}
-              </td>
-              <td className="p-2">
-                {!fee.isPaid && (
-                  <button
-                    onClick={() => {
-                      const updated = [...fees];
-                      updated[index].isPaid = true;
-                      updated[index].due = 0;
-                      setFees(updated);
-                    }}
-                    className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow-sm transition"
-                  >
-                    Pay
-                  </button>
-                )}
-                {fee.isPaid && (
-                  <span className="text-green-700 font-semibold">Paid</span>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+              Pay
+            </button>
+          )}
+          {fee.isPaid && (
+            <span className="text-green-700 font-semibold">Paid</span>
+          )}
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
 
       <div className="grid grid-cols-3 gap-4 mb-6">
       
-        {/* <div>
-          <label className="text-sm text-gray-600">Category</label>
+        <div>
+          <label className="text-sm text-gray-600">Total Fees</label>
           <input
-            type="text"
-            value={selectedStudent?.category || ""}
+            type="number"
+            value={feeSummary?.totalFee || ""}
 
             className="w-full border p-2 rounded"
           />
-        </div> */}
+        </div>
+             <div>
+          <label className="text-sm text-gray-600">Total Amount Paid</label>
+          <input
+            type="number"
+            value={feeSummary?.totalPaid || ""}
+
+            className="w-full border p-2 rounded"
+          />
+        </div>
+             <div>
+          <label className="text-sm text-gray-600">Due Amount</label>
+          <input
+            type="number"
+            value={feeSummary?.remainingDue || 0}
+
+            className="w-full border p-2 rounded"
+          />
+        </div>
+
         <div>
           <label className="text-sm text-gray-600">Notes</label>
           <input
