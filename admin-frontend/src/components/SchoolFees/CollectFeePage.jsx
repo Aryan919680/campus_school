@@ -78,41 +78,6 @@ const CollectFeePage = () => {
 
       if (studentFeeData) {
         const {fees, feeSummary} =  studentFeeData;
-        console.log(fees, feeSummary);
-        // const { fees, payments, feeSummary } = studentFeeData;
-        // const totalPaid = feeSummary?.[0]?.totalPaid || 0;
-        // console.log(fees)
-        // const formattedFees = fees.map((fee) => {
-
-        //   if (!payments || payments.length === 0 || feeSummary.length === 0) {
-        //     return {
-        //       name: fee.name,
-        //       feesId: fee.feesId,
-        //       selected: false,
-        //       type: fee.type,
-        //       feesPaid: 0, 
-        //     };
-        //   }
-
-          // const paid = payments
-          //   .filter((p) => p.feesId === fee.feesId)
-          //   .reduce((sum, p) => sum + Number(p.paidAmount || 0), 0);
-
-          // const due = paid > 0 ? Math.max(totalFeeAmount - paid, 0) : totalFeeAmount;
-
-          // return {
-          //   name: fee.name,
-          //   due,
-          //   toCollect: due,
-          //   feesId: fee.feesId,
-          //   selected: false,
-          //   courseId: selectedStudent.courseId,
-          //   type: fee.type,
-          //   feesPaid: paid > 0 ? paid : 0,
-          //   originalAmount: totalFeeAmount,
-          // };
-        // });
-
         setFees(fees);
         setFeeSummary(feeSummary[0]);
         
@@ -127,103 +92,70 @@ const CollectFeePage = () => {
     }
   };
 
-  const handleSubmitFees = async () => {
-    if (!selectedStudent?.studentId) {
-      alert("Please select a student before submitting.");
+// ✅ handleSubmitFees
+const handleSubmitFees = async () => {
+  try {
+    // filter only months where user clicked Pay
+    const selectedFees = fees
+      .filter((_, index) => newPaidEntries[index] > 0)
+      .map((fee, index) => {
+        const paidAmount = newPaidEntries[index];
+
+        return {
+          feesId: fee.feesId,
+          classId: fee.classId,
+          month: fee.month,
+          feeAmount: fee.feeAmount,
+          paidAmount,
+          due: Math.max(fee.feeAmount - paidAmount, 0),
+        };
+      });
+
+    if (selectedFees.length === 0) {
+      alert("Please select at least one fee to pay.");
       return;
     }
- const selectedFees = fees
- .filter((fee, index) => (newPaidEntries[index] || 0) > 0)
-  .map((fee, index) => {
-    const isTuition = fee.name.toLowerCase().includes("tuition");
-    const discountToApply = isTuition ? discount || 0 : 0;
-    const paidAmount = newPaidEntries[index] + discountToApply  || 0;
 
-    const newDue = Math.max(
-      fee.originalAmount - fee.feesPaid - paidAmount,
+    // total amount being paid now
+    const totalAmount = selectedFees.reduce(
+      (sum, f) => sum + f.paidAmount,
       0
     );
 
-    return {
-      feesId: fee.feesId,
-      courseId: fee.courseId,
-      paidAmount,
-      due: newDue,
-      type: fee.type,
-    };
-  });
-
-
-
-    if (selectedFees.length === 0) {
-      alert("Please select at least one fee and enter amount.");
-      return;
-    }
-
-    const totalAmount = selectedFees.reduce((acc, fee) => acc + Number(fee.paidAmount || 0), 0);
-
     const payload = {
+      campusId: userData.data.campusId, // ✅ from logged-in user
       studentId: selectedStudent.studentId,
       amount: totalAmount,
-      localTransactionId: "",
+      localTransactionId: `txn-${Date.now()}`, // simple txn id
       additional_details: {
-        
-        notes,
-        modeOfPayment,
+        paymentMode: modeOfPayment,
         referenceNo,
-        category: selectedStudent?.category || "",
+        note: notes,
       },
-      discount: discount || 0,
       fees: selectedFees,
     };
 
-    console.log(payload)
-    try {
-      const res = await axios.post(
-        API_ENDPOINTS.PAYMENT_FEES(),
-        payload,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+    console.log("Submitting Payload:", payload);
 
-      const response = res.data.data;
-      const updatedFees = selectedFees.map((fee) => {
-        const fullFee = fees.find(f => f.feesId === fee.feesId);
-        return {
-          name: fullFee?.name || "Fee",
-          oldPaid: fullFee?.feesPaid,
-          newPaid: fee.paidAmount,
-          due: fee.due,
-        };
-      });
-      const totalDue = response.data.feeSummary.remainingDue;
-      const receipt = {
-        receiptNo: response.data.payment.paymentId || "RCPT-XXXXXX",
-        student: {
-          name: selectedStudent.name || "Student",
-          id: selectedStudent.studentId,
-          course: selectedStudent.courseName || "-",
-          semester: selectedStudent.semesterName || "-",
-        },
-        breakdown: updatedFees,
-        summary: {
-          discountLabel: `${discount || 0}`,
-          amountReceived: totalAmount,
-          paymentMode: response.paymentMode || modeOfPayment,
-          totalPaid: totalAmount,
-          totalDue: totalDue
-        },
-      };
+    // const response = await axios.post(
+    //   API_ENDPOINTS.PAY_FEES_SCHOOL(), // replace with your POST API
+    //   payload,
+    //   {
+    //     headers: { Authorization: `Bearer ${token}` },
+    //   }
+    // );
 
-      setReceiptData(receipt);
-      setSubmitted(true);
-      alert("Fees submitted successfully.");
-    } catch (error) {
-      console.error("Error submitting fees:", error);
-      alert("Failed to submit fees.");
-    }
-  };
+    // setSubmitted(true);
+    // setReceiptData(response.data);
+    // alert("Fees submitted successfully!");
+    // getFees(); // refresh table
+  } catch (error) {
+    console.error("Error submitting fees:", error);
+    alert("Error submitting fees. Please try again.");
+  }
+};
+
+
 
 
   const handlePayment = () => {
@@ -244,46 +176,6 @@ const handleDownloadAndReset = () => {
   return (
     <div className="max-w-6xl mx-auto p-6 bg-white rounded shadow mt-6">
       {loadingFees && <div>Loading fees...</div>}
-      {showFeeModal && currentFeeIndex !== null && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded shadow-lg w-96">
-            <h3 className="text-xl font-bold mb-4">
-              Pay for {fees[currentFeeIndex]?.name}
-            </h3>
-
-            <p className="mb-2">Due Amount: ₹{fees[currentFeeIndex]?.due}</p>
-
-            <input
-              type="number"
-              placeholder="Enter amount to pay"
-              value={feePaymentAmount}
-              max={fees[currentFeeIndex]?.due}
-              onChange={(e) => setFeePaymentAmount(Number(e.target.value))}
-              className="w-full border p-2 rounded mb-4"
-            />
-
-            <div className="flex justify-end gap-2">
-              <button
-                onClick={() => {
-                  setShowFeeModal(false);
-                  setFeePaymentAmount('');
-                  setCurrentFeeIndex(null);
-                }}
-                className="px-4 py-2 bg-gray-300 rounded"
-              >
-                Cancel
-              </button>
-
-              <button
-                onClick={handlePayment}
-                className="px-4 py-2 bg-linear-blue text-white rounded"
-              >
-                Confirm Payment
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       <div className="flex justify-between">
         <h2 className="text-2xl font-bold mb-4">Collect Fee</h2>
@@ -399,17 +291,25 @@ const handleDownloadAndReset = () => {
         <td className="p-2">
           {!fee.isPaid && (
             <button
-              onClick={() => {
-                const updated = [...fees];
-                updated[index].isPaid = true;
-                updated[index].due = 0;
-                updated[index].paidAmount = updated[index].feeAmount; // mark full payment
-                setFees(updated);
-              }}
-              className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow-sm transition"
-            >
-              Pay
-            </button>
+  onClick={() => {
+    // track full fee payment in newPaidEntries
+    setNewPaidEntries((prev) => ({
+      ...prev,
+      [index]: fee.feeAmount, // mark full amount
+    }));
+
+    // also update UI state so table shows as paid
+    const updated = [...fees];
+    updated[index].isPaid = true;
+    updated[index].paidAmount = fee.feeAmount;
+    updated[index].due = 0;
+    setFees(updated);
+  }}
+  className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow-sm transition"
+>
+  Pay
+</button>
+
           )}
           {fee.isPaid && (
             <span className="text-green-700 font-semibold">Paid</span>
