@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import API_ENDPOINTS from "../../API/apiEndpoints";
-import ReceiptDownloadButton from "../CollegeFees/ReceiptDownloadButton";
+import ReceiptDownloadButton from "./ReceiptDownloadButton";
 
 
 const CollectFeePage = () => {
@@ -95,19 +95,20 @@ const CollectFeePage = () => {
 // ✅ handleSubmitFees
 const handleSubmitFees = async () => {
   try {
+    console.log(fees)
     // filter only months where user clicked Pay
     const selectedFees = fees
       .filter((_, index) => newPaidEntries[index] > 0)
       .map((fee, index) => {
-        const paidAmount = newPaidEntries[index];
 
         return {
+          name: fee.name,
           feesId: fee.feesId,
-          classId: fee.classId,
+          classId: selectedStudent.classId,
           month: fee.month,
           feeAmount: fee.feeAmount,
-          paidAmount,
-          due: Math.max(fee.feeAmount - paidAmount, 0),
+          paidAmount: fee.paidAmount,
+          due: 0,
         };
       });
 
@@ -137,17 +138,42 @@ const handleSubmitFees = async () => {
 
     console.log("Submitting Payload:", payload);
 
-    // const response = await axios.post(
-    //   API_ENDPOINTS.PAY_FEES_SCHOOL(), // replace with your POST API
-    //   payload,
-    //   {
-    //     headers: { Authorization: `Bearer ${token}` },
-    //   }
-    // );
-
-    // setSubmitted(true);
+    const response = await axios.post(
+      API_ENDPOINTS.SUBMIT_SCHOOL_FEES(), // replace with your POST API
+      payload,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    console.log("Submit Fees Response:", response.data);
+    setSubmitted(true);
     // setReceiptData(response.data);
-    // alert("Fees submitted successfully!");
+
+     const receiptObj = {
+      receiptNo: response.data.data.data.payment.paymentId || payload.localTransactionId,
+      student: {
+        name: selectedStudent.name,
+        id: selectedStudent.studentId,
+        course: selectedStudent.className,
+        semester: selectedStudent.subClassName,
+      },
+      breakdown: selectedFees.map((f) => ({
+        name: f.name,
+        newPaid: f.paidAmount,
+        due: f.due,
+        month: f.month,
+      })),
+      summary: {
+        amountReceived: totalAmount,
+        totalPaid: feeSummary?.totalPaid + totalAmount, // update old total
+        totalDue: feeSummary?.remainingDue - totalAmount,
+        discountLabel: feeSummary?.discount || 0,
+        paymentMode: modeOfPayment,
+      },
+    };
+    console.log("Receipt Object:", receiptObj);
+    setReceiptData(receiptObj)
+    alert("Fees submitted successfully!");
     // getFees(); // refresh table
   } catch (error) {
     console.error("Error submitting fees:", error);
@@ -264,7 +290,7 @@ const handleDownloadAndReset = () => {
       <th className="p-2">Fee Amount</th>
       <th className="p-2">Paid Amount</th>
       <th className="p-2">Due Amount</th>
-      <th className="p-2">Is Paid</th>
+      <th className="p-2">Status</th>
       <th className="p-2">Action</th>
     </tr>
   </thead>
@@ -286,7 +312,7 @@ const handleDownloadAndReset = () => {
             fee.isPaid ? "text-green-600" : "text-red-600"
           }`}
         >
-          {fee.isPaid ? "Yes" : "No"}
+          {fee.isPaid ? "Paid" : "Not Paid"}
         </td>
         <td className="p-2">
           {!fee.isPaid && (

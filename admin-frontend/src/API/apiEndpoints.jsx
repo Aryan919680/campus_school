@@ -48,11 +48,18 @@ const API_ENDPOINTS = {
   FEES_SUMMARY: () => `${
       import.meta.env.VITE_BASE_URL
     }/api/v1/payment/campus/${getCampusId()}/feesSummary`,
+
+      SCHOOL_FEES_SUMMARY: () => `${
+      import.meta.env.VITE_BASE_URL
+    }/api/v1/payment/campus/${getCampusId()}/schoolFeesSummary`,
+   
   SUBMIT_FEES: () =>
     `${
       import.meta.env.VITE_BASE_URL
     }/api/v1/department/campus/${getCampusId()}`,
-
+SUBMIT_SCHOOL_FEES: () => `${
+      import.meta.env.VITE_BASE_URL
+    }/api/v1/payment/campus/${getCampusId()}/schoolFees`,
     GET_PAYMENT_FEES:() => `${
       import.meta.env.VITE_BASE_URL
     }/api/v1/payment/campus/${getCampusId()}/getFeesByStudentName`,

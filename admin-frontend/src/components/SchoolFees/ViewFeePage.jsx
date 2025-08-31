@@ -87,7 +87,7 @@ useEffect(() => {
 const fetchFeeRecords = async (studentName = "") => {
   setLoading(true);
   try {
-    const response = await axios.get(API_ENDPOINTS.FEES_SUMMARY(), {
+    const response = await axios.get(API_ENDPOINTS.SCHOOL_FEES_SUMMARY(), {
       headers: { Authorization: `Bearer ${token}` },
      params: {
   studentName: studentName || filters.search,
