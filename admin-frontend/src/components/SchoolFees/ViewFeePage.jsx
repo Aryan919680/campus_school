@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import API_ENDPOINTS from "../../API/apiEndpoints";
-// import ReceiptDownloadButton from "./ReceiptDownloadButton";
+import ReceiptDownloadButton from "./ReceiptDownloadButton";
 export default function ViewFeePage() {
   const [filters, setFilters] = useState({
   search: "",
@@ -94,8 +94,10 @@ const fetchFeeRecords = async (studentName = "") => {
   // departmentIds: selectedDepartment || undefined,
   // courseIds: selectedCourse || undefined,
   // semesterIds: selectedSemester || undefined,
+  // classIds : selectedClass ? selectedClass : undefined,
+  // subClassIds : selectedSubClass ? selectedSubClass : undefined,
   category: selectedCategory !== "All Categories" ? selectedCategory : undefined,
-  status: selectedStatus !== "All Statuses" ? selectedStatus : undefined,
+  status: selectedStatus !== "All Sta tuses" ? selectedStatus : undefined,
 }
 
     });
@@ -110,55 +112,33 @@ const fetchFeeRecords = async (studentName = "") => {
 };
 
 const handleGenerateReceipt = async (record) => {
+  console.log(record);
   try {
-    const response = await axios.get(`${API_ENDPOINTS.GET_PAYMENT_FEES()}`, {
-      headers: { Authorization: `Bearer ${token}` },
-      params: { name: record.studentName },
-    });
-    const payments = response.data[0].payments;
-    const fees =  response.data[0].fees;
-    const feeSummary = response.data[0].feeSummary;
-    // Group payments by feesId to calculate total paid so far (oldPaid)
-    const oldPaidMap = {};
-    payments.forEach(p => {
-      if (!oldPaidMap[p.feesId]) oldPaidMap[p.feesId] = 0;
-      oldPaidMap[p.feesId] += p.paidAmount;
-    });
 
-    // Get the latest payments (assumes sorted by createdAt ascending, reverse if needed)
-    const latestPayments = payments.slice(-3); // or filter based on a timestamp or condition
-
-    const updatedFees = latestPayments.map(fee => {
-      const fullFee = fees.find(f => f.feesId === fee.feesId);
-      const totalPaidForFee = oldPaidMap[fee.feesId] || 0;
-
-      return {
-        name: fullFee?.name || "Fee",
-        oldPaid: totalPaidForFee - fee.paidAmount,
-        newPaid: totalPaidForFee,
-        due: fee.dueAmount,
-      };
-    });
-
-    const receipt = {
-      receiptNo: record.receiptNo || "RCPT-XXXXXX",
+    const receiptObj = {
+      receiptNo: record.receiptNo,
       student: {
-        name: record.studentName || "Student",
+        name: record.name,
         id: record.studentId,
-        course: record.courseName || "-",
-        semester: record.semesterName || "-",
+        course: record.className,
+        semester: record.subClass,
       },
-      breakdown: updatedFees,
+      breakdown: record.monthlyFees.map((f) => ({
+        name: f.name,
+        newPaid: f.paidAmount,
+        due: f.due || 0,
+        month: f.month,
+      })),
       summary: {
-        discountLabel: `${record.discount}`,
-        amountReceived: feeSummary[0].totalPaid,
-        paymentMode: response.data.payment?.paymentMode || "Online",
-        totalPaid: feeSummary[0].totalFee,
-        totalDue: feeSummary[0].remainingDue
+        amountReceived: record.totalPaid,
+        totalPaid: record.totalFee, // update old total
+        totalDue: record.totalDue,
+        paymentMode: record.modeOfPayment,
       },
     };
 
-    setReceiptData(receipt);
+
+    setReceiptData(receiptObj);
     setSelectedReceiptRecordId(record.studentId);
   } catch (error) {
     console.error("Error generating receipt:", error);
@@ -275,8 +255,8 @@ const handleGenerateReceipt = async (record) => {
               <tr>
                 <th className="px-4 py-2">Student Name</th>
                 <th className="px-4 py-2">Student ID</th>
-                <th className="px-4 py-2">Course</th>
-                <th className="px-4 py-2">Semester</th>
+                <th className="px-4 py-2">Class</th>
+                <th className="px-4 py-2">Sub Class</th>
                 <th className="px-4 py-2">Total Fee (₹)</th>
                 <th className="px-4 py-2">Paid (₹)</th>
                 <th className="px-4 py-2">Due (₹)</th>
@@ -291,8 +271,8 @@ const handleGenerateReceipt = async (record) => {
                 <tr key={record.id}>
                   <td className="px-4 py-2">{record.studentName}</td>
                   <td className="px-4 py-2">{record.studentId}</td>
-                  <td className="px-4 py-2">{record.courseName}</td>
-                  <td className="px-4 py-2">{record.semesterName}</td>
+                  <td className="px-4 py-2">{record.className}</td>
+                  <td className="px-4 py-2">{record.subClass}</td>
                   <td className="px-4 py-2">{record.totalFee}</td>
                   <td className="px-4 py-2">{record.totalPaid}</td>
                   <td className="px-4 py-2">{record.totalDue}</td>
@@ -310,7 +290,7 @@ const handleGenerateReceipt = async (record) => {
                   </td>
               
                      <td className="px-4 py-2">
-  {/* {selectedReceiptRecordId === record.studentId ? (
+  {selectedReceiptRecordId === record.studentId ? (
     <ReceiptDownloadButton
    
       receipt={receiptData}
@@ -326,7 +306,7 @@ const handleGenerateReceipt = async (record) => {
     >
       Generate Receipt
     </button>
-  )} */}
+  )}
 </td>
 
                         
