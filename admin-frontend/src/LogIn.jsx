@@ -4,6 +4,9 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import API_ENDPOINTS from "./API/apiEndpoints";
 import { AuthContext } from "./context/AuthContext";
+import { Eye, EyeOff, Lock } from "lucide-react";
+import { Mail } from "lucide-react";
+
 
 const LogIn = ({ onSchoolOnboarding,onCollegeOnboarding }) => {
 	const { setIsLoggedIn, setToken, setUserData, refreshAuthState } =
@@ -14,6 +17,7 @@ const LogIn = ({ onSchoolOnboarding,onCollegeOnboarding }) => {
 	const [errorMessage, setErrorMessage] = useState("");
 	const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
 	const [showForgotPassword, setShowForgotPassword] = useState(false);
+	const [showPassword, setShowPassword] = useState(false);
 	const [forgotPasswordMessage, setForgotPasswordMessage] = useState("");
 	const navigate = useNavigate();
 
@@ -117,91 +121,99 @@ const LogIn = ({ onSchoolOnboarding,onCollegeOnboarding }) => {
 				>
 					<h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
 
-					{/* <div className="mb-4">
-						<label
-							className="block text-gray-700 text-sm font-bold mb-2"
-							htmlFor="campusType"
-						>
-							Campus Type
-						</label>
-						<select
-							className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-							id="campusType"
-							name="campusType"
-							value={campusType}
-							onChange={(e) => setCampusType(e.target.value)}
-						>
-							<option value="school">School</option>
-							<option value="college">College</option>
-						</select>
-					</div> */}
+				<div className="mb-4">
+  <label className="block text-sm font-semibold text-gray-700 mb-2">
+    Email
+  </label>
 
-					{/* <div className="mb-4">
-						<label
-							className="block text-gray-700 text-sm font-bold mb-2"
-							htmlFor="userType"
-						>
-							User Type
-						</label>
-						<select
-							className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-							id="userType"
-							name="userType"
-							value={userType}
-							onChange={(e) => setUserType(e.target.value)}
-						>
-							{campusType === "school" ? (
-								<>
-									<option value="admin">Admin</option>
-									<option value="finance">Finance</option>
-								</>
-							) : (
-								<>
-									<option value="hod">HOD</option>
-									<option value="cc">Class Coordinator</option>
-									<option value="professor">Professor</option>
-								</>
-							)}
-						</select>
-					</div> */}
+  <div className="relative group">
+    
+    <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 group-focus-within:text-sky-500 transition-colors">
+      <Mail size={18} />
+    </div>
 
-					<div className="mb-4">
-						<label
-							className="block text-gray-700 text-sm font-bold mb-2"
-							htmlFor="email"
-						>
-							Email
-						</label>
-						<input
-							className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-							id="email"
-							type="email"
-							placeholder="Email"
-							name="email"
-							value={credentials.email}
-							onChange={handleChange}
-							required
-						/>
-					</div>
+    <input
+      type="email"
+      name="email"
+      value={credentials.email}
+      onChange={handleChange}
+      placeholder="Enter your email"
+      required
+      className="
+        w-full
+        pl-10 pr-3
+        py-2.5
+        border border-gray-300
+        rounded-lg
+        bg-gray-50
+        text-gray-800
+        placeholder-gray-400
+        focus:outline-none
+        focus:ring-2
+        focus:ring-sky-500
+        focus:border-sky-500
+        focus:bg-white
+        transition-all duration-200
+      "
+    />
+  </div>
+</div>
 
-					<div className="mb-6">
-						<label
-							className="block text-gray-700 text-sm font-bold mb-2"
-							htmlFor="password"
-						>
-							Password
-						</label>
-						<input
-							className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-							id="password"
-							type="password"
-							placeholder="******************"
-							name="password"
-							value={credentials.password}
-							onChange={handleChange}
-							required
-						/>
-					</div>
+<div className="mb-6">
+  <label className="block text-sm font-semibold text-gray-700 mb-2">
+    Password
+  </label>
+
+  <div className="relative group">
+    
+    {/* Lock Icon */}
+    <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 group-focus-within:text-sky-500 transition-colors">
+      <Lock size={18} />
+    </div>
+
+    {/* Input */}
+    <input
+      type={showPassword ? "text" : "password"}
+      name="password"
+      value={credentials.password}
+      onChange={handleChange}
+      placeholder="Enter your password"
+      required
+      className="
+        w-full
+        pl-10 pr-10
+        py-2.5
+        border border-gray-300
+        rounded-lg
+        bg-gray-50
+        text-gray-800
+        placeholder-gray-400
+        focus:outline-none
+        focus:ring-2
+        focus:ring-sky-500
+        focus:border-sky-500
+        focus:bg-white
+        transition-all duration-200
+      "
+    />
+
+    {/* Eye Toggle */}
+    <button
+      type="button"
+      onClick={() => setShowPassword(!showPassword)}
+      className="
+        absolute inset-y-0 right-0 flex items-center pr-3
+        text-gray-400 hover:text-sky-600
+        transition-colors duration-200
+      "
+    >
+      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+    </button>
+
+  </div>
+</div>
+
+
 
 					<div className="flex items-center justify-between">
 						<button
@@ -231,20 +243,7 @@ const LogIn = ({ onSchoolOnboarding,onCollegeOnboarding }) => {
  
 				<div className="text-center">
 					<p className="text-gray-600 text-sm">Don't have an account?</p>
-					{/* <div className="flex flex-col">
-					<button
-						onClick={onSchoolOnboarding}
-						className="mt-2 text-sky-500 hover:text-sky-700 font-semibold"
-					>
-						Start School Onboarding
-					</button>
-					<button
-						onClick={onCollegeOnboarding}
-						className="mt-2 text-sky-500 hover:text-sky-700 font-semibold"
-					>
-						Start College Onboarding
-					</button>
-					</div> */}
+	
 				</div> 
 
 				<div className="mt-4 text-center">
