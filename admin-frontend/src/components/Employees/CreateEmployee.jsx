@@ -86,7 +86,7 @@ const CreateEmployee = ({ setFormModalOpen, onEmployeeAdded }) => {
                             <input type="email" name="email" value={currentEmployee.email} onChange={handleChange} placeholder="Email Address" className="mt-2 block w-full p-2 border border-gray-300 rounded-md" />
                             <input type="text" name="qualification" value={currentEmployee.qualification} onChange={handleChange} placeholder="Qualification" className="mt-2 block w-full p-2 border border-gray-300 rounded-md" />
                         </div>
-                        <button onClick={addEmployee} className="mt-2 bg-blue-600 px-4 py-2 rounded-md text-white">+ Add Employee</button>
+                        <button onClick={addEmployee} className="mt-2 bg-linear-blue px-4 py-2 rounded-md text-white mr-4">+ Add Employee</button>
                         <button onClick={nextStep} className="mt-4 bg-green-600 px-4 py-2 rounded-md text-white">Next</button>
                     </>
                 )}
